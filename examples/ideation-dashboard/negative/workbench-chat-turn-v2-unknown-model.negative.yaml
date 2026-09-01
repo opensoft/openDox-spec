@@ -1,12 +1,11 @@
-# pair member A
+# INVALID (unknown-model): model_id absent from every packaged catalog.
 # Re-expressed against the surviving family at contract-v3.0
-# (retire-doxbench-chat-turn-v1 task 4.4). The idempotency-conflict
-# sweep is keyed on `client_turn_id` over REQUEST kinds, and the v2
-# request is the only one left for it to sweep.
+# (retire-doxbench-chat-turn-v1 task 4.4). `model_id` is spelled identically
+# in both request families and judged against the same catalog context.
 {
   "schema_version": 1,
   "kind": "workbench-chat-turn-v2",
-  "client_turn_id": "turn-dup-1",
+  "client_turn_id": "turn-0003",
   "scope": {
     "repository": "openxFactory",
     "ref": "draft/demo-topic",
@@ -16,7 +15,7 @@
   "bound_buffer": "ideation/staging/demo-topic/note.md",
   "working_subject": "Clarify the acceptance boundary",
   "message": "Which open question should we close next?",
-  "model_id": "local-authoring-1",
+  "model_id": "never-approved-9",
   "last_assistant_turn_id": null,
   "transcript": [],
   "buffers": [

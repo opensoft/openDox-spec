@@ -1,19 +1,19 @@
-# pair member A
+# INVALID (path): a buffer path traverses out of the checkout.
 # Re-expressed against the surviving family at contract-v3.0
-# (retire-doxbench-chat-turn-v1 task 4.4). The idempotency-conflict
-# sweep is keyed on `client_turn_id` over REQUEST kinds, and the v2
-# request is the only one left for it to sweep.
+# (retire-doxbench-chat-turn-v1 task 4.4); the refusal class is unchanged and
+# the v1 instance that carried it retired with its envelope. `bound_buffer`
+# names the OUTLINE so the escape stays the single intended violation.
 {
   "schema_version": 1,
   "kind": "workbench-chat-turn-v2",
-  "client_turn_id": "turn-dup-1",
+  "client_turn_id": "turn-0005",
   "scope": {
     "repository": "openxFactory",
     "ref": "draft/demo-topic",
     "tile_kind": "staged",
     "tile_id": "demo-topic"
   },
-  "bound_buffer": "ideation/staging/demo-topic/note.md",
+  "bound_buffer": "outline",
   "working_subject": "Clarify the acceptance boundary",
   "message": "Which open question should we close next?",
   "model_id": "local-authoring-1",
@@ -34,7 +34,7 @@
     {
       "kind": "document",
       "repository": "openxFactory",
-      "path": "ideation/staging/demo-topic/note.md",
+      "path": "../../etc/passwd",
       "base_ref": "draft/demo-topic",
       "base_revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
       "base_hash": "9859eb7d779f1dee12579980045bb94ecbc2cc487d8160aa239bc1bfe3416825",
