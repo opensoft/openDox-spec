@@ -1,9 +1,8 @@
 # Branch protection: the `validate` check is required
 
-Closes item 1.5 of `openxFactory
-openspec/changes/split-opendox-two-layer-product/tasks.md` for this
-repository: *"Branch-protection ruleset created in EVALUATE mode in each,
-promoted to ACTIVE once its required check has reported once."*
+Closes item 1.5 of `openxFactory openspec/changes/split-opendox-two-layer-product/tasks.md`
+for this repository: *"Branch-protection ruleset created in EVALUATE mode in
+each, promoted to ACTIVE once its required check has reported once."*
 
 Ruleset state is a repository setting, not a tree fact — nothing under
 `tests/` can assert it — so this file is the evidence line 1.5 asks for.
@@ -36,14 +35,15 @@ not any check content):
 Before this ruleset existed, nothing in this repository required `validate`
 to pass before a merge: the org-wide rulesets require a pull request and a
 Copilot review, but neither names a status check, and classic branch
-protection was never configured (`404 Branch not protected`). The two PRs
-this project merged before this one (#1 bootstrapping posture) landed without
-`validate` being a required check — a gap this file, and the ruleset it
-documents, closes.
+protection was never configured (`404 Branch not protected`). The one PR
+this project merged before this one (#1, bootstrapping posture) landed
+without `validate` being a required check — a gap this file, and the ruleset
+it documents, closes.
 
 ## Correction to PR #1's claim
 
 PR #1's body stated compliance with tasks.md "§ 1.3-1.5". That overstated the
 work: 1.5 (this file's subject) was not done in PR #1 — no ruleset existed in
-this repository until this pull request. PR #1's description has been
-corrected to say § 1.3-1.4, with a pointer to this PR for 1.5.
+this repository until this pull request. PR #1's description is being
+corrected, as part of landing this fix, to say § 1.3-1.4 with a pointer to
+this PR for 1.5.
