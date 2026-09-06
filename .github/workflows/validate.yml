@@ -17,15 +17,18 @@ jobs:
       - name: install pytest
         run: python -m pip install pytest
 
-      - name: pytest
-        run: python -m pytest -q
-
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
 
       - name: install OpenSpec CLI
         run: npm install -g @fission-ai/openspec@1.2.0
+
+      # OpenSpec must be on PATH before pytest runs: tests/test_leg_shape.py's
+      # test_openspec_validate() shells out to `openspec` itself, and would
+      # silently skip (rather than exercise real coverage) if this ran first.
+      - name: pytest
+        run: python -m pytest -q
 
       - name: OpenSpec validate
         run: OPENSPEC_TELEMETRY=0 openspec validate --all --strict

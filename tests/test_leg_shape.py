@@ -8,6 +8,7 @@ validates cleanly.
 
 from __future__ import annotations
 
+import os
 import shutil
 import subprocess
 import sys
@@ -57,7 +58,7 @@ def test_openspec_validate() -> None:
     proc = subprocess.run(
         [openspec, "validate", "--all", "--strict"],
         cwd=str(ROOT),
-        env={**__import__("os").environ, "OPENSPEC_TELEMETRY": "0"},
+        env={**os.environ, "OPENSPEC_TELEMETRY": "0"},
         capture_output=True,
         text=True,
     )
