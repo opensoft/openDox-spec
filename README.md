@@ -37,3 +37,19 @@ in `opensoft/openDox`. Security reports for this repository go through
 [SECURITY.md](SECURITY.md). The `validate` check is a required status check
 on `main`, enforced by a repository ruleset — see
 [docs/branch-protection.md](docs/branch-protection.md).
+
+## Documentation
+
+The doc index for this repository. Everything under `docs/` is listed here,
+and a new document is linked from this table in the same pull request that
+adds it — the xFactory family's standing rule, levelled across all six
+`opendox`/`openxdox` repositories by the OQ-O scaffold pass
+(`opensoft/openxFactory#656`).
+
+| document | what it is |
+|---|---|
+| [docs/branch-protection.md](docs/branch-protection.md) | the repository ruleset that makes `validate` a required status check on `main`, its `evaluate` → `active` history, and the one policy difference between the two families |
+
+`openspec/project.md` is not a document in this sense — it is this leg's
+OpenSpec instance file, read by the `openspec` CLI and by
+`tests/test_leg_shape.py`.
