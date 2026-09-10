@@ -49,6 +49,7 @@ adds it — the xFactory family's standing rule, levelled across all six
 | document | what it is |
 |---|---|
 | [docs/branch-protection.md](docs/branch-protection.md) | the repository ruleset that makes `validate` a required status check on `main`, its `evaluate` → `active` history, and the one policy difference between the two families |
+| [docs/ideation-dashboard-session-runbook.md](docs/ideation-dashboard-session-runbook.md) | a draft process runbook for operating the ideation dashboard's branch sessions — the verbs, their CLI parity, where the derived artifacts live, and the rules that must not be broken while testing |
 
 `openspec/project.md` is not a document in this sense — it is this leg's
 OpenSpec instance file, read by the `openspec` CLI and by
