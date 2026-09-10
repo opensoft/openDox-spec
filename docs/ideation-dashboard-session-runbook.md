@@ -563,7 +563,7 @@ Start the local surface from the repository root. **Both flags are REQUIRED** â€
 `generate-and-open` has no default for either, and without them argparse exits 2:
 
 ```bash
-python3 scripts/ideation_dashboard/cli.py generate-and-open \
+python3 src/opendox/cli.py generate-and-open \
   --repo-root /workspace/projects/xFactory/openxFactory \
   --repository openxFactory
 ```
@@ -771,7 +771,7 @@ mangle a document):
 
 ```bash
 # open or join the tile's session by writing the first document in it
-python3 scripts/ideation_dashboard/cli.py gate create-document \
+python3 src/opendox/cli.py gate create-document \
   --repo-root <served checkout> --actor "<name>" \
   --scope-kind staged-topic --scope-id <topic-id> \
   --title "..." --summary "..." --topic <keyword> --area ideation/staging/<topic-id>/ \
@@ -779,26 +779,26 @@ python3 scripts/ideation_dashboard/cli.py gate create-document \
   [--continuation resume|new] [--repository <repository>]
 
 # rewrite an existing document INSIDE the session worktree
-python3 scripts/ideation_dashboard/cli.py gate edit-document \
+python3 src/opendox/cli.py gate edit-document \
   --repo-root <served checkout> --actor "<name>" \
   --scope-kind staged-topic --scope-id <topic-id> \
   --document <path in the worktree> --content-file <file> \
   [--notes "..."] [--repository <repository>]
 
 # save: push the branch and open (or update) its pull request
-python3 scripts/ideation_dashboard/cli.py gate open-pr \
+python3 src/opendox/cli.py gate open-pr \
   --repo-root <served checkout> --actor "<name>" \
   --scope-kind staged-topic --scope-id <topic-id> \
   [--title "..."] [--body-file <file>] [--repository <repository>]
 
 # end the session without saving; the reason is REQUIRED and durable
-python3 scripts/ideation_dashboard/cli.py gate abandon-session \
+python3 src/opendox/cli.py gate abandon-session \
   --repo-root <served checkout> --actor "<name>" \
   --scope-kind staged-topic --scope-id <topic-id> \
   --reason "<why this exploration stopped>" [--repository <repository>]
 
 # delete an abandoned session's local branch after durable retention release
-python3 scripts/ideation_dashboard/cli.py gate cleanup-abandoned-branch \
+python3 src/opendox/cli.py gate cleanup-abandoned-branch \
   --repo-root <served checkout> --actor "<name>" \
   --scope-kind staged-topic --scope-id <topic-id> --ref <branch> \
   [--retention-release-reason "<why this orphan may be discarded>"] \
