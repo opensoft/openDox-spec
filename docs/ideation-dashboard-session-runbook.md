@@ -2,7 +2,7 @@
 
 Status: draft
 Kind: process
-Repository context: openxFactory
+Repository context: openDox-spec
 Purpose: operate the ideation dashboard's branch sessions — the verbs, their CLI parity, where the derived artifacts live, and the rules that must not be broken while testing
 
 Realizes the operating half of openxFactory `add-workbench-branch-sessions`
@@ -459,11 +459,11 @@ that happened to survive in a dead session's `/tmp` scratchpad. Neither the argv
 nor the plane belonged there.
 
 ```bash
-scripts/reserve-dashboard.sh              # ensure the plane, then serve
-scripts/reserve-dashboard.sh --status     # up or down, exit 0/1
-scripts/reserve-dashboard.sh --stop       # stop whatever holds the port
-scripts/reserve-dashboard.sh --rebuild    # republish every registered repo first
-scripts/reserve-dashboard.sh --supervise  # restart the serve if it CRASHES
+openxFactory/scripts/reserve-dashboard.sh              # ensure the plane, then serve
+openxFactory/scripts/reserve-dashboard.sh --status     # up or down, exit 0/1
+openxFactory/scripts/reserve-dashboard.sh --stop       # stop whatever holds the port
+openxFactory/scripts/reserve-dashboard.sh --rebuild    # republish every registered repo first
+openxFactory/scripts/reserve-dashboard.sh --supervise  # restart the serve if it CRASHES
 ```
 
 Three things it does that the manual recipe cannot:
@@ -484,7 +484,7 @@ process, so it covers a crash and nothing more. Boot-start needs a service
 manager, and this host has none: measured 2026-08-13, `/etc/wsl.conf` carries
 `[boot] systemd=false`, PID 1 is `init(Ubuntu-24.04)`, and `systemctl --user`
 refuses with "System has not been booted with systemd as init system."
-`scripts/systemd/xfactory-dashboard.service` is committed ready for the day
+openxFactory's `scripts/systemd/xfactory-dashboard.service` is committed ready for the day
 systemd is enabled — its header carries the four enabling steps plus
 `loginctl enable-linger`, which is required rather than optional: without it a
 user unit waits for a login, so a power cut with nobody logged in still leaves
@@ -533,7 +533,7 @@ Two consequences worth internalizing:
 - **The served checkout never moves.** No session verb switches its branch,
   resets it, or stashes in it. The only path a session writes inside the served
   checkout is the declared gate-records prefix
-  `ideation/dashboard/gate-records/`, where the main-resident `open-pr` and
+  openxFactory's `ideation/dashboard/gate-records/`, where the main-resident `open-pr` and
   `abandon-session` records land so they outlive the branch they name.
 - **A draft never appears in a shared surface.** The wheel, the funnel, and the
   pipeline board always render the snapshot fetched with the ACTIVE
@@ -639,7 +639,7 @@ dashboard starts anyway, exit 0, because a governance view you cannot open helps
 you less than one whose schema check was skipped. Two ways to get here:
 
 - *Nothing to run.* Neither the OUTPUT directory (searched first) nor
-  `--repo-root` (the fallback) has `openxFactory/scripts/validate-ideation-dashboard-contracts.py`
+  `--repo-root` (the fallback) has opensoft/openXdox-code's `scripts/validate-ideation-dashboard-contracts.py`
   above it; the message names both directories it walked up from. Render a
   checkout inside an aggregation checkout, or point `--run-dir` into one. This
   used to happen on EVERY ordinary launch — the search started only at the
@@ -743,12 +743,12 @@ lines, filled in for the open tile.
 `edit-document` rewrites the tile's own material and nothing else:
 
 - a STAGED-TOPIC tile's session may rewrite documents under
-  `ideation/staging/<topic-id>/`, the folder the tile is named after;
+  openxFactory's `ideation/staging/<topic-id>/`, the folder the tile is named after;
 - ANY tile's session may rewrite a document THAT SESSION CREATED (a path the
   session worktree has and the served checkout does not) — which is what a
   cluster or possible tile's session may rewrite, since neither owns a folder;
 - everything else is READ-ONLY CONTEXT and is refused, on both surfaces, with
-  nothing written: another topic's staged document, an `ideation/brainstorm/`
+  nothing written: another topic's staged document, an openxFactory `ideation/brainstorm/`
   capture, a cluster-neighbourhood or inherited row, and an inbound document
   that merely declares this topic as a destination.
 
@@ -774,7 +774,7 @@ mangle a document):
 python3 src/opendox/cli.py gate create-document \
   --repo-root <served checkout> --actor "<name>" \
   --scope-kind staged-topic --scope-id <topic-id> \
-  --title "..." --summary "..." --topic <keyword> --area ideation/staging/<topic-id>/ \
+  --title "..." --summary "..." --topic <keyword> --area openxFactory/ideation/staging/<topic-id>/ \
   --repository-context <repository> \
   [--continuation resume|new] [--repository <repository>]
 
@@ -881,9 +881,9 @@ it is dry-run by default — run it without `--apply` first and eyeball the op
 list:
 
 ```bash
-python3 scripts/sync-notebooklm-books.py <workspace root> --session-ref <branch>
-python3 scripts/sync-notebooklm-books.py <workspace root> --session-ref <branch> --apply
-python3 scripts/sync-notebooklm-books.py <workspace root> --session-ref <branch> \
+python3 openxFactory/scripts/sync-notebooklm-books.py <workspace root> --session-ref <branch>
+python3 openxFactory/scripts/sync-notebooklm-books.py <workspace root> --session-ref <branch> --apply
+python3 openxFactory/scripts/sync-notebooklm-books.py <workspace root> --session-ref <branch> \
   --session-retire --apply
 ```
 
@@ -995,7 +995,7 @@ report is worth reading before `--apply`.
                                                          is not written yet
 <repo>-worktrees/session-ended/<flattened>.ended.json    an ending that could
                                                          not finish
-<served checkout>/ideation/dashboard/gate-records/       main-resident records
+<served checkout>/openxFactory/ideation/dashboard/gate-records/  main-resident records
 ```
 
 The last two are the only durable trace of a HALF-FINISHED ending, and both
@@ -1086,7 +1086,7 @@ hazard, not a theoretical one): gate records land in it, and a session verb
 creates a worktree container beside it.
 
 Every session test builds a throwaway repository with a local bare `origin`
-(`tests/ideation-dashboard/session_fixtures.py::build_scratch_repo`) under
+(opensoft/openDox-code's `tests/session_fixtures.py::build_scratch_repo`) under
 `tmp_path`, and the same rule governs the browser smoke. Dated note
 (2026-08-26): the pointer this section once gave —
 `specs/007-workbench-branch-sessions/playwright-smoke.py` in a codexFactory
@@ -1097,7 +1097,7 @@ not gone outright, but it now exists only on unmerged codexFactory branches
 `011-wheel-action-verbs`), never on `main`. Its successor is the harness
 described next.
 
-The extended eleven-step doxBench editor/chat version of that smoke now lives IN THIS REPO at `tests/ideation-dashboard/tools/playwright-smoke.py` (ported 2026-08-26 from codexFactory `010-doxbench-editor-chat`, blob `fc321637`): an OPERATOR tool — it needs playwright 1.61.0 + chromium on the host, is deliberately not a `test_*.py` so the hermetic suite never collects it, and is run directly as `python3 tests/ideation-dashboard/tools/playwright-smoke.py`.
+The extended eleven-step doxBench editor/chat version of that smoke now lives at opensoft/openXdox-code's `tests/tools/playwright-smoke.py` (ported 2026-08-26 from codexFactory `010-doxbench-editor-chat`, blob `fc321637`): an OPERATOR tool — it needs playwright 1.61.0 + chromium on the host, is deliberately not a `test_*.py` so the hermetic suite never collects it, and is run directly as `python3 tests/tools/playwright-smoke.py` there.
 
 That script builds its own scratch world, constructs the server **in Python** so
 the two seams can be fakes — `pull_request_factory` (no `gh`, no network) and
