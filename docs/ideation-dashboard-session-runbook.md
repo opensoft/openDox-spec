@@ -774,7 +774,7 @@ mangle a document):
 python3 src/opendox/cli.py gate create-document \
   --repo-root <served checkout> --actor "<name>" \
   --scope-kind staged-topic --scope-id <topic-id> \
-  --title "..." --summary "..." --topic <keyword> --area openxFactory/ideation/staging/<topic-id>/ \
+  --title "..." --summary "..." --topic <keyword> --area ideation/staging/<topic-id>/ \
   --repository-context <repository> \
   [--continuation resume|new] [--repository <repository>]
 
@@ -995,7 +995,7 @@ report is worth reading before `--apply`.
                                                          is not written yet
 <repo>-worktrees/session-ended/<flattened>.ended.json    an ending that could
                                                          not finish
-<served checkout>/openxFactory/ideation/dashboard/gate-records/  main-resident records
+<served checkout>/ideation/dashboard/gate-records/       main-resident records
 ```
 
 The last two are the only durable trace of a HALF-FINISHED ending, and both
