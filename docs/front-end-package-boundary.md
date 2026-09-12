@@ -357,9 +357,25 @@ The front end needs the identical thing in one place: **the class-B route table
 must not be a literal in an openDox module.** A contributed binding brings its
 own routes with it, so `GATE_DISPOSE_ROUTE` and its twelve siblings travel to the
 binding that uses them, and an openDox module that still needs a gate verb asks
-the registry and gets a refusal — naming the layering — when no gate column is
-registered. That refusal is § 1.2(b)'s dangling import turned into a first-class,
-testable outcome.
+the VIEW REGISTRY (§ 4.1) and gets a refusal — naming the layering — when no
+gate column is registered. This is the gate loop's own mechanism: it needs
+§ 4.1's `collectViewBindings` to exist first, which is why the gate loop is
+contributed at S5, after S3 builds the registry.
+
+**`intent-feed.js` (§ 1.2(b)) reaches the same "late, named, refusable" shape a
+slice earlier, at S2, without the view registry.** `dispose.js`'s tray mounts
+per-tile — inside whichever view renders that tile, not at a region of its
+own — and `wheel.js` already mounts at its own region (`index.html`'s
+`view-wheel`). Either way the chips are a fragment inside an already-mounted
+view, never a region needing a binding of their own: they were never going to
+be a `ViewBinding` (§ 4.1 binds at the region grain — a whole tab or overlay —
+not a fragment a view renders internally). S2 instead gives each importer a
+small, local, late-and-refusable guard directly against the module's own
+presence — an optional resolve in place of the import-time
+`from "./intent-feed.js"` — present, the chips mount; absent, `dispose.js` and
+`wheel.js` render without them. That guard is what turns § 1.2(b)'s dangling
+import into a first-class, testable outcome (assertion 3), independently of —
+and a slice before — § 4.1's registry.
 
 ### 4.3 Names from the profile, mirroring `domain_profile` + `profile_proxy`
 
@@ -486,8 +502,8 @@ Ordered, each sized like the BUILD-arc slices already landing on this packet.
 | # | slice | files | seam | test | leg |
 | --- | --- | --- | --- | --- | --- |
 | **S1** | **Declare the census and measure the defect.** Land the census table of § 3.2 as data plus `tests/test_web_boundary.py` with all four assertions, add the file to `validate`'s explicit list in the SAME commit, and mark assertions 2, 3 and 4 `@pytest.mark.xfail(strict=True)` citing the defect each measures (§ 4.5). Assertion 1 is unmarked. No file moves, and the required check stays green. | +2 (census + test) + `validate.yml` | — | new | openDox-code |
-| **S2** | **Resolve the `intent-feed` edge (§ 6 Q5).** **RULED** — keep the manifest row, fix the importers (Brett Heap, 2026-09-12, #656 comment 5642758731): S2 makes the intent chips an OPTIONAL contributed binding; absent, the wheel and the dispose tray render without them. S2 is the slice that makes `app.js`'s module graph resolve again. | `dispose.js`, `wheel.js`, `styles.css`:1278–1295 | § 4.2 | assertion 3 green | openDox-code |
-| **S3** | **The view registry.** `ViewBinding` + `collectViewBindings` + the shell's declared regions; `app.js`'s direct class-B imports become registry lookups; nothing is contributed yet, so the shell renders exactly as today with an empty extension tuple. | `app.js`, new `views/view_extension.js`, `index.html` | § 4.1 | collision + empty-tuple refusal tests | openDox-code |
+| **S2** | **Resolve the `intent-feed` edge (§ 6 Q5).** **RULED** — keep the manifest row, fix the importers (Brett Heap, 2026-09-12, #656 comment 5642758731): S2 makes the intent chips an OPTIONAL contributed binding; absent, the wheel and the dispose tray render without them. S2 is the slice that makes `app.js`'s module graph resolve again. Its guard is independent of § 4.1's view registry — not yet built at this point in the landing order — per § 4.2's own account of the two mechanisms. | `dispose.js`, `wheel.js`, `styles.css`:1278–1295 | § 4.2 | assertion 3 green | openDox-code |
+| **S3** | **The view registry.** `ViewBinding` + `collectViewBindings` + the shell's declared regions; `app.js`'s direct class-B imports become registry lookups; no VIEW is contributed to THIS registry yet — S2's intent-feed guard (§ 4.2) is a narrower, region-free mechanism outside it — so the shell renders exactly as today with an empty extension tuple. | `app.js`, new `views/view_extension.js`, `index.html` | § 4.1 | collision + empty-tuple refusal tests | openDox-code |
 | **S4** | **Split the three RULED `SPLIT` files.** — the PRECONDITION for S5, not its sequel. Only 3 of the 13 gate-route constants are declared in class-B files (`dispose.js`:28/:29, `gate.js`:120); the other 10 are declared in `lens-model.js`, `repo-selector.js` and `staging-workbench-model.js`, and both `swb-create.js` and `swb-session.js` IMPORT theirs from the last of those. The gate loop cannot be contributed until its route table stops living outside class B. Each tail to its class per § 6's Q3 ruling: `lens-model.js`'s two routes, `repo-selector.js`'s five cross-column routes, `staging-workbench-model.js`'s six. **RULED Q3** (Brett Heap, 2026-09-12, #656 comment 5642758731) — `explorer.js` needs no split here: Q2 already resolved it wholly to class C (§ 3.2). `lens.js` is OUT OF SCOPE: none of Q1–Q5 rules on its two openxFactory-lane routes, so it stays `?` and those two sites stay `xfail` for a later ruled slice. | 3 files | § 4.2 | assertion 2 green for the twelve SPLIT-file sites (not `lens.js`'s two openxFactory-lane sites) | openDox-code |
 | **S5** | **Contribute the gate loop.** The four class-B files and all 13 route constants — now all declared in class-B files — move behind a binding openXdox supplies; a student install comes up with no gate bar, no dispose tray, no session verbs, and no 404. **Needs an openXdox-spec counterpart** (§ 5.1). | `dispose.js`, `gate.js`, `swb-create.js`, `swb-session.js` | § 4.1 + § 4.2 | assertion 2 green outright | openXdox-code (binding) + openDox-code (removal) |
 | **S6** | **Re-home `/source/` per Q4** — the slice that discharges the census's one § 2.2 rule 1 breach. `openxdox/serve_projection.py` drops the `BARE_SOURCE_ROUTE` and `SOURCE_PREFIX` bindings (:57, :61, :375–384) and keeps `/snapshot-index.json` and the three `/projections/*` routes; openDox's `serve.py` declares the read-only pass-through as its own fixed core arm. `views/viewer.js` and `views/wheel.js`:97 become clean. **RULED Q4** (Brett Heap, 2026-09-12, #656 comment 5642758731). | `serve_projection.py`, `serve.py` (+ their tests) | § 4.1 | assertion 2 green for `viewer.js` | openXdox-code + openDox-code |
