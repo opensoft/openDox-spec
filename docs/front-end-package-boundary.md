@@ -161,10 +161,20 @@ profile's shape and its "resolve by ROLE, not by string" rule.
 
 ### 2.2 The three rules that fall out
 
-1. **A class-A or class-C file may not name a class-B route.** That is what
-   makes (c) above a defect rather than a layout choice. `views/viewer.js` is the
-   one census row that breaks it while staying class A, and § 6's Q4 is the
-   ruling that discharges it — by moving the ROUTE, not the file (slice S6).
+1. **A class-A or class-C file may not name a route ANOTHER COLUMN declares.**
+   Not "a class-B route": class B is the gate-loop subset, and § 3.3 measures
+   three route owners, so the rule has to be stated over ownership or it misses
+   two of the three kinds of breach the census actually found. In scope: every
+   route under `serve_gate.ACTIONS_GATE_PREFIX` (class-B, 13 constants),
+   openXdox's PROJECTION routes (`/snapshot-index.json`, `/source`, `/source/`,
+   the three `/projections/*`), and openxFactory's adapter lanes
+   (`/actions/dtn-seed`, `/actions/staging-seed`,
+   `/actions/apply-register-edits`) — the last of which no class can ever own,
+   because RULING DQ-1 keeps that column at openxFactory. That is what makes
+   § 1.2(c) and § 3.3 defects rather than layout choices. `views/viewer.js` is
+   the one census row that breaks the rule while staying class A, and it breaks
+   it on a PROJECTION route, not a gate one: § 6's Q4 is the ruling that
+   discharges it — by moving the route, not the file (slice S6).
 2. **A class-C file may not carry a governance word as a literal.** That is
    RULING C2, and it is why class C is a class rather than a footnote on class A:
    11,575 lines sit in it.
@@ -390,9 +400,15 @@ assertion that parses the tree and imports nothing:
    exactly once in a declared census (a small YAML or a table in the test), with
    a class. A new file with no row fails. This is the ratchet: it is what makes
    the boundary survive the next feature.
-2. **No class-A or class-C file names a class-B route.** Grep each class-A/C file
-   for the gate prefix and for every route the census marks as another column's.
-   Today this fails with 13 + 3 hits; the slices in § 5 drive it to zero.
+2. **No class-A or class-C file names a route another column declares** (§ 2.2
+   rule 1, stated over OWNERSHIP and not over class B alone). Grep each class-A/C
+   file against the § 3.3 ownership table: the gate prefix, openXdox's five
+   projection routes, and openxFactory's three lane routes. Today it fails on
+   **13 gate constants** (§ 1.2(c)), **3 openxFactory lane constants**
+   (`lens.js`:41/:45, `repo-selector.js`:46) and **3 projection constants**
+   (`repo-selector.js`:33, `viewer.js` and `wheel.js`:97 via `/source/`); the
+   slices in § 5 drive it to zero — S4 the lanes, S5 the gate prefix, S6
+   `/source/`.
 3. **Every relative import resolves**, and no class-A/C file imports a class-B
    module. This catches § 1.2(b) — `intent-feed.js` — as a test failure rather
    than a blank page, and it is the assertion that should have existed before the
@@ -409,11 +425,11 @@ assertion that parses the tree and imports nothing:
 
 **How this lands without a red required check.** openDox-code's `validate` runs
 an explicit file list with `--noconftest` (§ 1.2(d)), so a new test file is not
-run until the workflow names it — and naming it while two of its assertions are
-known-red would put the required check red for the duration of the arc. Slice S1
-therefore lands the file, adds it to that list in the SAME commit, and marks the
-two known-red assertions `@pytest.mark.xfail(strict=True)` with the defect and
-this note cited in the reason. `strict=True` is the whole point: the check is
+run until the workflow names it — and naming it while three of its four
+assertions are known-red would put the required check red for the duration of
+the arc. Slice S1 therefore lands the file, adds it to that list in the SAME
+commit, and marks those three `@pytest.mark.xfail(strict=True)` with the defect
+and this note cited in the reason. `strict=True` is the whole point: the check is
 green while the defect stands, and goes RED the moment a slice fixes the defect
 without removing the marker, so the measurement cannot rot into a permanently
 tolerated failure. **Assertion 1 is unmarked from the start** — the census is complete the moment
@@ -437,7 +453,7 @@ Ordered, each sized like the BUILD-arc slices already landing on this packet.
 | **S5** | **Contribute the gate loop.** The four class-B files and all 13 route constants — now all declared in class-B files — move behind a binding openXdox supplies; a student install comes up with no gate bar, no dispose tray, no session verbs, and no 404. **Needs an openXdox-spec counterpart** (§ 5.1). | `dispose.js`, `gate.js`, `swb-create.js`, `swb-session.js` | § 4.1 + § 4.2 | assertion 2 green outright | openXdox-code (binding) + openDox-code (removal) |
 | **S6** | **Re-home `/source/` per Q4** — the slice that discharges the census's one § 2.2 rule 1 breach. `openxdox/serve_projection.py` drops the `BARE_SOURCE_ROUTE` and `SOURCE_PREFIX` bindings (:57, :61, :375–384) and keeps `/snapshot-index.json` and the three `/projections/*` routes; openDox's `serve.py` declares the read-only pass-through as its own fixed core arm. `views/viewer.js` and `views/wheel.js`:97 become clean. **Needs Q4.** | `serve_projection.py`, `serve.py` (+ their tests) | § 4.1 | assertion 2 green for `viewer.js` | openXdox-code + openDox-code |
 | **S7** | **Parameterize class C.** The display facet on `/capabilities`, the context hop, and the vocabulary by ROLE across the 13 class-C files PLUS the three declared class-A tails (`docs.js`:18, `grouping.js`:34–41/:51–52, `repo-selector-model.js`:517–522) — `wheel-model.js` and `model.js` first (they are the vocabulary the others import), `styles.css`'s four `--st-*` tokens last. Carries the § 1.1 packet-figure amendment. | 16 files + `serve.py` | § 4.3 | assertion 4 green; both exemptions declared | openDox-code (+ openxFactory for the packet row) |
-| **S8** | **Re-home the 48 test files and un-narrow `validate`.** The 23 at openXdox-code pointing at an absent `web/` go to the leg the census says owns each bundle file; the narrowings (RULED Q-L5 (b′) / Q-L8 (b′)) lift for the web suites; the last `xfail(strict=True)` marker from S1 is gone by construction. | 48 test files | — | both legs' `validate` | both |
+| **S8** | **Re-home the 48 test files and un-narrow `validate`.** The 23 at openXdox-code pointing at an absent `web/` go to the leg the census says owns each bundle file; the narrowings (RULED Q-L5 (b′) / Q-L8 (b′)) lift for the web suites. All three `xfail(strict=True)` markers from S1 are already gone by S7 — 3 at S2, 2 at S5 and S6, 4 at S7 — so S8 starts from four unmarked assertions and carries none of its own. | 48 test files | — | both legs' `validate` | both |
 
 ### 5.1 The openXdox-spec counterpart this note does NOT author
 
