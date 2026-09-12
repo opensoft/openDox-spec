@@ -159,13 +159,36 @@ domain profile, never from a literal. This is RULING C2 applied one tier out —
 openXdox-spec note `docs/domain-profile-design-note.md` already settles the
 profile's shape and its "resolve by ROLE, not by string" rule.
 
-### 2.2 The two rules that fall out
+### 2.2 The three rules that fall out
 
 1. **A class-A or class-C file may not name a class-B route.** That is what
-   makes (c) above a defect rather than a layout choice.
+   makes (c) above a defect rather than a layout choice. `views/viewer.js` is the
+   one census row that breaks it while staying class A, and § 6's Q4 is the
+   ruling that discharges it — by moving the ROUTE, not the file (slice S6).
 2. **A class-C file may not carry a governance word as a literal.** That is
    RULING C2, and it is why class C is a class rather than a footnote on class A:
    11,575 lines sit in it.
+3. **A SNAPSHOT SCHEMA KEY is not a stage name; a RENDERED WORD or a CORPUS PATH
+   is.** Without this the rule is unusable, because the snapshot's own field
+   names (`documents`, `clusters`, `possibles`, `staged_topics`, `changes`,
+   `keyword_index`) appear in files that render no governance word at all. A
+   class-A file MAY read a schema key; it may NOT carry a word it renders or a
+   corpus path it walks.
+
+   **Three class-A rows carry a rendered tail and are declared as such** in
+   § 3.2 — `views/docs.js`:18 (`AREA_ORDER`, corpus paths), `views/grouping.js`
+   :34–41 and :51–52 (`TALLY_FIELDS`' rendered labels, and two `status ===`
+   literals), `views/repo-selector-model.js`:517–522 (`STATIONS`' rendered
+   labels). They are parameterized with class C in slice S7, and the `(C tail)`
+   marker on their row is what says so.
+
+   **Two are declared EXEMPT, with the reason on the record** —
+   `views/composed-model.js`:107–110 (`COMPOSED_COLLECTIONS`, six snapshot field
+   names, never rendered) and `views/doxbench-state.js`:37 (`SCOPE_KINDS`, the
+   three tile kinds a workbench session may be scoped to, a state key and not a
+   label). § 4.5's assertion 4 carries them as a DECLARED exemption list with
+   these reasons: an exemption that is silence is how a literal survives a
+   vocabulary sweep.
 
 ### 2.3 What this note does NOT claim
 
@@ -211,7 +234,7 @@ puts the four principle questions that decide where each tail lands.
 | `views/bullseye.js` | 398 | the shared match-count bullseye SVG (rings, sectors, dots) | A | "PURE of view state… issues no network call of any kind"; only import is `lens-model.js`'s `GEOM`; zero governance literals |
 | `views/canvas-model.js` | 215 | the pure cluster-canvas derivation: member pane, evidence board, possibles rail | C | exports `listCanvasClusters`, `supersedePlan`, `supersedeReason`, `DRAFTS_DIR` — cluster/possible/supersede are governance nouns |
 | `views/canvas.js` | 404 | the cluster canvas's three panes | C | renders `canvas-model.js`'s output; 7 governance literals |
-| `views/composed-model.js` | 329 | the multi-repository composed-snapshot derivation (cluster union, shared view, scoping) | A | repository / project / membership nouns — RULING Q1's identity-and-coordination half, which is openDox's; the two stage literals are in `COMPOSED_COLLECTIONS` :108 |
+| `views/composed-model.js` | 329 | the multi-repository composed-snapshot derivation (cluster union, shared view, scoping) | A *(declared exempt)* | repository / project / membership nouns — RULING Q1's identity-and-coordination half, which is openDox's; `COMPOSED_COLLECTIONS` :107–110 is six SNAPSHOT FIELD NAMES, never rendered (§ 2.2 rule 3) |
 | `views/dispose.js` | 427 | the gate dispose tray and its refusal panel | **B** | `GATE_DISPOSE_ROUTE` :28 and `GATE_PROPOSE_ROUTE` :29 both sit under `serve_gate.ACTIONS_GATE_PREFIX`; mounts on `actions.gate` capability |
 | `views/doc-wheel.js` | 491 | the docs-pane wheel — one reel, no chrome | C | imports `wheel-model.js`; exports `DOC_TILE_VERBS` |
 | `views/docs.js` | 189 | the doc list, grouped by area, with Topics chips | A *(C tail)* | zero governance literals — but `AREA_ORDER` :18 hardcodes `ideation/brainstorm` and `ideation/staging`, openxFactory's own corpus layout (§ 6 Q1) |
@@ -219,12 +242,12 @@ puts the four principle questions that decide where each tail lands.
 | `views/doxbench-chat.js` | 1828 | the doxBench chat rail: subject, model selector, transcript, composer | A | imports ONLY the pure chat model; transports injected from `app.js` |
 | `views/doxbench-editor.js` | 2966 | the doxBench authoring canvas: Outline + Document buffers, preview, switch guard | A | imports `viewer.js` and `doxbench-state.js` only; the largest single file in the tree |
 | `views/doxbench-save.js` | 509 | the ordered Save orchestration | A | import-free; one injected transport |
-| `views/doxbench-state.js` | 1049 | buffer primitives, UTF-8 bounds, content identity | A | import-free; the three literals at :37 name buffer SCOPE kinds, not statuses |
+| `views/doxbench-state.js` | 1049 | buffer primitives, UTF-8 bounds, content identity | A *(declared exempt)* | import-free; `SCOPE_KINDS` :37 is the three tile kinds a session may be scoped to — a state key, never a label (§ 2.2 rule 3) |
 | `views/edit.js` | 48 | the select-to-edit transport | A | `ACTIONS_EDIT_ROUTE` :5 = `/actions/edit`, answered by openDox's own `serve.py` |
 | `views/explorer.js` | 279 | the drill-down explorer: a staged/proposal/realized tile opened as its artifact folder | **?** | `classifyChangeFile`; reads `staged_topics[].files` / `changes[].files`; 5 governance literals. Is this § 3.4's "drill-in"? (§ 6 Q2) |
 | `views/funnel.js` | 538 | the realization funnel's six columns and its hand-drawn edges | C | imports `model.js`'s `COLUMN_KEYS`; 10 governance literals |
 | `views/gate.js` | 184 | the human gate-console bar | **B** | `GATE_ACTIONS = ["demote","edit","ratify","kickoff"]` :11; `GATE_RATIFY_ROUTE` :120 under the gate prefix; its Python counterpart `gate_console.py` is openXdox's |
-| `views/grouping.js` | 246 | the project / project-group roll-up bar | A *(C tail)* | a pure renderer-side roll-up over already-resolved snapshot fields; the 9 literals at :36–:51 enumerate the six stage keys for per-project counts |
+| `views/grouping.js` | 246 | the project / project-group roll-up bar | A *(C tail)* | a pure renderer-side roll-up over already-resolved snapshot fields — but `TALLY_FIELDS` :34–41 pairs each schema key with a RENDERED label (`docs`, `clusters`, `possibles`, `staged`, `proposals`, `realized`) and :51–52 test `c.status === "active"` / `"archived"` (§ 2.2 rule 3; parameterized in S7) |
 | `views/helpers.js` | 58 | `el()` / `txt()` / `basename()` / heat bands — the textContent-first DOM discipline | A | no import, no literal, no route |
 | `views/lens-model.js` | 1070 | lens geometry, matching, co-occurrence, label layout | **?** | pure and import-free (class A substance) — but `LENS_SAVE_ROUTE` :1036 and `LENS_CLUSTER_ROUTE` :1037 are class-B tails in a pure model file |
 | `views/lens.js` | 1524 | the keyword-lens set-builder surface | **?** | `VOCABULARIES` :57 is a class-C vocabulary table; `DTN_SEED_ROUTE` :41 and `STAGING_SEED_ROUTE` :45 are answered ONLY by openxFactory's `scripts/ideation_dashboard/serve_openxfactory_lanes.py` — a THIRD column (§ 3.3) |
@@ -232,7 +255,7 @@ puts the four principle questions that decide where each tail lands.
 | `views/model.js` | 126 | the snapshot → funnel view-model | C | `COLUMN_KEYS = ["docs","clusters","possibles","staged","proposals","realized"]` :15 — 28 governance literals in 126 lines, the densest file in the tree |
 | `views/notebook.js` | 109 | the "open in NotebookLM" tile action | A | `/capabilities` :12 and `/actions/notebook` :13, both openDox's `serve.py` |
 | `views/outline-model.js` | 404 | the staged-topic outline model: sections, gaps, insertion | C | `REQUIRED_SECTIONS`, `QUESTION_SUBFIELDS`, `TEMPLATE_ORDER` — the section vocabulary of one domain's staging template, plus its `xspec:` marker grammar |
-| `views/repo-selector-model.js` | 537 | the roster derivation over the snapshot index | A | repository / ref / project nouns; the 3 literals at :519–:520 are collection names |
+| `views/repo-selector-model.js` | 537 | the roster derivation over the snapshot index | A *(C tail)* | repository / ref / project nouns, which are openDox's — but `STATIONS` :517–522 pairs each schema key with a RENDERED label ("ideation documents", "topic clusters", "possibles", "staged topics", "OpenSpec changes") (§ 2.2 rule 3; parameterized in S7) |
 | `views/repo-selector.js` | 889 | the header project picker, repo filter and refresh affordance | **?** | addresses all THREE columns from one file: `/project-register.json` :38 (openDox) · `/snapshot-index.json` :33 (openXdox) · `/actions/gate/create-project` :39 and `/actions/gate/edit-project` :43 (openXdox) · `/actions/apply-register-edits` :46 (openxFactory's lanes) · `/actions/refresh` :34 (both legs declare a handler) |
 | `views/settings.js` | 234 | the ⚙ panel and the theme/`localStorage` preference store | A | "PURE FRONTEND: no data path of any kind"; imports `wheel-model.js` only for `DRUM` geometry |
 | `views/staging-workbench-model.js` | 1949 | the pure workbench scope derivation and its route table | **?** | pure derivation (class-A/C substance) carrying SIX class-B route constants :543, :817, :818, :821, :822, :826 plus `STATUS_BRAINSTORM` / `BRAINSTORM_AREA` / `STAGING_AREA` (class-C) |
@@ -240,7 +263,7 @@ puts the four principle questions that decide where each tail lands.
 | `views/swb-create.js` | 372 | the create-document dialog and its transport | **B** | `CREATE_ROUTE` = `/actions/gate/create-document` (`staging-workbench-model.js`:543); the module exists because the workbench view is pinned transport-free |
 | `views/swb-model-intake.js` | 364 | the model-intake dialog and its transport | A | `/workbench/model-intake` and `/actions/workbench/model-intake` / `model-approval`, all answered by openDox's `serve_workbench.py` |
 | `views/swb-session.js` | 614 | the three live branch-session verbs and their CLI descriptors | **B** | `FIRST_EDIT_ROUTE` / `ABANDON_SESSION_ROUTE` / `SHARE_SESSION_ROUTE` / `OPEN_PR_ROUTE`, all under the gate prefix |
-| `views/viewer.js` | 403 | the read-only Markdown viewer over a source file | A *(B-owned route)* | pure render plus the vendored `markdown-it`; but its content comes from `/source/`, declared by `openxdox/serve_projection.py`:57 (§ 6 Q4) |
+| `views/viewer.js` | 403 | the read-only Markdown viewer over a source file | A *(B-owned route, discharged by S6)* | pure render plus the vendored `markdown-it`; but its content comes from `/source/`, declared by `openxdox/serve_projection.py`:57 — the one § 2.2 rule 1 breach the census carries, ruled by Q4 and moved by slice S6 |
 | `views/wheel-model.js` | 1300 | the snapshot → wheel view-model, geometry and alignment | C | `WHEEL_KEYS` :25 and `WHEEL_LABELS` :27–34 — the six stage names, spelled twice |
 | `views/wheel.js` | 1702 | THE WHEEL: the funnel-navigation deck | C *(B + openxFactory imports)* | imports `dispose.js` :73–74 (class B) and `intent-feed.js` :75–76 (absent, RULED openxFactory); `SOURCE_ROUTE` :97 |
 
@@ -374,14 +397,29 @@ assertion that parses the tree and imports nothing:
    module. This catches § 1.2(b) — `intent-feed.js` — as a test failure rather
    than a blank page, and it is the assertion that should have existed before the
    carve.
-4. **No class-C file carries a governance literal.** A closed word list
-   (the registered profile's vocabulary, plus the eight controlled `Status:`
-   words) grep-proven absent from class-C sources, mirroring openXdox-code's
-   `tests/test_no_hardcoded_status_words.py`. `styles.css` is included: its four
-   `--st-*` token NAMES are in scope.
+4. **No class-C file — and no declared class-A tail — carries a governance
+   literal.** A closed word list (the registered profile's vocabulary, plus the
+   eight controlled `Status:` words) grep-proven absent, mirroring
+   openXdox-code's `tests/test_no_hardcoded_status_words.py`. Scope is the 13
+   class-C files, the three class-A tails of § 2.2 rule 3, and `styles.css`
+   (its four `--st-*` token NAMES included). The two schema-key EXEMPTIONS —
+   `composed-model.js`:107–110 and `doxbench-state.js`:37 — are carried in the
+   test as a declared list with the reason beside each, never as silence: an
+   undeclared exemption is how a literal survives a vocabulary sweep.
 
-Assertions 1 and 3 can land before any file moves, red, as the measurement. 2
-and 4 go green slice by slice.
+**How this lands without a red required check.** openDox-code's `validate` runs
+an explicit file list with `--noconftest` (§ 1.2(d)), so a new test file is not
+run until the workflow names it — and naming it while two of its assertions are
+known-red would put the required check red for the duration of the arc. Slice S1
+therefore lands the file, adds it to that list in the SAME commit, and marks the
+two known-red assertions `@pytest.mark.xfail(strict=True)` with the defect and
+this note cited in the reason. `strict=True` is the whole point: the check is
+green while the defect stands, and goes RED the moment a slice fixes the defect
+without removing the marker, so the measurement cannot rot into a permanently
+tolerated failure. **Assertion 1 is unmarked from the start** — the census is complete the moment
+it is written, and an unrowed new file must fail immediately or the ratchet does
+not exist. **Assertions 2, 3 and 4 carry the marker at S1**, and each is unmarked
+by the slice that discharges it: 3 by S2, 2 by S5 and S6, 4 by S7.
 
 ---
 
@@ -392,23 +430,24 @@ Ordered, each sized like the BUILD-arc slices already landing on this packet.
 
 | # | slice | files | seam | test | leg |
 | --- | --- | --- | --- | --- | --- |
-| **S1** | **Declare the census and fail loudly.** Land the census table of § 3.2 as data plus `tests/test_web_boundary.py` assertions 1 and 3, with 3 expected-failing on `intent-feed.js` and the two importers named. No file moves. | +2 (census + test) | — | new | openDox-code |
+| **S1** | **Declare the census and measure the defect.** Land the census table of § 3.2 as data plus `tests/test_web_boundary.py` with all four assertions, add the file to `validate`'s explicit list in the SAME commit, and mark assertions 2, 3 and 4 `@pytest.mark.xfail(strict=True)` citing the defect each measures (§ 4.5). Assertion 1 is unmarked. No file moves, and the required check stays green. | +2 (census + test) + `validate.yml` | — | new | openDox-code |
 | **S2** | **Resolve the `intent-feed` edge (§ 6 Q5).** Either the binding registry lands first and the two importers ask for an optional `intent` binding, or the ruling re-points the manifest row. Whichever way it is ruled, S2 is the slice that makes `app.js`'s module graph resolve again. | `dispose.js`, `wheel.js`, `styles.css`:1278–1295 | § 4.2 | assertion 3 green | openDox-code |
 | **S3** | **The view registry.** `ViewBinding` + `collectViewBindings` + the shell's declared regions; `app.js`'s direct class-B imports become registry lookups; nothing is contributed yet, so the shell renders exactly as today with an empty extension tuple. | `app.js`, new `views/view_extension.js`, `index.html` | § 4.1 | collision + empty-tuple refusal tests | openDox-code |
-| **S4** | **Contribute the gate loop.** The four class-B files and the 13 route constants move behind a binding openXdox supplies; a student install comes up with no gate bar, no dispose tray, no session verbs, and no 404. **Needs an openXdox-spec counterpart** (§ 5.1). | `dispose.js`, `gate.js`, `swb-create.js`, `swb-session.js` | § 4.1 + § 4.2 | assertion 2 green for the gate prefix | openXdox-code (binding) + openDox-code (removal) |
-| **S5** | **Split the five `?` files.** Each tail to its class per § 6's rulings: `lens-model.js`'s two routes, `lens.js`'s two openxFactory routes, `repo-selector.js`'s five cross-column routes, `staging-workbench-model.js`'s six, `explorer.js` whole. | 5 files | § 4.2 | assertion 2 green outright | both |
-| **S6** | **Parameterize class C.** The display facet on `/capabilities`, the context hop, and the 13 class-C files' vocabulary by ROLE — `wheel-model.js` and `model.js` first (they are the vocabulary the others import), `styles.css`'s four tokens last. Carries the § 1.1 packet-figure amendment. | 13 files + `serve.py` | § 4.3 | assertion 4 green | openDox-code (+ openxFactory for the packet row) |
-| **S7** | **Re-home the 48 test files and un-narrow `validate`.** The 23 at openXdox-code pointing at an absent `web/` go to the leg the census says owns each bundle file; the narrowings (RULED Q-L5 (b′) / Q-L8 (b′)) lift for the web suites. | 48 test files | — | both legs' `validate` | both |
+| **S4** | **Split the five `?` files** — the PRECONDITION for S5, not its sequel. Only 3 of the 13 gate-route constants are declared in class-B files (`dispose.js`:28/:29, `gate.js`:120); the other 10 are declared in `lens-model.js`, `repo-selector.js` and `staging-workbench-model.js`, and both `swb-create.js` and `swb-session.js` IMPORT theirs from the last of those. The gate loop cannot be contributed until its route table stops living in `?` files. Each tail to its class per § 6's rulings: `lens-model.js`'s two routes, `lens.js`'s two openxFactory routes, `repo-selector.js`'s five cross-column routes, `staging-workbench-model.js`'s six, `explorer.js` whole. **Needs Q1, Q2, Q3.** | 5 files | § 4.2 | assertion 2 green for the openxFactory routes | openDox-code |
+| **S5** | **Contribute the gate loop.** The four class-B files and all 13 route constants — now all declared in class-B files — move behind a binding openXdox supplies; a student install comes up with no gate bar, no dispose tray, no session verbs, and no 404. **Needs an openXdox-spec counterpart** (§ 5.1). | `dispose.js`, `gate.js`, `swb-create.js`, `swb-session.js` | § 4.1 + § 4.2 | assertion 2 green outright | openXdox-code (binding) + openDox-code (removal) |
+| **S6** | **Re-home `/source/` per Q4** — the slice that discharges the census's one § 2.2 rule 1 breach. `openxdox/serve_projection.py` drops the `BARE_SOURCE_ROUTE` and `SOURCE_PREFIX` bindings (:57, :61, :375–384) and keeps `/snapshot-index.json` and the three `/projections/*` routes; openDox's `serve.py` declares the read-only pass-through as its own fixed core arm. `views/viewer.js` and `views/wheel.js`:97 become clean. **Needs Q4.** | `serve_projection.py`, `serve.py` (+ their tests) | § 4.1 | assertion 2 green for `viewer.js` | openXdox-code + openDox-code |
+| **S7** | **Parameterize class C.** The display facet on `/capabilities`, the context hop, and the vocabulary by ROLE across the 13 class-C files PLUS the three declared class-A tails (`docs.js`:18, `grouping.js`:34–41/:51–52, `repo-selector-model.js`:517–522) — `wheel-model.js` and `model.js` first (they are the vocabulary the others import), `styles.css`'s four `--st-*` tokens last. Carries the § 1.1 packet-figure amendment. | 16 files + `serve.py` | § 4.3 | assertion 4 green; both exemptions declared | openDox-code (+ openxFactory for the packet row) |
+| **S8** | **Re-home the 48 test files and un-narrow `validate`.** The 23 at openXdox-code pointing at an absent `web/` go to the leg the census says owns each bundle file; the narrowings (RULED Q-L5 (b′) / Q-L8 (b′)) lift for the web suites; the last `xfail(strict=True)` marker from S1 is gone by construction. | 48 test files | — | both legs' `validate` | both |
 
 ### 5.1 The openXdox-spec counterpart this note does NOT author
 
-**S4 needs one, and it is not written here.** The gate-loop column's VIEW
+**S5 needs one, and it is not written here.** The gate-loop column's VIEW
 CONTRACT — what a contributed `ViewBinding` may assume about the shell (mount
 points, the context object's shape, the capability probe's payload, the refusal
 text when a binding's `requires` is unmet) — is a requirement ON openXdox, and by
 the same reasoning that put the domain-profile note at openXdox-spec it belongs
 at `opensoft/openXdox-spec` `docs/`. This note names the obligation and stops.
-Everything S1–S3 needs is here.
+Everything S1–S4 needs is here.
 
 ---
 
@@ -461,7 +500,10 @@ file.
 only `/snapshot-index.json` and the three `/projections/*` routes.** Reading a
 file out of the pinned checkout is the neutral product's own read-only
 pass-through; it predates the gate loop and nothing about it is a gate act.
-This is a route-ownership correction at § 4.3 of the packet, not a new capability.
+This is a route-ownership correction at § 4.3 of the packet, not a new
+capability, and it is slice **S6** — the recommendation is not left without an
+owner: `openxdox/serve_projection.py` drops two bindings, openDox's `serve.py`
+declares one fixed core arm, and both legs' tests move with them.
 
 **Q5 — `views/intent-feed.js` is RULED `not_moved` and two openDox files import
 it.** The manifest row (`docs/opendox-carve-manifest.yaml`:1807–1810, RULED OQ-F)
