@@ -431,17 +431,21 @@ assertion that parses the tree and imports nothing:
 
    | owner | sites | where | cleared by |
    | --- | ---: | --- | --- |
-   | gate prefix | 10 | `lens-model.js`:1036/:1037, `repo-selector.js`:39/:43, `staging-workbench-model.js`:543/:817/:818/:821/:822/:826 — all `?` rows | S4 |
-   | openxFactory lanes | 3 | `lens.js`:41/:45, `repo-selector.js`:46 — all `?` rows | S4 |
-   | openXdox projection | 1 | `repo-selector.js`:33 (`/snapshot-index.json`) — a `?` row | S4 |
+   | gate prefix | 10 | `lens-model.js`:1036/:1037, `repo-selector.js`:39/:43, `staging-workbench-model.js`:543/:817/:818/:821/:822/:826 — all now RULED **SPLIT** rows (Q3, 2026-09-12, #656 comment 5642758731) | S4 |
+   | openxFactory lanes | 3 | `lens.js`:41/:45 (the one true `?` row) · `repo-selector.js`:46 (RULED **SPLIT**, Q3 — leaves the bundle) | S4 |
+   | openXdox projection | 1 | `repo-selector.js`:33 (`/snapshot-index.json`) — now a RULED **SPLIT** row (Q3) | S4 |
    | openXdox projection | 4 | `app.js`:183/:184, `viewer.js`:314, `wheel.js`:97 (`/source/`) — class A and class C | S6 |
 
-   Fourteen of the eighteen are in `?` rows and clear at S4; the remaining four
-   are the `/source/` sites Q4 rules on. The three gate constants declared in
-   class-B files (`dispose.js`:28/:29, `gate.js`:120) are NOT in the count: they
-   are exempt now and travel with the binding at S5. § 1.2(c)'s "13 gate route
-   constants" measures the TREE; this row measures the ASSERTION, and the three
-   in class-B files are the difference.
+   Fourteen of the eighteen sit in the three files the 2026-09-12 ruling
+   resolved and still clear at S4: twelve are now RULED **SPLIT**
+   (`lens-model.js`, `repo-selector.js`, `staging-workbench-model.js` — Q3)
+   and two remain in the one true `?` row, `lens.js` (none of Q1–Q5 rules on
+   it). The remaining four are the `/source/` sites Q4 rules on. The three
+   gate constants declared in class-B files (`dispose.js`:28/:29,
+   `gate.js`:120) are NOT in the count: they are exempt now and travel with
+   the binding at S5. § 1.2(c)'s "13 gate route constants" measures the TREE;
+   this row measures the ASSERTION, and the three in class-B files are the
+   difference.
 3. **Every relative import resolves**, and no class-A/C file imports a class-B
    module. This catches § 1.2(b) — `intent-feed.js` — as a test failure rather
    than a blank page, and it is the assertion that should have existed before the
