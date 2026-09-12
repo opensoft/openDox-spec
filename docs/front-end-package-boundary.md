@@ -55,7 +55,7 @@ hand-authored because exactly one file did not travel: `views/intent-feed.js`
 (483 lines), RULED `not_moved / stays_openxfactory_adapter`
 (`docs/opendox-carve-manifest.yaml`:1807–1810, under RULED OQ-F). The packet's
 count is a pre-carve measurement the tree has since moved past; it is recorded
-here, not corrected here — a packet figure is amended in the packet (§ 5, S6).
+here, not corrected here — a packet figure is amended in the packet (§ 5, S7).
 
 ### 1.2 There is no boundary — four measurements that say so
 
@@ -396,19 +396,35 @@ assertion that parses the tree and imports nothing:
 
 `openDox-code/tests/test_web_boundary.py`, four assertions.
 
-1. **The census is complete.** Every file under `src/opendox/web/` appears
-   exactly once in a declared census (a small YAML or a table in the test), with
-   a class. A new file with no row fails. This is the ratchet: it is what makes
-   the boundary survive the next feature.
-2. **No class-A or class-C file names a route another column declares** (§ 2.2
-   rule 1, stated over OWNERSHIP and not over class B alone). Grep each class-A/C
-   file against the § 3.3 ownership table: the gate prefix, openXdox's five
-   projection routes, and openxFactory's three lane routes. Today it fails on
-   **13 gate constants** (§ 1.2(c)), **3 openxFactory lane constants**
-   (`lens.js`:41/:45, `repo-selector.js`:46) and **3 projection constants**
-   (`repo-selector.js`:33, `viewer.js` and `wheel.js`:97 via `/source/`); the
-   slices in § 5 drive it to zero — S4 the lanes, S5 the gate prefix, S6
-   `/source/`.
+1. **The census is complete, and `?` is TRANSITIONAL.** Every file under
+   `src/opendox/web/` appears exactly once in a declared census (a small YAML or
+   a table in the test), with a class. A new file with no row fails. This is the
+   ratchet: it is what makes the boundary survive the next feature. **`?` is a
+   class the census may carry only until S4**: after that slice a `?` row fails
+   the assertion, because a permanent "undecided" is an escape hatch, not a
+   boundary.
+2. **No file OUTSIDE class B names a route another column declares** (§ 2.2
+   rule 1, stated over OWNERSHIP and not over class B alone). Scope is every
+   census row whose class is not B — class A, class C AND the transitional `?`,
+   which is where most of the breaches actually sit and why the assertion cannot
+   be scoped to A/C alone. Class B is exempt by construction: a gate-loop file
+   naming a gate route is the boundary working. Grep each in-scope file against
+   the § 3.3 ownership table: the gate prefix, openXdox's five projection
+   routes, and openxFactory's three lane routes. Today it fails on **18 sites**:
+
+   | owner | sites | where | cleared by |
+   | --- | ---: | --- | --- |
+   | gate prefix | 10 | `lens-model.js`:1036/:1037, `repo-selector.js`:39/:43, `staging-workbench-model.js`:543/:817/:818/:821/:822/:826 — all `?` rows | S4 |
+   | openxFactory lanes | 3 | `lens.js`:41/:45, `repo-selector.js`:46 — all `?` rows | S4 |
+   | openXdox projection | 1 | `repo-selector.js`:33 (`/snapshot-index.json`) — a `?` row | S4 |
+   | openXdox projection | 4 | `app.js`:183/:184, `viewer.js`:314, `wheel.js`:97 (`/source/`) — class A and class C | S6 |
+
+   Fourteen of the eighteen are in `?` rows and clear at S4; the remaining four
+   are the `/source/` sites Q4 rules on. The three gate constants declared in
+   class-B files (`dispose.js`:28/:29, `gate.js`:120) are NOT in the count: they
+   are exempt now and travel with the binding at S5. § 1.2(c)'s "13 gate route
+   constants" measures the TREE; this row measures the ASSERTION, and the three
+   in class-B files are the difference.
 3. **Every relative import resolves**, and no class-A/C file imports a class-B
    module. This catches § 1.2(b) — `intent-feed.js` — as a test failure rather
    than a blank page, and it is the assertion that should have existed before the
