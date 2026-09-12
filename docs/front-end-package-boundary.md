@@ -430,19 +430,23 @@ assertion that parses the tree and imports nothing:
 
 `openDox-code/tests/test_web_boundary.py`, four assertions.
 
-1. **The census is complete, and `?` is TRANSITIONAL.** Every file under
-   `src/opendox/web/` appears exactly once in a declared census (a small YAML or
-   a table in the test), with a class. A new file with no row fails. This is the
-   ratchet: it is what makes the boundary survive the next feature. **`?` is a
-   class the census may carry only until S4, with one declared exception:**
-   after S4 the assertion fails on any `?` row EXCEPT `views/lens.js`, named
-   here — the same idiom assertion 4 uses for its two schema-key exemptions
-   (§ 2.2 rule 3) — because none of Q1–Q5 rules on its two openxFactory-lane
-   routes (§ 6): it is out of scope for this ruling round, not undecided by
-   omission, and it stays `?` until a future ruling names its destination. A
-   permanent UNDECLARED "undecided" is an escape hatch, not a boundary; a
-   permanent DECLARED one, cited to the ruling gap that causes it, is how this
-   census stays honest about what it does not yet know.
+1. **The census is complete, and `?` and `SPLIT` are BOTH TRANSITIONAL.**
+   Every file under `src/opendox/web/` appears exactly once in a declared
+   census (a small YAML or a table in the test), with a class. A new file
+   with no row fails. This is the ratchet: it is what makes the boundary
+   survive the next feature. **`?` and `SPLIT` are classes the census may
+   carry only until S4, with one declared exception:** after S4 the assertion
+   fails on any row still `?` OR still `SPLIT` — EXCEPT `views/lens.js`'s `?`,
+   named here — the same idiom assertion 4 uses for its two schema-key
+   exemptions (§ 2.2 rule 3) — because none of Q1–Q5 rules on its two
+   openxFactory-lane routes (§ 6): it is out of scope for this ruling round,
+   not undecided by omission, and it stays `?` until a future ruling names its
+   destination. A `SPLIT` row carries no such exception: S4 is the slice that
+   splits all three of them (§ 5), so a `SPLIT` row still standing after S4
+   fails the assertion exactly like an undeclared `?` row would. A permanent
+   UNDECLARED "undecided" is an escape hatch, not a boundary; a permanent
+   DECLARED one, cited to the ruling gap that causes it, is how this census
+   stays honest about what it does not yet know.
 2. **No file OUTSIDE class B names a route another column declares** (§ 2.2
    rule 1, stated over OWNERSHIP and not over class B alone). Scope is every
    census row whose class is not B — class A, class C AND the transitional `?`,
