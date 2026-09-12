@@ -1,6 +1,7 @@
 # The Front-End Package Boundary openDox Has To Invent
 
 Status: draft
+Amended: 2026-09-12 — the five open questions RULED (#656 comment 5642758731)
 Kind: architecture
 Repository context: openDox-spec
 Realizes: `split-opendox-two-layer-product` `tasks.md` § 3.4 (`opensoft/openxFactory`)
@@ -177,7 +178,8 @@ profile's shape and its "resolve by ROLE, not by string" rule.
    discharges it — by moving the route, not the file (slice S6).
 2. **A class-C file may not carry a governance word as a literal.** That is
    RULING C2, and it is why class C is a class rather than a footnote on class A:
-   11,575 lines sit in it.
+   11,854 lines sit in it (2026-09-12: 14 files, after Q2 moved `explorer.js`
+   into class C, #656 comment 5642758731).
 3. **A SNAPSHOT SCHEMA KEY is not a stage name; a RENDERED WORD or a CORPUS PATH
    is.** Without this the rule is unusable, because the snapshot's own field
    names (`documents`, `clusters`, `possibles`, `staged_topics`, `changes`,
@@ -212,7 +214,9 @@ drawn in the filesystem — one `web/` with a declared manifest, or `web/core/` 
 ## 3. The census
 
 Every file under `src/opendox/web/` at `a99eba03`, with its line count from that
-tree. `LOC` is `wc -l`. `class` is A / B / C / `?` per § 2. `evidence` names the
+tree. `LOC` is `wc -l`. `class` is A / B / C / `?` per § 2, plus **SPLIT** — a
+file the 2026-09-12 ruling (§ 6) resolves into more than one destination but
+that has not yet been physically divided in code. `evidence` names the
 import or identifier that decided it.
 
 ### 3.1 Totals
@@ -221,14 +225,28 @@ import or identifier that decided it.
 | --- | ---: | ---: |
 | **A — openDox core** | 20 (18 hand-authored + 2 vendored) | 11,702 (11,700 hand-authored) |
 | **B — the gate loop** | 4 | 1,597 |
-| **C — stage-named region** | 13 | 11,575 |
-| **? — undecided (§ 6)** | 5 | 5,711 |
+| **C — stage-named region** | 14 | 11,854 |
+| **SPLIT — ruled, not yet built (§ 6)** | 3 | 3,908 |
+| **? — undecided (§ 6)** | 1 | 1,524 |
 | **total** | **42 (40 hand-authored)** | **30,585 (30,583 hand-authored)** |
 
-The `?` rows are 18.7% of the tree's lines and every one of them is a SPLIT
-file, not an unknown one: each carries class-A or class-C substance AND a
-class-B (or openxFactory-adapter) tail. That is the shape of the answer, and § 6
-puts the four principle questions that decide where each tail lands.
+**Amended 2026-09-12 — four of the five `?` rows are now RULED** (Brett Heap,
+#656 comment 5642758731, by interactive multi-choice). `views/explorer.js`
+(279 lines) moves wholly to class C (Q2) — the totals above move it out of `?`
+and into C in full. `views/repo-selector.js` (889), `views/staging-workbench-model.js`
+(1,949) and `views/lens-model.js` (1,070) are RULED **SPLIT** (Q3): each keeps
+its class-A (or class-A/C) substance in place and its class-B route constants
+travel with the contributed binding that calls them, never with the model that
+declares them. No code has moved yet — this note designs, it does not build —
+so the three SPLIT files are counted here in their own transitional bucket
+(3 files / 3,908 lines) rather than folded into A/B/C, and their own class(es)
+will be re-derived from real line counts once S4 executes the split. Only
+`views/lens.js` (1,524 lines) stays `?`: none of Q1–Q5 rules on its two
+openxFactory-lane routes (`DTN_SEED_ROUTE`, `STAGING_SEED_ROUTE`), so its
+tail's destination remains undecided pending a future ruling. Previously (at
+landing, before this ruling): A 20 / 11,702; B 4 / 1,597; C 13 / 11,575;
+`?` 5 / 5,711; total 42 / 30,585 — the same total lines and file count hold
+now, re-bucketed.
 
 ### 3.2 The rows
 
@@ -254,21 +272,21 @@ puts the four principle questions that decide where each tail lands.
 | `views/doxbench-save.js` | 509 | the ordered Save orchestration | A | import-free; one injected transport |
 | `views/doxbench-state.js` | 1049 | buffer primitives, UTF-8 bounds, content identity | A *(declared exempt)* | import-free; `SCOPE_KINDS` :37 is the three tile kinds a session may be scoped to — a state key, never a label (§ 2.2 rule 3) |
 | `views/edit.js` | 48 | the select-to-edit transport | A | `ACTIONS_EDIT_ROUTE` :5 = `/actions/edit`, answered by openDox's own `serve.py` |
-| `views/explorer.js` | 279 | the drill-down explorer: a staged/proposal/realized tile opened as its artifact folder | **?** | `classifyChangeFile`; reads `staged_topics[].files` / `changes[].files`; 5 governance literals. Is this § 3.4's "drill-in"? (§ 6 Q2) |
+| `views/explorer.js` | 279 | the drill-down explorer: a staged/proposal/realized tile opened as its artifact folder | C | `classifyChangeFile`; reads `staged_topics[].files` / `changes[].files`; 5 governance literals — a projection whose only domain content is the artifact-folder vocabulary. RULED Q2, not class B: § 3.4's "drill-in" is `dispose.js`'s refusal panel, already class B (Brett Heap, 2026-09-12, #656 comment 5642758731) |
 | `views/funnel.js` | 538 | the realization funnel's six columns and its hand-drawn edges | C | imports `model.js`'s `COLUMN_KEYS`; 10 governance literals |
 | `views/gate.js` | 184 | the human gate-console bar | **B** | `GATE_ACTIONS = ["demote","edit","ratify","kickoff"]` :11; `GATE_RATIFY_ROUTE` :120 under the gate prefix; its Python counterpart `gate_console.py` is openXdox's |
 | `views/grouping.js` | 246 | the project / project-group roll-up bar | A *(C tail)* | a pure renderer-side roll-up over already-resolved snapshot fields — but `TALLY_FIELDS` :34–41 pairs each schema key with a RENDERED label (`docs`, `clusters`, `possibles`, `staged`, `proposals`, `realized`) and :51–52 test `c.status === "active"` / `"archived"` (§ 2.2 rule 3; parameterized in S7) |
 | `views/helpers.js` | 58 | `el()` / `txt()` / `basename()` / heat bands — the textContent-first DOM discipline | A | no import, no literal, no route |
-| `views/lens-model.js` | 1070 | lens geometry, matching, co-occurrence, label layout | **?** | pure and import-free (class A substance) — but `LENS_SAVE_ROUTE` :1036 and `LENS_CLUSTER_ROUTE` :1037 are class-B tails in a pure model file |
-| `views/lens.js` | 1524 | the keyword-lens set-builder surface | **?** | `VOCABULARIES` :57 is a class-C vocabulary table; `DTN_SEED_ROUTE` :41 and `STAGING_SEED_ROUTE` :45 are answered ONLY by openxFactory's `scripts/ideation_dashboard/serve_openxfactory_lanes.py` — a THIRD column (§ 3.3) |
+| `views/lens-model.js` | 1070 | lens geometry, matching, co-occurrence, label layout | **SPLIT** | pure and import-free (class A substance) — `LENS_SAVE_ROUTE` :1036 and `LENS_CLUSTER_ROUTE` :1037 are class-B tails that travel with the binding that calls them, never with the model (RULED Q3, Brett Heap, 2026-09-12, #656 comment 5642758731); not yet built — the two constants stay in-file until S4 |
+| `views/lens.js` | 1524 | the keyword-lens set-builder surface | **?** | `VOCABULARIES` :57 is a class-C vocabulary table; `DTN_SEED_ROUTE` :41 and `STAGING_SEED_ROUTE` :45 are answered ONLY by openxFactory's `scripts/ideation_dashboard/serve_openxfactory_lanes.py` — a THIRD column (§ 3.3). Stays `?`: none of Q1–Q5 rules on this file (Brett Heap, 2026-09-12, #656 comment 5642758731) |
 | `views/lineage.js` | 140 | the stats strip and the cluster lineage / readiness-heat overlay | C | 10 governance literals; readiness rendered verbatim from cluster fields |
 | `views/model.js` | 126 | the snapshot → funnel view-model | C | `COLUMN_KEYS = ["docs","clusters","possibles","staged","proposals","realized"]` :15 — 28 governance literals in 126 lines, the densest file in the tree |
 | `views/notebook.js` | 109 | the "open in NotebookLM" tile action | A | `/capabilities` :12 and `/actions/notebook` :13, both openDox's `serve.py` |
 | `views/outline-model.js` | 404 | the staged-topic outline model: sections, gaps, insertion | C | `REQUIRED_SECTIONS`, `QUESTION_SUBFIELDS`, `TEMPLATE_ORDER` — the section vocabulary of one domain's staging template, plus its `xspec:` marker grammar |
 | `views/repo-selector-model.js` | 537 | the roster derivation over the snapshot index | A *(C tail)* | repository / ref / project nouns, which are openDox's — but `STATIONS` :517–522 pairs each schema key with a RENDERED label ("ideation documents", "topic clusters", "possibles", "staged topics", "OpenSpec changes") (§ 2.2 rule 3; parameterized in S7) |
-| `views/repo-selector.js` | 889 | the header project picker, repo filter and refresh affordance | **?** | addresses all THREE columns from one file: `/project-register.json` :38 (openDox) · `/snapshot-index.json` :33 (openXdox) · `/actions/gate/create-project` :39 and `/actions/gate/edit-project` :43 (openXdox) · `/actions/apply-register-edits` :46 (openxFactory's lanes) · `/actions/refresh` :34 (both legs declare a handler) |
+| `views/repo-selector.js` | 889 | the header project picker, repo filter and refresh affordance | **SPLIT** | addresses all THREE columns from one file: `/project-register.json` :38 (openDox) · `/snapshot-index.json` :33 (openXdox) · `/actions/gate/create-project` :39 and `/actions/gate/edit-project` :43 (openXdox) · `/actions/apply-register-edits` :46 (openxFactory's lanes) · `/actions/refresh` :34 (both legs declare a handler). RULED Q3 (Brett Heap, 2026-09-12, #656 comment 5642758731): SPLIT — picker + refresh stay class A; `:39`/`:43` become a contributed binding at S4/S5; `:46` leaves the bundle entirely; not yet built |
 | `views/settings.js` | 234 | the ⚙ panel and the theme/`localStorage` preference store | A | "PURE FRONTEND: no data path of any kind"; imports `wheel-model.js` only for `DRUM` geometry |
-| `views/staging-workbench-model.js` | 1949 | the pure workbench scope derivation and its route table | **?** | pure derivation (class-A/C substance) carrying SIX class-B route constants :543, :817, :818, :821, :822, :826 plus `STATUS_BRAINSTORM` / `BRAINSTORM_AREA` / `STAGING_AREA` (class-C) |
+| `views/staging-workbench-model.js` | 1949 | the pure workbench scope derivation and its route table | **SPLIT** | pure derivation (class-A/C substance) carrying SIX class-B route constants :543, :817, :818, :821, :822, :826 (travel with the binding that calls them, never with the model — RULED Q3, Brett Heap, 2026-09-12, #656 comment 5642758731) plus `STATUS_BRAINSTORM` / `BRAINSTORM_AREA` / `STAGING_AREA` (class-C); not yet built — the six constants stay in-file until S4 |
 | `views/staging-workbench.js` | 3315 | the full-screen workbench scoped to one topic-bearing tile | C | its scope is "a cluster, a possible, or a staged topic"; composes `doxbench-editor` + `doxbench-chat` + `bullseye` + `doc-wheel` |
 | `views/swb-create.js` | 372 | the create-document dialog and its transport | **B** | `CREATE_ROUTE` = `/actions/gate/create-document` (`staging-workbench-model.js`:543); the module exists because the workbench view is pinned transport-free |
 | `views/swb-model-intake.js` | 364 | the model-intake dialog and its transport | A | `/workbench/model-intake` and `/actions/workbench/model-intake` / `model-approval`, all answered by openDox's `serve_workbench.py` |
@@ -339,9 +357,25 @@ The front end needs the identical thing in one place: **the class-B route table
 must not be a literal in an openDox module.** A contributed binding brings its
 own routes with it, so `GATE_DISPOSE_ROUTE` and its twelve siblings travel to the
 binding that uses them, and an openDox module that still needs a gate verb asks
-the registry and gets a refusal — naming the layering — when no gate column is
-registered. That refusal is § 1.2(b)'s dangling import turned into a first-class,
-testable outcome.
+the VIEW REGISTRY (§ 4.1) and gets a refusal — naming the layering — when no
+gate column is registered. This is the gate loop's own mechanism: it needs
+§ 4.1's `collectViewBindings` to exist first, which is why the gate loop is
+contributed at S5, after S3 builds the registry.
+
+**`intent-feed.js` (§ 1.2(b)) reaches the same "late, named, refusable" shape a
+slice earlier, at S2, without the view registry.** `dispose.js`'s tray mounts
+per-tile — inside whichever view renders that tile, not at a region of its
+own — and `wheel.js` already mounts at its own region (`index.html`'s
+`view-wheel`). Either way the chips are a fragment inside an already-mounted
+view, never a region needing a binding of their own: they were never going to
+be a `ViewBinding` (§ 4.1 binds at the region grain — a whole tab or overlay —
+not a fragment a view renders internally). S2 instead gives each importer a
+small, local, late-and-refusable guard directly against the module's own
+presence — an optional resolve in place of the import-time
+`from "./intent-feed.js"` — present, the chips mount; absent, `dispose.js` and
+`wheel.js` render without them. That guard is what turns § 1.2(b)'s dangling
+import into a first-class, testable outcome (assertion 3), independently of —
+and a slice before — § 4.1's registry.
 
 ### 4.3 Names from the profile, mirroring `domain_profile` + `profile_proxy`
 
@@ -396,13 +430,23 @@ assertion that parses the tree and imports nothing:
 
 `openDox-code/tests/test_web_boundary.py`, four assertions.
 
-1. **The census is complete, and `?` is TRANSITIONAL.** Every file under
-   `src/opendox/web/` appears exactly once in a declared census (a small YAML or
-   a table in the test), with a class. A new file with no row fails. This is the
-   ratchet: it is what makes the boundary survive the next feature. **`?` is a
-   class the census may carry only until S4**: after that slice a `?` row fails
-   the assertion, because a permanent "undecided" is an escape hatch, not a
-   boundary.
+1. **The census is complete, and `?` and `SPLIT` are BOTH TRANSITIONAL.**
+   Every file under `src/opendox/web/` appears exactly once in a declared
+   census (a small YAML or a table in the test), with a class. A new file
+   with no row fails. This is the ratchet: it is what makes the boundary
+   survive the next feature. **`?` and `SPLIT` are classes the census may
+   carry only until S4, with one declared exception:** after S4 the assertion
+   fails on any row still `?` OR still `SPLIT` — EXCEPT `views/lens.js`'s `?`,
+   named here — the same idiom assertion 4 uses for its two schema-key
+   exemptions (§ 2.2 rule 3) — because none of Q1–Q5 rules on its two
+   openxFactory-lane routes (§ 6): it is out of scope for this ruling round,
+   not undecided by omission, and it stays `?` until a future ruling names its
+   destination. A `SPLIT` row carries no such exception: S4 is the slice that
+   splits all three of them (§ 5), so a `SPLIT` row still standing after S4
+   fails the assertion exactly like an undeclared `?` row would. A permanent
+   UNDECLARED "undecided" is an escape hatch, not a boundary; a permanent
+   DECLARED one, cited to the ruling gap that causes it, is how this census
+   stays honest about what it does not yet know.
 2. **No file OUTSIDE class B names a route another column declares** (§ 2.2
    rule 1, stated over OWNERSHIP and not over class B alone). Scope is every
    census row whose class is not B — class A, class C AND the transitional `?`,
@@ -414,17 +458,37 @@ assertion that parses the tree and imports nothing:
 
    | owner | sites | where | cleared by |
    | --- | ---: | --- | --- |
-   | gate prefix | 10 | `lens-model.js`:1036/:1037, `repo-selector.js`:39/:43, `staging-workbench-model.js`:543/:817/:818/:821/:822/:826 — all `?` rows | S4 |
-   | openxFactory lanes | 3 | `lens.js`:41/:45, `repo-selector.js`:46 — all `?` rows | S4 |
-   | openXdox projection | 1 | `repo-selector.js`:33 (`/snapshot-index.json`) — a `?` row | S4 |
+   | gate prefix | 10 | `lens-model.js`:1036/:1037, `repo-selector.js`:39/:43, `staging-workbench-model.js`:543/:817/:818/:821/:822/:826 — all now RULED **SPLIT** rows (Q3, 2026-09-12, #656 comment 5642758731) | S4 |
+   | openxFactory lanes | 1 | `repo-selector.js`:46 (RULED **SPLIT**, Q3 — leaves the bundle) | S4 |
+   | openxFactory lanes | 2 | `lens.js`:41/:45 (the one true `?` row — ruled-later, none of Q1–Q5 rules on it) | future ruling |
+   | openXdox projection | 1 | `repo-selector.js`:33 (`/snapshot-index.json`) — now a RULED **SPLIT** row (Q3) | S4 |
    | openXdox projection | 4 | `app.js`:183/:184, `viewer.js`:314, `wheel.js`:97 (`/source/`) — class A and class C | S6 |
 
-   Fourteen of the eighteen are in `?` rows and clear at S4; the remaining four
-   are the `/source/` sites Q4 rules on. The three gate constants declared in
-   class-B files (`dispose.js`:28/:29, `gate.js`:120) are NOT in the count: they
-   are exempt now and travel with the binding at S5. § 1.2(c)'s "13 gate route
-   constants" measures the TREE; this row measures the ASSERTION, and the three
-   in class-B files are the difference.
+   Fourteen of the eighteen sit in the three files the 2026-09-12 ruling
+   named: twelve clear AT S4, now that they are RULED **SPLIT**
+   (`lens-model.js`, `repo-selector.js`, `staging-workbench-model.js` — Q3);
+   the other two are `lens.js`'s sites and do NOT clear at S4 — none of Q1–Q5
+   rules on them, so they stand as the declared, ruled-later exception this
+   assertion shares with assertion 1 (above), rather than clearing on any
+   slice's schedule. The remaining four are the `/source/` sites Q4 rules on,
+   cleared at S6.
+
+   **`lens.js`'s two openxFactory-lane sites are this assertion's own
+   standing, declared exception** — the same idiom assertion 4 uses for its
+   two schema-key exemptions (§ 2.2 rule 3): named here, with the reason
+   beside it, excluded from the in-scope grep until a future ruling folds
+   `lens.js` back in. This is why S5's and S6's `xfail(strict=True)` removal
+   still leaves the test green: the marker comes off because every OTHER site
+   it was tolerating is fixed, not because `lens.js`'s two sites started
+   passing the grep — they never entered it. A THIRD undeclared `?` or
+   unresolved SPLIT row appearing later still fails immediately, the same
+   ratchet assertion 1 enforces.
+
+   The three gate constants declared in class-B files (`dispose.js`:28/:29,
+   `gate.js`:120) are NOT in the count: they are exempt now and travel with
+   the binding at S5. § 1.2(c)'s "13 gate route constants" measures the TREE;
+   this row measures the ASSERTION, and the three in class-B files are the
+   difference.
 3. **Every relative import resolves**, and no class-A/C file imports a class-B
    module. This catches § 1.2(b) — `intent-feed.js` — as a test failure rather
    than a blank page, and it is the assertion that should have existed before the
@@ -432,8 +496,9 @@ assertion that parses the tree and imports nothing:
 4. **No class-C file — and no declared class-A tail — carries a governance
    literal.** A closed word list (the registered profile's vocabulary, plus the
    eight controlled `Status:` words) grep-proven absent, mirroring
-   openXdox-code's `tests/test_no_hardcoded_status_words.py`. Scope is the 13
-   class-C files, the three class-A tails of § 2.2 rule 3, and `styles.css`
+   openXdox-code's `tests/test_no_hardcoded_status_words.py`. Scope is the 14
+   class-C files (2026-09-12: including `explorer.js`, RULED Q2), the three
+   class-A tails of § 2.2 rule 3, and `styles.css`
    (its four `--st-*` token NAMES included). The two schema-key EXEMPTIONS —
    `composed-model.js`:107–110 and `doxbench-state.js`:37 — are carried in the
    test as a declared list with the reason beside each, never as silence: an
@@ -463,13 +528,24 @@ Ordered, each sized like the BUILD-arc slices already landing on this packet.
 | # | slice | files | seam | test | leg |
 | --- | --- | --- | --- | --- | --- |
 | **S1** | **Declare the census and measure the defect.** Land the census table of § 3.2 as data plus `tests/test_web_boundary.py` with all four assertions, add the file to `validate`'s explicit list in the SAME commit, and mark assertions 2, 3 and 4 `@pytest.mark.xfail(strict=True)` citing the defect each measures (§ 4.5). Assertion 1 is unmarked. No file moves, and the required check stays green. | +2 (census + test) + `validate.yml` | — | new | openDox-code |
-| **S2** | **Resolve the `intent-feed` edge (§ 6 Q5).** Either the binding registry lands first and the two importers ask for an optional `intent` binding, or the ruling re-points the manifest row. Whichever way it is ruled, S2 is the slice that makes `app.js`'s module graph resolve again. | `dispose.js`, `wheel.js`, `styles.css`:1278–1295 | § 4.2 | assertion 3 green | openDox-code |
-| **S3** | **The view registry.** `ViewBinding` + `collectViewBindings` + the shell's declared regions; `app.js`'s direct class-B imports become registry lookups; nothing is contributed yet, so the shell renders exactly as today with an empty extension tuple. | `app.js`, new `views/view_extension.js`, `index.html` | § 4.1 | collision + empty-tuple refusal tests | openDox-code |
-| **S4** | **Split the five `?` files** — the PRECONDITION for S5, not its sequel. Only 3 of the 13 gate-route constants are declared in class-B files (`dispose.js`:28/:29, `gate.js`:120); the other 10 are declared in `lens-model.js`, `repo-selector.js` and `staging-workbench-model.js`, and both `swb-create.js` and `swb-session.js` IMPORT theirs from the last of those. The gate loop cannot be contributed until its route table stops living in `?` files. Each tail to its class per § 6's rulings: `lens-model.js`'s two routes, `lens.js`'s two openxFactory routes, `repo-selector.js`'s five cross-column routes, `staging-workbench-model.js`'s six, `explorer.js` whole. **Needs Q1, Q2, Q3.** | 5 files | § 4.2 | assertion 2 green for the openxFactory routes | openDox-code |
+| **S2** | **Resolve the `intent-feed` edge (§ 6 Q5).** **RULED** — keep the manifest row, fix the importers (Brett Heap, 2026-09-12, #656 comment 5642758731): S2 makes the intent chips an OPTIONAL contributed binding; absent, the wheel and the dispose tray render without them. S2 is the slice that makes `app.js`'s module graph resolve again. Its guard is independent of § 4.1's view registry — not yet built at this point in the landing order — per § 4.2's own account of the two mechanisms. | `dispose.js`, `wheel.js`, `styles.css`:1278–1295 | § 4.2 | assertion 3 green | openDox-code |
+| **S3** | **The view registry.** `ViewBinding` + `collectViewBindings` + the shell's declared regions; `app.js`'s direct class-B imports become registry lookups; no VIEW is contributed to THIS registry yet — S2's intent-feed guard (§ 4.2) is a narrower, region-free mechanism outside it — so the shell renders exactly as today with an empty extension tuple. | `app.js`, new `views/view_extension.js`, `index.html` | § 4.1 | collision + empty-tuple refusal tests | openDox-code |
+| **S4** | **Split the three RULED `SPLIT` files.** — the PRECONDITION for S5, not its sequel. Only 3 of the 13 gate-route constants are declared in class-B files (`dispose.js`:28/:29, `gate.js`:120); the other 10 are declared in `lens-model.js`, `repo-selector.js` and `staging-workbench-model.js`, and both `swb-create.js` and `swb-session.js` IMPORT theirs from the last of those. The gate loop cannot be contributed until its route table stops living outside class B. Each tail to its class per § 6's Q3 ruling: `lens-model.js`'s two routes, `repo-selector.js`'s five cross-column routes, `staging-workbench-model.js`'s six. **RULED Q3** (Brett Heap, 2026-09-12, #656 comment 5642758731) — `explorer.js` needs no split here: Q2 already resolved it wholly to class C (§ 3.2). `lens.js` is OUT OF SCOPE: none of Q1–Q5 rules on its two openxFactory-lane routes, so it stays `?` as assertion 1's one declared, ruled-later exception, and those two sites stand as assertion 2's own declared exception (§ 4.5) — not a temporary `xfail` — until a later ruling resolves `lens.js`. | 3 files | § 4.2 | assertion 2 green for the twelve SPLIT-file sites (not `lens.js`'s two openxFactory-lane sites) | openDox-code |
 | **S5** | **Contribute the gate loop.** The four class-B files and all 13 route constants — now all declared in class-B files — move behind a binding openXdox supplies; a student install comes up with no gate bar, no dispose tray, no session verbs, and no 404. **Needs an openXdox-spec counterpart** (§ 5.1). | `dispose.js`, `gate.js`, `swb-create.js`, `swb-session.js` | § 4.1 + § 4.2 | assertion 2 green outright | openXdox-code (binding) + openDox-code (removal) |
-| **S6** | **Re-home `/source/` per Q4** — the slice that discharges the census's one § 2.2 rule 1 breach. `openxdox/serve_projection.py` drops the `BARE_SOURCE_ROUTE` and `SOURCE_PREFIX` bindings (:57, :61, :375–384) and keeps `/snapshot-index.json` and the three `/projections/*` routes; openDox's `serve.py` declares the read-only pass-through as its own fixed core arm. `views/viewer.js` and `views/wheel.js`:97 become clean. **Needs Q4.** | `serve_projection.py`, `serve.py` (+ their tests) | § 4.1 | assertion 2 green for `viewer.js` | openXdox-code + openDox-code |
-| **S7** | **Parameterize class C.** The display facet on `/capabilities`, the context hop, and the vocabulary by ROLE across the 13 class-C files PLUS the three declared class-A tails (`docs.js`:18, `grouping.js`:34–41/:51–52, `repo-selector-model.js`:517–522) — `wheel-model.js` and `model.js` first (they are the vocabulary the others import), `styles.css`'s four `--st-*` tokens last. Carries the § 1.1 packet-figure amendment. | 16 files + `serve.py` | § 4.3 | assertion 4 green; both exemptions declared | openDox-code (+ openxFactory for the packet row) |
-| **S8** | **Re-home the 48 test files and un-narrow `validate`.** The 23 at openXdox-code pointing at an absent `web/` go to the leg the census says owns each bundle file; the narrowings (RULED Q-L5 (b′) / Q-L8 (b′)) lift for the web suites. All three `xfail(strict=True)` markers from S1 are already gone by S7 — 3 at S2, 2 at S5 and S6, 4 at S7 — so S8 starts from four unmarked assertions and carries none of its own. | 48 test files | — | both legs' `validate` | both |
+| **S6** | **Re-home `/source/` per Q4** — the slice that discharges the census's one § 2.2 rule 1 breach. `openxdox/serve_projection.py` drops the `BARE_SOURCE_ROUTE` and `SOURCE_PREFIX` bindings (:57, :61, :375–384) and keeps `/snapshot-index.json` and the three `/projections/*` routes; openDox's `serve.py` declares the read-only pass-through as its own fixed core arm. `views/viewer.js` and `views/wheel.js`:97 become clean. **RULED Q4** (Brett Heap, 2026-09-12, #656 comment 5642758731). | `serve_projection.py`, `serve.py` (+ their tests) | § 4.1 | assertion 2 green for `viewer.js` | openXdox-code + openDox-code |
+| **S7** | **Parameterize class C.** The display facet on `/capabilities`, the context hop, and the vocabulary by ROLE across the 14 class-C files (2026-09-12: including `explorer.js`'s five governance literals, RULED Q2) PLUS the three declared class-A tails (`docs.js`:18, `grouping.js`:34–41/:51–52, `repo-selector-model.js`:517–522) — `wheel-model.js` and `model.js` first (they are the vocabulary the others import), `styles.css`'s four `--st-*` tokens last. Carries the § 1.1 packet-figure amendment. | 17 files + `serve.py` | § 4.3 | assertion 4 green; both exemptions declared | openDox-code (+ openxFactory for the packet row) |
+| **S8** | **Re-home the 48 test files and un-narrow `validate`.** The 23 at openXdox-code pointing at an absent `web/` go to the leg the census says owns each bundle file; the narrowings (RULED Q-L5 (b′) / Q-L8 (b′)) lift for the web suites. All three `xfail(strict=True)` markers from S1 are already gone by S7 — 3 at S2, 2 at S5 and S6, 4 at S7 — so S8 starts from four unmarked assertions and carries none of its own; `lens.js`'s standing exceptions under assertions 1 and 2 (§ 4.5) are declared, not marked, and are not this slice's — or any slice's — to close, only a future ruling's. | 48 test files | — | both legs' `validate` | both |
+
+**RULED, same sitting → S1–S3 START NOW** (Brett Heap, 2026-09-12, #656 comment
+5642758731): none of the three needed a ruling to begin — S1 and S3 never did,
+and S2's Q5 is RULED above. S4, S5 and S6 above are marked RULED and follow once
+S1–S3 land. **Q-L1 binds every slice:** an edit to an ARRIVED file (a
+`moved_verbatim` / `moved_with_declared_edit` row of
+`docs/opendox-carve-manifest.yaml`) outside its declared lines is an undeclared
+movement, so any slice that edits such a file pairs its leg PR with an
+openxFactory row-annotation PR (the ASK-7 pattern) that lands FIRST; new files
+are created, not arrived. Landing order among S1–S3: S1 → S2 → S3, the lane
+merging main into each before landing.
 
 ### 5.1 The openXdox-spec counterpart this note does NOT author
 
@@ -500,6 +576,10 @@ already has to carry an artifact-vocabulary axis for `outline-model.js`. Making
 the tile itself openXdox would take the doc list away from the student, which is
 the outcome § 3.4 exists to prevent.
 
+**RULED — the recommended answer adopted: openDox, class A, with the area map
+parameterized.** Brett Heap, 2026-09-12, #656 comment 5642758731, by
+interactive multi-choice.
+
 **Q2 — Is `views/explorer.js` the "drill-in" § 3.4 assigns to the gate loop?**
 The task text says *"the gate console and drill-in are the gate loop"*. Two
 things in the tree answer to "drill-in": `explorer.js` (279 lines, the drill-DOWN
@@ -512,6 +592,10 @@ drill banner follows `repo-selector.js`'s own ruling (Q3 below). What § 3.4
 means by "drill-in" is the gate console's own drill-in, which at this tree is the
 dispose tray's refusal panel inside `dispose.js`, already class B.
 
+**RULED — the recommended answer adopted: neither `explorer.js` nor the drill
+banner is class B; `explorer.js` is class C.** Brett Heap, 2026-09-12, #656
+comment 5642758731, by interactive multi-choice.
+
 **Q3 — Does `views/repo-selector.js` split, or move whole?** One 889-line file
 addresses all three columns (§ 3.2's row). Splitting it is real work; moving it
 whole puts the project picker — the student's way to choose what they are
@@ -522,6 +606,9 @@ two `/actions/gate/*` project commissions become a contributed binding with S4;
 entirely. The same ruling governs `staging-workbench-model.js`'s six route
 constants and `lens-model.js`'s two: **a route constant travels with the binding
 that calls it, never with the model that happens to declare it.**
+
+**RULED — the recommended answer adopted: split.** Brett Heap, 2026-09-12,
+#656 comment 5642758731, by interactive multi-choice.
 
 **Q4 — `/source/` is openXdox's. Can a student read a document?** The read-only
 Markdown viewer (`views/viewer.js`, class A) fetches document CONTENT from
@@ -537,6 +624,9 @@ capability, and it is slice **S6** — the recommendation is not left without an
 owner: `openxdox/serve_projection.py` drops two bindings, openDox's `serve.py`
 declares one fixed core arm, and both legs' tests move with them.
 
+**RULED — the recommended answer adopted: `/source/` is openDox's.** Brett
+Heap, 2026-09-12, #656 comment 5642758731, by interactive multi-choice.
+
 **Q5 — `views/intent-feed.js` is RULED `not_moved` and two openDox files import
 it.** The manifest row (`docs/opendox-carve-manifest.yaml`:1807–1810, RULED OQ-F)
 says the committed-intent feed is RULING Q1's apply lane made visible and its
@@ -549,3 +639,7 @@ an OPTIONAL contributed binding — absent, the wheel and the tray render withou
 them — which is the same answer `build_server()` gives for an unregistered
 profile. The alternative (re-point the manifest row to `opendox_code`) ships
 openxFactory's lane to every install and contradicts OQ-F.
+
+**RULED — the recommended answer adopted: keep the ruling, fix the
+importers.** Brett Heap, 2026-09-12, #656 comment 5642758731, by interactive
+multi-choice.
