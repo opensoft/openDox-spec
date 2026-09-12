@@ -434,9 +434,15 @@ assertion that parses the tree and imports nothing:
    `src/opendox/web/` appears exactly once in a declared census (a small YAML or
    a table in the test), with a class. A new file with no row fails. This is the
    ratchet: it is what makes the boundary survive the next feature. **`?` is a
-   class the census may carry only until S4**: after that slice a `?` row fails
-   the assertion, because a permanent "undecided" is an escape hatch, not a
-   boundary.
+   class the census may carry only until S4, with one declared exception:**
+   after S4 the assertion fails on any `?` row EXCEPT `views/lens.js`, named
+   here — the same idiom assertion 4 uses for its two schema-key exemptions
+   (§ 2.2 rule 3) — because none of Q1–Q5 rules on its two openxFactory-lane
+   routes (§ 6): it is out of scope for this ruling round, not undecided by
+   omission, and it stays `?` until a future ruling names its destination. A
+   permanent UNDECLARED "undecided" is an escape hatch, not a boundary; a
+   permanent DECLARED one, cited to the ruling gap that causes it, is how this
+   census stays honest about what it does not yet know.
 2. **No file OUTSIDE class B names a route another column declares** (§ 2.2
    rule 1, stated over OWNERSHIP and not over class B alone). Scope is every
    census row whose class is not B — class A, class C AND the transitional `?`,
@@ -449,16 +455,32 @@ assertion that parses the tree and imports nothing:
    | owner | sites | where | cleared by |
    | --- | ---: | --- | --- |
    | gate prefix | 10 | `lens-model.js`:1036/:1037, `repo-selector.js`:39/:43, `staging-workbench-model.js`:543/:817/:818/:821/:822/:826 — all now RULED **SPLIT** rows (Q3, 2026-09-12, #656 comment 5642758731) | S4 |
-   | openxFactory lanes | 3 | `lens.js`:41/:45 (the one true `?` row) · `repo-selector.js`:46 (RULED **SPLIT**, Q3 — leaves the bundle) | S4 |
+   | openxFactory lanes | 1 | `repo-selector.js`:46 (RULED **SPLIT**, Q3 — leaves the bundle) | S4 |
+   | openxFactory lanes | 2 | `lens.js`:41/:45 (the one true `?` row — ruled-later, none of Q1–Q5 rules on it) | future ruling |
    | openXdox projection | 1 | `repo-selector.js`:33 (`/snapshot-index.json`) — now a RULED **SPLIT** row (Q3) | S4 |
    | openXdox projection | 4 | `app.js`:183/:184, `viewer.js`:314, `wheel.js`:97 (`/source/`) — class A and class C | S6 |
 
    Fourteen of the eighteen sit in the three files the 2026-09-12 ruling
-   resolved and still clear at S4: twelve are now RULED **SPLIT**
-   (`lens-model.js`, `repo-selector.js`, `staging-workbench-model.js` — Q3)
-   and two remain in the one true `?` row, `lens.js` (none of Q1–Q5 rules on
-   it). The remaining four are the `/source/` sites Q4 rules on. The three
-   gate constants declared in class-B files (`dispose.js`:28/:29,
+   named: twelve clear AT S4, now that they are RULED **SPLIT**
+   (`lens-model.js`, `repo-selector.js`, `staging-workbench-model.js` — Q3);
+   the other two are `lens.js`'s sites and do NOT clear at S4 — none of Q1–Q5
+   rules on them, so they stand as the declared, ruled-later exception this
+   assertion shares with assertion 1 (above), rather than clearing on any
+   slice's schedule. The remaining four are the `/source/` sites Q4 rules on,
+   cleared at S6.
+
+   **`lens.js`'s two openxFactory-lane sites are this assertion's own
+   standing, declared exception** — the same idiom assertion 4 uses for its
+   two schema-key exemptions (§ 2.2 rule 3): named here, with the reason
+   beside it, excluded from the in-scope grep until a future ruling folds
+   `lens.js` back in. This is why S5's and S6's `xfail(strict=True)` removal
+   still leaves the test green: the marker comes off because every OTHER site
+   it was tolerating is fixed, not because `lens.js`'s two sites started
+   passing the grep — they never entered it. A THIRD undeclared `?` or
+   unresolved SPLIT row appearing later still fails immediately, the same
+   ratchet assertion 1 enforces.
+
+   The three gate constants declared in class-B files (`dispose.js`:28/:29,
    `gate.js`:120) are NOT in the count: they are exempt now and travel with
    the binding at S5. § 1.2(c)'s "13 gate route constants" measures the TREE;
    this row measures the ASSERTION, and the three in class-B files are the
@@ -504,11 +526,11 @@ Ordered, each sized like the BUILD-arc slices already landing on this packet.
 | **S1** | **Declare the census and measure the defect.** Land the census table of § 3.2 as data plus `tests/test_web_boundary.py` with all four assertions, add the file to `validate`'s explicit list in the SAME commit, and mark assertions 2, 3 and 4 `@pytest.mark.xfail(strict=True)` citing the defect each measures (§ 4.5). Assertion 1 is unmarked. No file moves, and the required check stays green. | +2 (census + test) + `validate.yml` | — | new | openDox-code |
 | **S2** | **Resolve the `intent-feed` edge (§ 6 Q5).** **RULED** — keep the manifest row, fix the importers (Brett Heap, 2026-09-12, #656 comment 5642758731): S2 makes the intent chips an OPTIONAL contributed binding; absent, the wheel and the dispose tray render without them. S2 is the slice that makes `app.js`'s module graph resolve again. Its guard is independent of § 4.1's view registry — not yet built at this point in the landing order — per § 4.2's own account of the two mechanisms. | `dispose.js`, `wheel.js`, `styles.css`:1278–1295 | § 4.2 | assertion 3 green | openDox-code |
 | **S3** | **The view registry.** `ViewBinding` + `collectViewBindings` + the shell's declared regions; `app.js`'s direct class-B imports become registry lookups; no VIEW is contributed to THIS registry yet — S2's intent-feed guard (§ 4.2) is a narrower, region-free mechanism outside it — so the shell renders exactly as today with an empty extension tuple. | `app.js`, new `views/view_extension.js`, `index.html` | § 4.1 | collision + empty-tuple refusal tests | openDox-code |
-| **S4** | **Split the three RULED `SPLIT` files.** — the PRECONDITION for S5, not its sequel. Only 3 of the 13 gate-route constants are declared in class-B files (`dispose.js`:28/:29, `gate.js`:120); the other 10 are declared in `lens-model.js`, `repo-selector.js` and `staging-workbench-model.js`, and both `swb-create.js` and `swb-session.js` IMPORT theirs from the last of those. The gate loop cannot be contributed until its route table stops living outside class B. Each tail to its class per § 6's Q3 ruling: `lens-model.js`'s two routes, `repo-selector.js`'s five cross-column routes, `staging-workbench-model.js`'s six. **RULED Q3** (Brett Heap, 2026-09-12, #656 comment 5642758731) — `explorer.js` needs no split here: Q2 already resolved it wholly to class C (§ 3.2). `lens.js` is OUT OF SCOPE: none of Q1–Q5 rules on its two openxFactory-lane routes, so it stays `?` and those two sites stay `xfail` for a later ruled slice. | 3 files | § 4.2 | assertion 2 green for the twelve SPLIT-file sites (not `lens.js`'s two openxFactory-lane sites) | openDox-code |
+| **S4** | **Split the three RULED `SPLIT` files.** — the PRECONDITION for S5, not its sequel. Only 3 of the 13 gate-route constants are declared in class-B files (`dispose.js`:28/:29, `gate.js`:120); the other 10 are declared in `lens-model.js`, `repo-selector.js` and `staging-workbench-model.js`, and both `swb-create.js` and `swb-session.js` IMPORT theirs from the last of those. The gate loop cannot be contributed until its route table stops living outside class B. Each tail to its class per § 6's Q3 ruling: `lens-model.js`'s two routes, `repo-selector.js`'s five cross-column routes, `staging-workbench-model.js`'s six. **RULED Q3** (Brett Heap, 2026-09-12, #656 comment 5642758731) — `explorer.js` needs no split here: Q2 already resolved it wholly to class C (§ 3.2). `lens.js` is OUT OF SCOPE: none of Q1–Q5 rules on its two openxFactory-lane routes, so it stays `?` as assertion 1's one declared, ruled-later exception, and those two sites stand as assertion 2's own declared exception (§ 4.5) — not a temporary `xfail` — until a later ruling resolves `lens.js`. | 3 files | § 4.2 | assertion 2 green for the twelve SPLIT-file sites (not `lens.js`'s two openxFactory-lane sites) | openDox-code |
 | **S5** | **Contribute the gate loop.** The four class-B files and all 13 route constants — now all declared in class-B files — move behind a binding openXdox supplies; a student install comes up with no gate bar, no dispose tray, no session verbs, and no 404. **Needs an openXdox-spec counterpart** (§ 5.1). | `dispose.js`, `gate.js`, `swb-create.js`, `swb-session.js` | § 4.1 + § 4.2 | assertion 2 green outright | openXdox-code (binding) + openDox-code (removal) |
 | **S6** | **Re-home `/source/` per Q4** — the slice that discharges the census's one § 2.2 rule 1 breach. `openxdox/serve_projection.py` drops the `BARE_SOURCE_ROUTE` and `SOURCE_PREFIX` bindings (:57, :61, :375–384) and keeps `/snapshot-index.json` and the three `/projections/*` routes; openDox's `serve.py` declares the read-only pass-through as its own fixed core arm. `views/viewer.js` and `views/wheel.js`:97 become clean. **RULED Q4** (Brett Heap, 2026-09-12, #656 comment 5642758731). | `serve_projection.py`, `serve.py` (+ their tests) | § 4.1 | assertion 2 green for `viewer.js` | openXdox-code + openDox-code |
 | **S7** | **Parameterize class C.** The display facet on `/capabilities`, the context hop, and the vocabulary by ROLE across the 14 class-C files (2026-09-12: including `explorer.js`'s five governance literals, RULED Q2) PLUS the three declared class-A tails (`docs.js`:18, `grouping.js`:34–41/:51–52, `repo-selector-model.js`:517–522) — `wheel-model.js` and `model.js` first (they are the vocabulary the others import), `styles.css`'s four `--st-*` tokens last. Carries the § 1.1 packet-figure amendment. | 17 files + `serve.py` | § 4.3 | assertion 4 green; both exemptions declared | openDox-code (+ openxFactory for the packet row) |
-| **S8** | **Re-home the 48 test files and un-narrow `validate`.** The 23 at openXdox-code pointing at an absent `web/` go to the leg the census says owns each bundle file; the narrowings (RULED Q-L5 (b′) / Q-L8 (b′)) lift for the web suites. All three `xfail(strict=True)` markers from S1 are already gone by S7 — 3 at S2, 2 at S5 and S6, 4 at S7 — so S8 starts from four unmarked assertions and carries none of its own. | 48 test files | — | both legs' `validate` | both |
+| **S8** | **Re-home the 48 test files and un-narrow `validate`.** The 23 at openXdox-code pointing at an absent `web/` go to the leg the census says owns each bundle file; the narrowings (RULED Q-L5 (b′) / Q-L8 (b′)) lift for the web suites. All three `xfail(strict=True)` markers from S1 are already gone by S7 — 3 at S2, 2 at S5 and S6, 4 at S7 — so S8 starts from four unmarked assertions and carries none of its own; `lens.js`'s standing exceptions under assertions 1 and 2 (§ 4.5) are declared, not marked, and are not this slice's — or any slice's — to close, only a future ruling's. | 48 test files | — | both legs' `validate` | both |
 
 **RULED, same sitting → S1–S3 START NOW** (Brett Heap, 2026-09-12, #656 comment
 5642758731): none of the three needed a ruling to begin — S1 and S3 never did,
