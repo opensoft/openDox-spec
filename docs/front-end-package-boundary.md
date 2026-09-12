@@ -34,8 +34,9 @@ three it newly names (`app.js`:45, `dispose.js`:396, `wheel.js`:140–146) there
 **Amendment #2 (2026-09-12) additionally read, and cites by their own sha:**
 `opensoft/openDox-code` `build/s3-view-registry`
 `a497d7156f63a920a750171dfe9b9bd1fc06e8d7` and its later head
-`e176947dd3691fa96b285575910989ed77e09181` (slice S3, PR #14, OPEN — the tree
-the § 4.1 registry actually exists on); `opensoft/openXdox-spec`
+`e176947dd3691fa96b285575910989ed77e09181` (slice S3, PR #14 — landed
+`c5edac88` 2026-09-12T18:36Z; annotation openxFactory #1001 → `f663b379` — the
+tree the § 4.1 registry actually exists on); `opensoft/openXdox-spec`
 `docs/gate-loop-view-contract.md` `d73767b7`; `opensoft/openxFactory` `main` at
 `177ba8196e16097e30aeb3f946ca8291b9ba4e92`, whose two documents this note cites
 by line are `docs/opendox-carve-manifest.yaml` (blob
@@ -747,7 +748,9 @@ author it.** It landed as `opensoft/openXdox-spec`
 → `d73767b7`, `Status: draft`, titled *"The Gate Loop's View Contract
 (openDox-spec § 5.1)"* and declaring this section verbatim as its obligation.
 It measures the shell as slice S3 actually leaves it (openDox-code PR #14,
-`a497d715`, OPEN at the time of writing and since moved to `e176947`), and it
+`a497d715`, OPEN at the time of writing and since moved to `e176947`; #14 has
+since LANDED as `c5edac88` (2026-09-12T18:36Z), and its Q-L1 annotation
+openxFactory #1001 has landed as `f663b379`), and it
 records three things S5 needs that S3 did NOT deliver: nothing generically
 mounts a contributed binding, nothing publishes the server-side view manifest,
 and nothing READS `requires`.
@@ -1031,12 +1034,14 @@ slice S4 is in flight and re-derives them at its landing.
 | (f) | § 6 (**Q6**) · § 5 (S8) | a sixth open question: **S8 needs a manifest RE-DESTINATION form.** Re-homing the 48 test files moves rows' `destination` / `destination_path`, which Q-L1's `edits: [{class, lines[]}]` grammar cannot express — S6 met it on one file and withdrew (openXdox-code `657c821b`). Asked with a RECOMMENDED answer (a `re_destined:` row amendment gated by the same verifier, over a one-time re-cut) and **left OPEN for Brett Heap** |
 | fix round | § 3.3 · § 4.5 assertion 2 · the measurement-heads block · § 6 Q6 | **two review findings taken on openDox-spec #10**, both accurate: (1) § 3.3's amended table and assertion 2's 18-site count read as contradicting each other, so both now state that the assertion consumes the ownership SNAPSHOT the tree has and takes the ruled table at the slice that realizes it; (2) the openxFactory citations named only `main`, which moves — now pinned to `177ba819` with both blob shas |
 | (g) | header · the opening blockquote · the measurement-heads block · § 7 · `README.md` | this record; the `Amended:` line; the blockquote's note that Q6 gates the LAST slice rather than the first; the statement of WHICH shas amendment #2 read, so a citation added by it is never mistaken for a census measurement; and the README documentation-index row, which read "the five questions (RULED …)" and now reads six — Q1–Q5 ruled, Q6 open — on the precedent of amendment #1, which updated the same row |
+| (h) | the measurement-heads block · § 5.1 · this table's own measurement-discipline paragraph | STATUS CORRECTION, no re-measurement: slice S3's leg, openDox-code PR #14, and its Q-L1 annotation, openxFactory PR #1001, were each stated OPEN (or "since moved to `e176947`" with no landed state) in three places — both have since LANDED: `#14` → `c5edac88` (2026-09-12T18:36Z), `#1001` → `f663b379`. Only the status wording changes; every reading recorded at `a497d715` / `e176947` stands as a reading, and no § 3 total, Q6, or other § 7 row is touched |
 
 **Measurement discipline across amendments.** The census tree is
 `a99eba03` and amendment #2 did not re-measure it. Every citation amendment #2
 adds is marked with the sha it was read at, because the shell has moved twice
 since the note landed — slice S2 to openDox-code `main` `c7ab3d87` and slice S3
-on `build/s3-view-registry` (`a497d715`, later `e176947`, PR #14 OPEN) — and a
+on `build/s3-view-registry` (`a497d715`, later `e176947`, PR #14 — landed
+`c5edac88` 2026-09-12T18:36Z; annotation openxFactory #1001 → `f663b379`) — and a
 line number carried across a head is a false citation. Where a fact is true at
 both the census tree and a later head, both are named.
 
