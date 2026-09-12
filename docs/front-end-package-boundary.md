@@ -36,8 +36,14 @@ three it newly names (`app.js`:45, `dispose.js`:396, `wheel.js`:140–146) there
 `a497d7156f63a920a750171dfe9b9bd1fc06e8d7` and its later head
 `e176947dd3691fa96b285575910989ed77e09181` (slice S3, PR #14, OPEN — the tree
 the § 4.1 registry actually exists on); `opensoft/openXdox-spec`
-`docs/gate-loop-view-contract.md` `d73767b7`; `opensoft/openxFactory` `main`
-(`docs/opendox-carve-manifest.yaml`, `docs/opendox-cutover-runbook.md`). **A
+`docs/gate-loop-view-contract.md` `d73767b7`; `opensoft/openxFactory` `main` at
+`177ba8196e16097e30aeb3f946ca8291b9ba4e92`, whose two documents this note cites
+by line are `docs/opendox-carve-manifest.yaml` (blob
+`e6c3925a08e51802598f4f9f421228b203d664ca`, last moved by openxFactory `#1002`
+`b3cc0181`) and `docs/opendox-cutover-runbook.md` (blob
+`ef1d439b5a39afc66036e1833f8d96f8eb9bf551`, last moved by `972b484a`) — **pinned
+because `main` moves**, and a line number in either is reproducible at that
+commit and at those blobs and nowhere else by guarantee. **A
 citation at one of those shas is NOT a census measurement**, and each is marked
 with the sha it was read at, because the shell has moved under this note twice
 since 2026-09-11 and a line number carried across a head is a false citation.
@@ -375,6 +381,17 @@ shows the RULED ownership; the TREE reaches it when #16 and #17 land, and
 until then § 3.2's `views/viewer.js` and `views/wheel.js` rows are clean by the
 ruling and not yet by the tree.
 
+**What that means for § 4.5 assertion 2, stated here so the two are not read as
+contradicting each other.** Assertion 2 greps in-scope files against "the § 3.3
+ownership table", and its 18-site count still carries the four `/source/` sites
+as openXdox breaches cleared at S6. That count is right: **a route is another
+column's until that column stops declaring it**, so the assertion consumes the
+ownership SNAPSHOT this table was measured against — the landed one, with
+`/source` and `/source/` under openXdox — and takes the ruled table as its input
+at the slice that REALIZES the ruling. openDox-code #16 does exactly that, in
+the same pull request that moves the routes. § 4.5 assertion 2 carries the same
+statement in full.
+
 Two openDox view files address the third column: `views/lens.js` (:41, :45) and
 `views/repo-selector.js` (:46). Under RULING DQ-1 those routes never move to a
 descendant, so a front end that hardcodes them ships one repository's lanes to
@@ -600,6 +617,28 @@ assertion that parses the tree and imports nothing:
    the binding at S5. § 1.2(c)'s "13 gate route constants" measures the TREE;
    this row measures the ASSERTION, and the three in class-B files are the
    difference.
+
+   **Amended 2026-09-12 (#2) — WHICH ownership table this assertion consumes.**
+   § 3.3's table now shows the ownership RULED Q4 establishes, with `/source`
+   and `/source/` under openDox; the 18-site table above still counts their four
+   sites (`app.js`:183/:184, `viewer.js`:314, `wheel.js`:97) as openXdox
+   breaches cleared at S6, and that is CORRECT and not a contradiction —
+   **the assertion greps against the ownership the TREE has, never against the
+   ownership a ruling has decided but no slice has yet realized.** A route is
+   another column's until that column stops declaring it, and until
+   openXdox-code #17 and openDox-code #16 land, `openxdox/serve_projection.py`
+   still declares the pair. **The assertion's input is therefore the ownership
+   SNAPSHOT this table was measured against — § 3.3's table as landed, with
+   `/source` and `/source/` under openXdox — and the amended table becomes its
+   input at the SLICE that realizes the ruling**, which is exactly what S6
+   already does at the code: openDox-code #16 drops the two routes from
+   assertion 2's owner pattern in the same pull request that moves them
+   (`20 → 16` sites there, on that branch's own re-derived arithmetic).
+   Implementing this assertion against § 3.3's RULED table before S6 lands would
+   stop counting four live breaches and would take the `xfail(strict=True)`
+   marker green for a defect that still stands, which is the exact rot
+   `strict=True` exists to prevent. The site counts above are not restated here
+   in either case: S4 is in flight and re-derives them.
 
    **Amended 2026-09-12 (#2) — what this assertion MEASURES WITH, and the one
    site that measurement cannot see.** The assertion's mechanism is stated above
@@ -852,7 +891,10 @@ leg the census says owns each bundle file"*. **That sentence is a change of
 DESTINATION on an already-arrived row, and nothing in the four-part floor can
 express it.**
 
-**The constraint, measured at `opensoft/openxFactory` `main` on 2026-09-12.** A
+**The constraint, measured at `opensoft/openxFactory`
+`177ba8196e16097e30aeb3f946ca8291b9ba4e92` on 2026-09-12** (every `:n` below is a
+line of `docs/opendox-carve-manifest.yaml` at blob `e6c3925a`, or of
+`docs/opendox-cutover-runbook.md` at blob `ef1d439b`, where it is named). A
 row in `docs/opendox-carve-manifest.yaml` places a file with two fields —
 `destination`, a key CLOSED to the five of `destinations:` (:188–197), and
 `destination_path` — and declares what may DIFFER at that destination with
@@ -918,7 +960,7 @@ thing on that tree"*. The manifest is now `phase: post-shed` (:171; the § 5.2
 shed landed at openxFactory `main` as `cc4ae9d3`, PR #940, 2026-09-11), which
 means the 319 moved and deleted source paths are EXPECTED ABSENT at the source
 and the validator CHECKS that absence (:157–164). Measured 2026-09-12 against
-`main`: `scripts/ideation_dashboard/serve.py` and
+`177ba819`: `scripts/ideation_dashboard/serve.py` and
 `tests/ideation-dashboard/test_source_dot_directories.py` are both gone, while
 the replicated `scripts/route_extension.py` is present. **A manifest re-emitted
 at a post-shed commit would carry no moved rows at all** — it would be a
@@ -987,6 +1029,7 @@ slice S4 is in flight and re-derives them at its landing.
 | (d) | § 1.2(b) · § 4.1 | FINDING: the registry declares two `"shell"` regions, `wheel-intent` and `dispose-intent` (`view_extension.py`:174–175, `views/view_extension.js`:80–81, at S3's `a497d715` and still at `e176947`), which **no host element and no reader uses** — S2 landed instead as `views/intent-binding.js` (openDox-code `#15` → `main` `c7ab3d87`). A binding naming either mounts into nothing, silently. **OPEN** (the counterpart's Q9 recommends keeping both declared and recording that they are unhosted) |
 | (e) | § 5.1 | the counterpart this note deliberately does not author now EXISTS: openXdox-spec `docs/gate-loop-view-contract.md` → `d73767b7`, with **twelve** open questions for Brett Heap listed there as S5's precondition list. The sentence that this note names the obligation and stops is kept |
 | (f) | § 6 (**Q6**) · § 5 (S8) | a sixth open question: **S8 needs a manifest RE-DESTINATION form.** Re-homing the 48 test files moves rows' `destination` / `destination_path`, which Q-L1's `edits: [{class, lines[]}]` grammar cannot express — S6 met it on one file and withdrew (openXdox-code `657c821b`). Asked with a RECOMMENDED answer (a `re_destined:` row amendment gated by the same verifier, over a one-time re-cut) and **left OPEN for Brett Heap** |
+| fix round | § 3.3 · § 4.5 assertion 2 · the measurement-heads block · § 6 Q6 | **two review findings taken on openDox-spec #10**, both accurate: (1) § 3.3's amended table and assertion 2's 18-site count read as contradicting each other, so both now state that the assertion consumes the ownership SNAPSHOT the tree has and takes the ruled table at the slice that realizes it; (2) the openxFactory citations named only `main`, which moves — now pinned to `177ba819` with both blob shas |
 | (g) | header · the opening blockquote · the measurement-heads block · § 7 | this record; the `Amended:` line; the blockquote's note that Q6 gates the LAST slice rather than the first; and the statement of WHICH shas amendment #2 read, so a citation added by it is never mistaken for a census measurement |
 
 **Measurement discipline across amendments.** The census tree is
