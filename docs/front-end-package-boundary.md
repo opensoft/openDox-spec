@@ -3,7 +3,12 @@
 Status: draft
 Amended: 2026-09-12 (#1) — the five open questions RULED (#656 comment
 5642758731); 2026-09-12 (#2) — five corrections and a sixth open question, Q6
-(#656 comment 5647678655). The full record is § 7.
+(#656 comment 5647678655); 2026-09-13 (#3) — Q6 RULED and realized, the S8
+premise rewritten to *"the path constant moves, the file does not"*, § 1.1 and
+the § 3 census re-measured at the arc's own trees, a FIFTH declared class-A
+tail, and the § 5.1 counterpart's twelve questions closed (#656 comment
+5656343213, with 5648044785 · 5648049748 · 5648065587 · 5649094228). The full
+record is § 7.
 Kind: architecture
 Repository context: openDox-spec
 Realizes: `split-opendox-two-layer-product` `tasks.md` § 3.4 (`opensoft/openxFactory`)
@@ -21,6 +26,13 @@ Topics: opendox, openxdox, front-end, package-boundary, ruling-c2, split-opendox
 > the questions a ruling must settle before the first slice starts — **and,
 > since amendment #2, one (Q6) that a ruling must settle before the LAST slice
 > can start.** § 7 is the note's own amendment record.
+>
+> *(Amended 2026-09-13 (#3): **Q6 is RULED and realized** — the `re_destined:`
+> form landed at openxFactory `#1011` → `880c821c` — so every one of § 6's six
+> questions is now closed, and so are all twelve of the § 5.1 counterpart's.
+> The note still designs and does not build; what amendment #3 adds is the
+> RE-MEASUREMENT the slices promised at their landings, and one new declared
+> class-A tail.)*
 
 **Everything measured here was read live on 2026-09-11 at these heads:**
 `opensoft/openDox-code` `main` `a99eba03e31a0aee1cc15a061fdf718cc88a2c44`,
@@ -48,6 +60,33 @@ commit and at those blobs and nowhere else by guarantee. **A
 citation at one of those shas is NOT a census measurement**, and each is marked
 with the sha it was read at, because the shell has moved under this note twice
 since 2026-09-11 and a line number carried across a head is a false citation.
+
+**Amendment #3 (2026-09-13) DID re-measure, and these are the trees it read.**
+Amendments #1 and #2 deliberately left § 1.1 and the § 3 census alone because a
+slice was in flight and would re-derive them; §§ 5 S4 and S7 each say so in
+terms. That slice arc is now landing, so amendment #3 takes the measurement
+those amendments deferred — at two trees per leg, because the arc is mid-flight
+at the moment of writing and a figure that names only one of them would be
+stale within the hour:
+
+| leg | tree | what it is |
+| --- | --- | --- |
+| openDox-code | `main` `05bbde80` | S1–S4 and S6 landed; S5 leg B, S7 and S8 leg B still open |
+| openDox-code | `#23` head `a7b7ac28` | the **ARC-COMPLETE** tree — S5 leg B (at `011c3be0`), S7 (`d672f0c7`) and S8 leg B stacked — i.e. what `main` carries once the arc lands |
+| openXdox-code | `main` `c1ad341a` | S5 leg A (`#18`) landed; S8 leg A still open |
+| openXdox-code | `#19` head `080dcfcd` | S8 leg A |
+| openxFactory | `main` `bfa90db6` | the carve floor as amendment #3 read it |
+| openxFactory | `#1025` head `ff7c01a6` | the S8 row annotation, merged with `main` @ `ee251d6c` |
+
+**Every figure amendment #3 states names the tree it was read at, and states
+its INSTRUMENT where a count could be taken two ways.** Two instruments are
+used below and they are not interchangeable: a ROOT SPELLING is one occurrence
+of `/ "src" / "<pkg>" / "web"` (or the `src/<pkg>/web` slash form) in a file; a
+PATH SITE is any expression that resolves into the bundle, including the ones
+derived from an already-spelled root. Slice S8 counted path sites; this
+amendment counts root spellings; they agree on the FILES and differ on the
+count, and § 1.2(d) says so rather than letting a later reader read one as a
+correction of the other.
 
 ---
 
@@ -82,6 +121,37 @@ hand-authored because exactly one file did not travel: `views/intent-feed.js`
 (`docs/opendox-carve-manifest.yaml`:1807–1810, under RULED OQ-F). The packet's
 count is a pre-carve measurement the tree has since moved past; it is recorded
 here, not corrected here — a packet figure is amended in the packet (§ 5, S7).
+
+**Re-measured 2026-09-13 (amendment #3).** The two paragraphs above are the
+measurement at the census tree `a99eba03` and they stand AS a measurement of
+that tree. The arc has moved it twice since:
+
+| tree | blobs | lines | hand-authored |
+| --- | ---: | ---: | --- |
+| `a99eba03` (the census tree) | 42 | 30,585 | 40 files / 30,583 lines |
+| openDox-code `main` `05bbde80` | **47** | **31,792** | 45 files / 31,790 lines |
+| the arc-complete tree, `#23` head `a7b7ac28` | **42** | **31,912** | 40 files / 31,910 lines |
+
+The blob count returns to 42 by arithmetic and not by coincidence, and the two
+movements are each a slice doing what § 5 says it does. **Five files arrived
+before S5** — `views/intent-binding.js` (S2, `#15` → `c7ab3d87`),
+`views/view_extension.js` (S3, `#14` → `c5edac88`), and `views/gate-lens.js`,
+`views/gate-projects.js` and `views/projection-index.js` (S4, `#17` →
+`69d27602`); then **`views/display.js` arrived with S7** and **six left with
+S5**, `views/dispose.js`,
+`views/gate.js`, `views/swb-create.js`, `views/swb-session.js` and S4's two new
+gate tails, which are now openXdox-code's package data (§ 5, S5). The net
+against the census tree is four files in (`display.js`, `intent-binding.js`,
+`projection-index.js`, `view_extension.js`) and four out — **exactly the four
+class-B files § 5's S5 row names**. `web/vendor/` is untouched at every tree,
+which is § 4.4's policy holding.
+
+One caveat, stated rather than rounded away: `#23`'s head carries S5 leg B as
+of `011c3be0`, and S5 leg B has moved since under review (`app.js` and
+`views/view_extension.js` both grew). The arc-complete LINE figure is therefore
+a floor, not a final count, and the landed reading is
+**[FILL AT LANDING — openDox-code `main` sha, blobs, lines, hand-authored]**.
+The BLOB count is unaffected: neither round adds or removes a file.
 
 ### 1.2 There is no boundary — four measurements that say so
 
@@ -168,6 +238,99 @@ openXdox-code's is narrowed on the same grounds (RULED Q-L8 (b′)). **When thos
 narrowings lift, 48 test files have to know which leg owns the bundle — and
 today nothing tells them.**
 
+---
+
+**Amended 2026-09-13 (#3) — the paragraph above measures a real defect and then
+draws the wrong inference from it. RULED: "the path constant moves, the file
+does not."** (Brett Heap, 2026-09-13, #656 comment `5656343213`, by interactive
+multi-choice.) Everything above stands AS a measurement of openDox-code
+`a99eba03` and openXdox-code `af15f712`. What does not stand is its closing
+clause — *"pointed the tests at the wrong leg"* — and the re-homing § 5's S8
+row infers from it.
+
+**Why the inference fails, measured.** Slice S8 walked every module-level
+`Import` / `ImportFrom` in the 23 files with `ast`, at both leg heads on
+2026-09-13: **every one of them imports a real `openxdox` module** —
+`generator`, `snapshot_registry`, `gate_console`, `gate_routes`,
+`doxbench_scope`, `round_trip`. RULED **OQ-G**'s TEST HOMES rule puts a mixed
+file at openXdox for exactly that reason — *"lawful there, because openXdox
+pins openDox; unlawful in openDox, which pins nothing"* — so OQ-G's placement
+is not the defect. Moved to openDox-code, each of the 23 fails on its first
+import line, and declaring `openxdox` there is the direction
+`tests/test_dependency_direction.py` exists to refuse. **The leg is right; only
+the path constant is wrong**, which is what this paragraph's own preceding
+sentence says before it infers otherwise.
+
+**The repair is the PIN, and it had already landed a slice earlier.** An
+openXdox-code suite reaches openDox's bundle through the openDox it PINS —
+`Path(opendox.__file__).resolve().parent / "web"` — skipping itself, with the
+reason named, where the pin is behind the bundle's packaging. That resolution
+is not invented by S8: slice S5 landed it at that leg in
+`tests/test_gate_loop_probes.py::_opendox_bundle`, and S8 generalizes it as
+`tests/opendox_bundle.py`, a CREATED file admitted by name (RULED OQ-C). Four
+suites that assert across the seam take a COMPOSED root built by the assembly
+hook itself (`openxdox.web_assets.install_view_modules()`), per RULED **Q5**.
+**S8 therefore re-points the paths and re-homes 0 files, and its openxFactory
+row annotation (`#1025`) carries 0 `re_destined:` rows and a test that pins the
+zero.** § 6's Q6 form is RULED and landed and this slice uses none of it; the
+form's only four uses are slice S5's.
+
+**48 → 43.** The re-measurement the ruling names, taken by slice S8 at its own
+two leg heads on 2026-09-13 and recorded at #656 comment `5650335573` § 5 and
+in openxFactory `#1025` § 1. **Its instrument is the PATH SITE** (every
+expression that resolves into the bundle, derived paths included):
+
+| measurement | as this note landed | S8's heads |
+| --- | ---: | ---: |
+| openDox-code files naming a `views/<name>.js` path | 25 | **20** |
+| openXdox-code files resolving one under `REPO_ROOT / "src" / "openxdox" / "web"` | 23 | **23** |
+| …of those, naming at least one bundle file openDox owns | — | **22** |
+| …of those, already correct after S5 with no edit (`test_gate_console.py`, `gate.js`) | — | **1** |
+| openXdox-code files naming that root AT ALL (the 8 serve-root suites included) | — | **31** (47 path sites, **46** re-pointed) |
+| **the note's "48"** | **48** | **43** |
+
+**And amendment #3's own independent reading, with a different instrument, so
+the two are never mistaken for a correction of each other.** Counting ROOT
+SPELLINGS (defined in the measurement-heads block above) over `tests/**.py`:
+
+| tree | files rooting `src/openxdox/web` | root spellings |
+| --- | ---: | ---: |
+| openXdox-code `af15f712` (this note's own census head) | **31** | 46 |
+| openXdox-code `main` `c1ad341a` (S5 leg A landed) | **31** | 46 |
+| openXdox-code `#19` head `080dcfcd` (S8 leg A) | **4** | 4 |
+
+The two instruments **agree exactly on the FILES — 31 — and differ on the
+count**, because a root spelled once can carry several derived paths
+(`WEB = REPO_ROOT / "src" / "openxdox" / "web"` then `GATE_JS = WEB / "views" /
+"gate.js"` is one spelling and two sites). Neither figure corrects the other.
+At `#19`'s head **32 further files reach openDox's bundle through the pin**,
+which is the repair arriving.
+
+**A correction this amendment owes on its own account: "a directory
+openXdox-code does not have" is no longer true.** It was true at `af15f712`,
+where `src/openxdox/web/` holds **0** files. At openXdox-code `main`
+`c1ad341a` it holds **6** — `views/dispose.js`, `views/gate.js`,
+`views/gate-lens.js`, `views/gate-projects.js`, `views/swb-create.js`,
+`views/swb-session.js`, the class-B modules slice S5 contributed as this
+column's own package data. That is why **three of the four root spellings S8
+leaves standing are CORRECT rather than residue**: `tests/test_gate_console.py`
+and `tests/test_renderer.py`'s `OWN_VIEWS` name *this leg's own* views, and
+`tests/tools/playwright-smoke.py` serves them; the fourth is
+`tests/opendox_bundle.py`, the pin resolver, whose docstring quotes the defect
+sentence in order to say what it replaces.
+
+**The narrowings have lifted — for the web suites, which is what § 5's S8 row
+says.** openDox-code's `validate` list goes from 10 files / 283 tests to **27
+files / 691 tests** (`#23`); openXdox-code's goes from 154 passed / 16 skipped
+to **301 passed / 23 skipped** (`#19`). The FULL un-narrowing is still not
+this slice's and is not a finding against it: both legs' own SOURCE modules
+reach openxFactory-only packages at import time — `src/opendox/serve.py:192` →
+`ideation_dashboard.serve_openxfactory_lanes` and
+`src/openxdox/generator.py:66` → `doc_health.corpus` — which is what RULED
+**Q-L5 (b′)** and **Q-L8 (b′)** each say in terms they are waiting on, and
+`tests/test_consumer_reach.py`'s `STILL_REACHING` asserts the openDox half
+still fails. Repairing it here would turn that assertion red.
+
 ### 1.3 What follows
 
 (b), (c) and (d) are three spellings of ONE fact: the web tier's cross-column
@@ -248,6 +411,33 @@ profile's shape and its "resolve by ROLE, not by string" rule.
    labels). They are parameterized with class C in slice S7, and the `(C tail)`
    marker on their row is what says so.
 
+   **Amended 2026-09-13 (#3) — there are FIVE, not three.** The three above are
+   the three this note landed with. **The fourth arrived with slice S4**:
+   `views/staging-workbench-model.js`'s `STATUS_BRAINSTORM` /
+   `BRAINSTORM_AREA` / `STAGING_AREA` — the class-C substance § 3.2's own row
+   already names — became a declared tail the moment S4 carried the file's six
+   class-B route constants out, because what is left is a class-A model with a
+   class-C vocabulary and that is precisely what a tail is. The leg's declared
+   census has carried it since (`tests/fixtures/web_boundary_census.yaml`,
+   openDox-code `#17` → `69d27602`); this note said "three" and is corrected
+   here.
+
+   **The fifth is declared by this amendment: `views/viewer.js`:262.** The
+   read-only Markdown viewer's header strip renders
+   `el("span", "pill stage", doc.stage)` — the snapshot's own stage VALUE,
+   straight into the DOM as visible text, in a class-A file. Rule 3 reaches it
+   exactly: reading `doc.stage` as a schema key is lawful, and RENDERING the
+   word it holds is the thing the rule forbids. It survived slice S7 because
+   **assertion 4's instrument greps for LITERALS** and this site carries none —
+   the governance word arrives at runtime — which is the same blind spot
+   § 4.5's own amended text records for assertion 2's computed route
+   (§ 1.2(c)). Measured at the arc-complete tree `a7b7ac28`:
+   `views/viewer.js` imports `../vendor/markdown-it.min.js` and nothing else,
+   so it never reaches `views/display.js`, while `views/lineage.js` — the
+   surface S7 DID reach — routes every stage word through the facet
+   (`stageSubline(docs, named, display)`). **This amendment DECLARES the tail
+   and does not build it**: what it obliges is named in § 4.5 assertion 4.
+
    **Two are declared EXEMPT, with the reason on the record** —
    `views/composed-model.js`:107–110 (`COMPOSED_COLLECTIONS`, six snapshot field
    names, never rendered) and `views/doxbench-state.js`:37 (`SCOPE_KINDS`, the
@@ -302,6 +492,48 @@ landing, before this ruling): A 20 / 11,702; B 4 / 1,597; C 13 / 11,575;
 `?` 5 / 5,711; total 42 / 30,585 — the same total lines and file count hold
 now, re-bucketed.
 
+**Re-derived 2026-09-13 (amendment #3), from the leg's own declared census.**
+Amendment #2 left these totals deliberately un-restated because slice S4 was in
+flight; S4 has landed and so has the rest of the arc's first half, so the
+re-derivation it deferred is taken here. **The live census is no longer this
+table**: slice S1 landed it as DATA at openDox-code
+`tests/fixtures/web_boundary_census.yaml`, read by
+`tests/test_web_boundary.py`, and assertion 1 is the ratchet that keeps it
+complete — a file with no row fails immediately. This note's § 3.2 rows remain
+the DESIGN-TIME census at `a99eba03` and are not re-transcribed here, because a
+42-row table copied into a document no test reads is the exact rot § 4.5
+assertion 1 exists to prevent. What the note carries instead is the arithmetic,
+summed from that fixture:
+
+| class | openDox-code `main` `05bbde80` | the arc-complete tree `a7b7ac28` |
+| --- | --- | --- |
+| **A — openDox core** | 25 files / 16,329 lines | **26 / 17,840** |
+| **B — the gate loop** | 7 / 2,174 | **1 / 73** |
+| **C — stage-named region** | 14 / 11,854 | **14 / 12,564** |
+| **SPLIT** | 0 — *discharged by S4* | **0** |
+| **? — ruled-later** | 1 / 1,435 (`views/lens.js`) | **1 / 1,435** |
+| **total** | 47 / 31,792 | **42 / 31,912** |
+
+Three readings of that table, each a slice doing what § 5 said it would.
+**(i) The `SPLIT` bucket is empty.** All three files S4 named are split, so
+assertion 1's post-S4 cutoff — a `SPLIT` row still standing fails — is in
+force with nothing to catch. **(ii) `?` is one row and it is the declared,
+ruled-later exception**, `views/lens.js`, whose loc moved 1,524 → 1,435 when S4
+took its execute affordance and the two gate routes it called out to
+`views/gate-lens.js`; its two openxFactory-lane sites are untouched, as § 4.5
+assertion 2's declared exception says they stay until a ruling names them.
+**(iii) Class B falls from 7 to 1 because S5 contributed the gate loop** —
+`dispose.js`, `gate.js`, `gate-lens.js`, `gate-projects.js`, `swb-create.js`
+and `swb-session.js` are openXdox-code's package data now. The one row left is
+`views/projection-index.js` (73 lines), S4's `/snapshot-index.json` tail. That
+is a PROJECTION route, not a gate route, so S5 — which contributes the gate
+loop — did not carry it, and the census keeps it in B because § 2.1's class-B
+test is the nearest fit for a file whose whole subject is another column's
+route. **This amendment RECORDS that and rules nothing by it**: whether a
+projection tail is its own destination is a question no ruling has been asked,
+and a class that is a nearest fit is worth writing down before it is read as a
+decision.
+
 ### 3.2 The rows
 
 | file | LOC | what it renders | class | evidence |
@@ -345,7 +577,7 @@ now, re-bucketed.
 | `views/swb-create.js` | 372 | the create-document dialog and its transport | **B** | `CREATE_ROUTE` = `/actions/gate/create-document` (`staging-workbench-model.js`:543); the module exists because the workbench view is pinned transport-free |
 | `views/swb-model-intake.js` | 364 | the model-intake dialog and its transport | A | `/workbench/model-intake` and `/actions/workbench/model-intake` / `model-approval`, all answered by openDox's `serve_workbench.py` |
 | `views/swb-session.js` | 614 | the three live branch-session verbs and their CLI descriptors | **B** | `FIRST_EDIT_ROUTE` / `ABANDON_SESSION_ROUTE` / `SHARE_SESSION_ROUTE` / `OPEN_PR_ROUTE`, all under the gate prefix |
-| `views/viewer.js` | 403 | the read-only Markdown viewer over a source file | A *(the route moved to openDox at S6 — IN FLIGHT)* | pure render plus the vendored `markdown-it`; its content comes from `/source/` :314, which at the census tree `a99eba03` was declared by `openxdox/serve_projection.py`:57 — the one § 2.2 rule 1 breach the census carried. **RULED Q4** and being realized by slice S6: openXdox-code PR #17 (`00b69de7`) drops the two projection bindings and openDox-code PR #16 (`7dd0ba5a`) declares the fixed core arm — **both DRAFT and unlanded**, so this row is clean by the ruling and not yet by the tree (§ 3.3) |
+| `views/viewer.js` | 403 | the read-only Markdown viewer over a source file | A *(C tail — amendment #3; the route moved to openDox at S6, LANDED)* | pure render plus the vendored `markdown-it`; its content comes from `/source/` :314, which at the census tree `a99eba03` was declared by `openxdox/serve_projection.py`:57 — the one § 2.2 rule 1 breach the census carried. **RULED Q4** and being realized by slice S6: openXdox-code PR #17 (`00b69de7`) drops the two projection bindings and openDox-code PR #16 (`7dd0ba5a`) declares the fixed core arm. *(Amended 2026-09-13 (#3): as amendment #2 wrote it both pull requests were DRAFT and unlanded and the row was "clean by the ruling and not yet by the tree". **S6 HAS LANDED** (amendment #3, 2026-09-13): openXdox-code `#17` → `d6e7bbe3`, openDox-code `#16` → `3661345f`, Q-L1 annotation openxFactory `#1009` → `468371dc`, so the row is now clean by BOTH.)* **And this row carries a DECLARED CLASS-A TAIL, added by amendment #3: `:262`, `el("span", "pill stage", doc.stage)`** — the snapshot's stage VALUE rendered as visible text (§ 2.2 rule 3). Line 262 is read at the arc-complete tree `a7b7ac28`, NOT at the census tree; the file is 403 lines at both |
 | `views/wheel-model.js` | 1300 | the snapshot → wheel view-model, geometry and alignment | C | `WHEEL_KEYS` :25 and `WHEEL_LABELS` :27–34 — the six stage names, spelled twice |
 | `views/wheel.js` | 1702 | THE WHEEL: the funnel-navigation deck | C *(B + openxFactory imports)* | imports `dispose.js` :73–74 (class B) and `intent-feed.js` :75–76 (absent, RULED openxFactory; discharged by S2, landed `#15` → openDox-code `main` `c7ab3d87` as `views/intent-binding.js`); `SOURCE_ROUTE` :97 — **RULED Q4**, openDox's own route once S6 lands (both legs DRAFT, § 3.3); :140–146 supplies the four verbs `dispose.js`:396 concatenates into a gate route (§ 1.2(c)) |
 
@@ -374,6 +606,12 @@ this amendment **both pull requests are DRAFT and unlanded**:
 | --- | --- | --- | --- |
 | openXdox-code | [#17](https://github.com/opensoft/openXdox-code/pull/17) DRAFT | `00b69de787975a663d9fb8985a6e38fc54945150` | `serve_projection.py` drops `SOURCE_PREFIX`, `BARE_SOURCE_ROUTE`, both `RouteBinding`s and the three handlers; `ProjectionRoutesExtension.routes()` becomes one binding, `/snapshot-index.json` |
 | openDox-code | [#16](https://github.com/opensoft/openDox-code/pull/16) DRAFT | `7dd0ba5a07484a2fb2715d1de4e08e7c4b68be08` | `serve.py` declares the pair as two FIXED core arms — exact `/source` above prefix `/source/`, both above the § 2.4 contributed consult, so a contributed binding can no longer take the route back by arriving first |
+
+*(Amended 2026-09-13 (#3) — STATUS, no re-measurement. **S6 HAS LANDED** (amendment #3, 2026-09-13): openXdox-code `#17` → `d6e7bbe3`, openDox-code `#16` → `3661345f`, Q-L1 annotation openxFactory `#1009` → `468371dc`. The two
+pull-request rows above are kept as amendment #2 wrote them, each naming the
+head it described; what changed is only that the TREE has now reached the
+ownership this table shows, so the sentence below — "the tree reaches it when
+#16 and #17 land" — is discharged.)*
 
 **The three `/projections/*` routes were never declared in
 `serve_projection.py`** — each travels with the surface that answers it — so
@@ -454,6 +692,18 @@ The front-end analogue, stated as a contract and not yet built:
   MEASUREMENT: the shell has two class-A→class-B imports, S5 must carry both,
   and § 4.5 assertion 3 and § 5's S5 row now name both.
 
+  **Amended 2026-09-13 (#3) — RULED, and the recommendation was adopted.**
+  Counterpart **Q10** (Brett Heap, 2026-09-12, #656 comment `5648065587`, by
+  interactive multi-choice): *"`app.js`:57's `firstEditTransport` travels as a
+  DECLARED NON-MOUNT EXPORT of the workbench binding (Q2's `exports` tuple),
+  reached through the registry, with a refusal-shaped fallback when the binding
+  is absent — never a blank."* That is the recommendation above, adopted
+  verbatim; the alternative this note argued against was refused. Slice S5
+  realizes it at both legs (§ 5). The paragraph above is kept as written
+  because it is the record of what was open and why, and the sentence "that
+  question is openXdox-spec's and is for Brett Heap" was true when it was
+  written and is discharged, not wrong.
+
 **FINDING, recorded 2026-09-12 (#2) — two declared regions that nothing hosts
 and nothing reads.** The registry S3 built declares its mount points in two
 mirrored tables, and `wheel-intent` and `dispose-intent` are declared in both —
@@ -474,6 +724,14 @@ this side of the seam. **It is a RECOMMENDATION and it is OPEN**
 (`docs/gate-loop-view-contract.md` § 8 Q9 @ `d73767b7`, for Brett Heap); the
 census, the classes and the four assertions are unaffected either way, because a
 region is not a file.
+
+**Amended 2026-09-13 (#3) — RULED, recommendation adopted.** Counterpart **Q9**
+(Brett Heap, 2026-09-12, #656 comment `5648065587`): *"`wheel-intent` /
+`dispose-intent` stay DECLARED in both REGIONS tables, recorded as unhosted and
+unread today (S2 landed as `views/intent-binding.js`); a future intent panel
+has its slot."* The finding above IS that record on this side of the seam, and
+it stands unchanged — what changes is only that it is now a ruled position
+rather than a recommendation awaiting one.
 
 ### 4.2 Reaching the consumer late, mirroring `consumer_reach`
 
@@ -664,6 +922,19 @@ assertion that parses the tree and imports nothing:
    and is for Brett Heap (`docs/gate-loop-view-contract.md` § 8 Q12 @
    `d73767b7`); this note records the site and the consequence and decides
    neither.
+
+   **Amended 2026-09-13 (#3) — (iii) is RULED, recommendation adopted.**
+   Counterpart **Q12** (Brett Heap, 2026-09-12, #656 comment `5648065587`):
+   *"a COMPUTED route is declared as its LITERALS: the dispose binding declares
+   four `/actions/gate/<verb>` routes; no prefix semantics on the declaring
+   side; assertion 2's grep sees them."* So the instrument gap named in (ii) is
+   closed from the DECLARING side rather than by teaching the grep to read a
+   concatenation — a binding that enumerates its four routes is visible to a
+   route-literal grep by construction. (ii) still stands as stated for any
+   class-A or class-C file that computes a route, because a class-A file has no
+   binding to declare on: the grep must still see a prefix in a concatenation,
+   and that remains openDox-code's to build at the slice that owns the
+   assertion.
 3. **Every relative import resolves**, and no class-A/C file imports a class-B
    module. This catches § 1.2(b) — `intent-feed.js` — as a test failure rather
    than a blank page, and it is the assertion that should have existed before the
@@ -678,6 +949,13 @@ assertion that parses the tree and imports nothing:
    and HOW the second one travels is OPEN (the counterpart's Q10, § 4.1). This
    amendment does not restate the assertion's measured site count: slice S4 is
    in flight and re-derives it at its landing.
+
+   **Amended 2026-09-13 (#3):** counterpart **Q10** is RULED (#656 comment
+   `5648065587`, § 4.1) — a declared non-mount export of the workbench binding,
+   reached through the registry — so "HOW the second one travels" is settled
+   and S5 carries both under it. S4 has landed (`#17` → `69d27602`) and S5 is
+   landing; the assertion's site count is re-derived at the leg by the realized
+   test rather than restated here, for the reason § 3.1 now gives in full.
 4. **No class-C file — and no declared class-A tail — carries a governance
    literal.** A closed word list (the registered profile's vocabulary, plus the
    eight controlled `Status:` words) grep-proven absent, mirroring
@@ -688,6 +966,39 @@ assertion that parses the tree and imports nothing:
    `composed-model.js`:107–110 and `doxbench-state.js`:37 — are carried in the
    test as a declared list with the reason beside each, never as silence: an
    undeclared exemption is how a literal survives a vocabulary sweep.
+
+   **Amended 2026-09-13 (#3) — the scope is NINETEEN files, and what that
+   obliges.** As landed this assertion scoped "the 14 class-C files, the three
+   class-A tails of § 2.2 rule 3, and `styles.css`" (`styles.css` being one of
+   the 14). The realized assertion at openDox-code derives its scope from the
+   declared census rather than from a list —
+   `tests/test_web_boundary.py::_assertion_4_scope()` returns every row whose
+   class is `C` **or** which carries a `tail:` — so the count follows the
+   census and not this paragraph. Measured at the arc-complete tree
+   `a7b7ac28`: 14 class-C rows + **4** declared tails = **18**, pinned by that
+   file's own `assert len(scope) == 18`. § 2.2 rule 3 above now declares a
+   FIFTH tail, `views/viewer.js`:262, so the scope becomes **19** and three
+   things are owed at the leg — named here because a note that declares a tail
+   and leaves no obligation behind it has declared nothing:
+
+   1. a `tail:` on `views/viewer.js`'s census row in
+      `tests/fixtures/web_boundary_census.yaml`;
+   2. the constant at `tests/test_web_boundary.py`, `18` → `19`, and the
+      `_assertion_4_scope()` docstring's "Four tails, 18 files in scope" with
+      it — the docstring is the only other place the number is spelled;
+   3. the REPAIR: `:262` resolves through the display facet the way
+      `views/lineage.js` already does, which makes `views/viewer.js` an EDITED
+      ARRIVED FILE. Its carve row is `moved_verbatim` with **no `edits:` at
+      all** (openxFactory `docs/opendox-carve-manifest.yaml`, measured at
+      `main` `bfa90db6` and at `#1025`'s head `ff7c01a6`), so under Q-L1 the
+      repair pairs with an openxFactory row annotation that converts the row to
+      `moved_with_declared_edit` and lands FIRST — the same pairing § 5 binds
+      every slice to.
+
+   **None of the three is amendment #3's own act**, for the reason § 5's S8 row
+   gives for the `retired:` form: this note designs and does not build, and a
+   leg change is a leg's pull request under its own claim. What the amendment
+   owes is the declaration and the obligation, and both are here.
 
 **How this lands without a red required check.** openDox-code's `validate` runs
 an explicit file list with `--noconftest` (§ 1.2(d)), so a new test file is not
@@ -719,7 +1030,55 @@ Ordered, each sized like the BUILD-arc slices already landing on this packet.
 | **S5** | **Contribute the gate loop.** The four class-B files and all 13 route constants — now all declared in class-B files — move behind a binding openXdox supplies; a student install comes up with no gate bar, no dispose tray, no session verbs, and no 404. **Amended 2026-09-12 (#2): S5 carries BOTH of the shell's class-A→class-B imports, not one** — `app.js`:43 (`gate.js`, already discharged by S3's registry) AND `app.js`:45 (`firstEditTransport` from `swb-session.js`, called at :1015; :57 / :1134 at S3's `a497d715`) — and how the SECOND travels is OPEN, the counterpart's Q10 recommending a declared non-mount export (§ 4.1). Also S5's: the computed gate route `dispose.js`:396 must arrive DECLARED (§ 1.2(c); the counterpart's Q12 recommends four literals — open). **Needs an openXdox-spec counterpart, which now EXISTS** (§ 5.1). | `dispose.js`, `gate.js`, `swb-create.js`, `swb-session.js` | § 4.1 + § 4.2 | assertion 2 green outright; assertion 3 green on BOTH shell imports | openXdox-code (binding) + openDox-code (removal) |
 | **S6** | **Re-home `/source/` per Q4** — the slice that discharges the census's one § 2.2 rule 1 breach. `openxdox/serve_projection.py` drops the `BARE_SOURCE_ROUTE` and `SOURCE_PREFIX` bindings (:57, :61, :375–384) and keeps `/snapshot-index.json` and the three `/projections/*` routes; openDox's `serve.py` declares the read-only pass-through as its own fixed core arm. `views/viewer.js` and `views/wheel.js`:97 become clean. **RULED Q4** (Brett Heap, 2026-09-12, #656 comment 5642758731). **IN FLIGHT (2026-09-12, #2):** openXdox-code [#17](https://github.com/opensoft/openXdox-code/pull/17) `00b69de7` (DRAFT) drops the bindings and openDox-code [#16](https://github.com/opensoft/openDox-code/pull/16) `7dd0ba5a` (DRAFT) declares the fixed core arm; § 3.3 carries the amended ownership table. | `serve_projection.py`, `serve.py` (+ their tests) | § 4.1 | assertion 2 green for `viewer.js` | openXdox-code + openDox-code |
 | **S7** | **Parameterize class C.** The display facet on `/capabilities`, the context hop, and the vocabulary by ROLE across the 14 class-C files (2026-09-12: including `explorer.js`'s five governance literals, RULED Q2) PLUS the three declared class-A tails (`docs.js`:18, `grouping.js`:34–41/:51–52, `repo-selector-model.js`:517–522) — `wheel-model.js` and `model.js` first (they are the vocabulary the others import), `styles.css`'s four `--st-*` tokens last. Carries the § 1.1 packet-figure amendment. | 17 files + `serve.py` | § 4.3 | assertion 4 green; both exemptions declared | openDox-code (+ openxFactory for the packet row) |
-| **S8** | **Re-home the 48 test files and un-narrow `validate`.** The 23 at openXdox-code pointing at an absent `web/` go to the leg the census says owns each bundle file; the narrowings (RULED Q-L5 (b′) / Q-L8 (b′)) lift for the web suites. All three `xfail(strict=True)` markers from S1 are already gone by S7 — 3 at S2, 2 at S5 and S6, 4 at S7 — so S8 starts from four unmarked assertions and carries none of its own; `lens.js`'s standing exceptions under assertions 1 and 2 (§ 4.5) are declared, not marked, and are not this slice's — or any slice's — to close, only a future ruling's. **BLOCKED on a ruling (2026-09-12, #2): § 6's Q6.** Re-homing a test file that ARRIVED at the wrong leg moves its carve-manifest row's `destination` / `destination_path`, and no form in the floor expresses that — S6 met the same wall on one file and withdrew rather than work round it. | 48 test files | — | both legs' `validate` | both |
+| **S8** | **Re-home the 48 test files and un-narrow `validate`.** The 23 at openXdox-code pointing at an absent `web/` go to the leg the census says owns each bundle file; the narrowings (RULED Q-L5 (b′) / Q-L8 (b′)) lift for the web suites. All three `xfail(strict=True)` markers from S1 are already gone by S7 — 3 at S2, 2 at S5 and S6, 4 at S7 — so S8 starts from four unmarked assertions and carries none of its own; `lens.js`'s standing exceptions under assertions 1 and 2 (§ 4.5) are declared, not marked, and are not this slice's — or any slice's — to close, only a future ruling's. ~~**BLOCKED on a ruling (2026-09-12, #2): § 6's Q6.**~~ *(Q6 is RULED and realized — openxFactory `#1011` → `880c821c`. The block is lifted.)* Re-homing a test file that ARRIVED at the wrong leg moves its carve-manifest row's `destination` / `destination_path`, and no form in the floor expresses that — S6 met the same wall on one file and withdrew rather than work round it. **Amended 2026-09-13 (#3) — RULED: "the path constant moves, the file does not"** (Brett Heap, #656 comment `5656343213`). The row's opening clause, *"re-home the 48 test files"*, and *"the 23 … go to the leg the census says owns each bundle file"*, DO NOT STAND: every one of the 23 imports a real `openxdox` module, so RULED OQ-G's TEST HOMES rule already placed each at the leg that can run it, and the only defect is the PATH CONSTANT (§ 1.2(d)). S8 re-points 46 sites across 31 files through the PIN, **re-homes 0 files**, uses **none** of Q6's `re_destined:` form, and lifts the narrowings for the web suites only. The slice's real title is therefore **"re-point the bundle paths and un-narrow `validate` for the web suites"**, and its file figure is **43**, not 48 | 31 files re-pointed, 0 re-homed | — | both legs' `validate`, for the web suites | both |
+
+### 5.0 Where the eight slices stand
+
+*Added by amendment #3, 2026-09-13.* The table above is the PLAN and is kept as
+written; this is the landing record against it. A slice is LANDED when every
+pull request it names is merged, and a Q-L1 annotation counts as one of them.
+
+| slice | openxFactory (Q-L1 annotation) | openDox-code | openXdox-code | state |
+| --- | --- | --- | --- | --- |
+| **S1** | — (created files only) | `#13` → `e86deb2d` | — | **LANDED** |
+| **S2** | — | `#15` → `c7ab3d87` | — | **LANDED** |
+| **S3** | `#1001` → `f663b379` | `#14` → `c5edac88` | — | **LANDED** |
+| **S4** | `#1010` → `bcde1575` | `#17` → `69d27602` | — | **LANDED** |
+| **S6** | `#1009` → `468371dc` | `#16` → `3661345f` | `#17` → `d6e7bbe3` | **LANDED** |
+| **S5** | `#1023` → `ee251d6c` | `#20` → **[FILL AT LANDING — merge sha]** | `#18` → `c1ad341a` | **LANDING** |
+| **S7** | **[FILL AT LANDING — PR # → merge sha]** | `#21` → **[FILL AT LANDING — merge sha]** | — | **LANDING** |
+| **S8** | `#1025` → **[FILL AT LANDING — merge sha]** | `#23` → **[FILL AT LANDING — merge sha]** | `#19` → **[FILL AT LANDING — merge sha]** | **LANDING** |
+
+S1–S4 and S6 are merged and their shas are final. S5, S7 and S8 are open at the
+moment amendment #3 is authored and land ahead of it in the lane's recorded
+order — **S5 leg B → S7 → S8** — so this amendment is the LAST act of the arc
+and fills its own placeholders at its landing. Two facts about the order are
+worth stating because they are not obvious from the table: **S6 landed before
+S5** (it is independent of the gate loop, and Q4 was ruled in the same sitting
+as Q1–Q5), and **S4 is S5's precondition, not its sequel**, which is what the
+S4 row says in its own words.
+
+**Two acts this arc REGISTERS and does not perform**, both RULED at #656
+comment `5656343213` (Brett Heap, 2026-09-13, by interactive multi-choice), in
+the order they must happen:
+
+1. **A `retired:` row form on the carve floor.** The floor has `re_destined:`
+   for a row whose file changes leg and nothing at all for a row whose file is
+   WITHDRAWN at its leg. It is the **NEXT carve-floor act**, under its own
+   claim, after S8.
+2. **The retirement of the three intent-feed suites**, as a declared act citing
+   RULED **OQ-F**, under the form act 1 lands: openDox-code
+   `tests/test_intent_tray_dom.py` (23 tests) and `tests/test_wheel_verbs_dom.py`
+   (8), and openXdox-code `tests/test_staging_workbench.py`'s ending replay.
+   All three drive `views/intent-feed.js` — a `not_moved` row that stays at
+   openxFactory and exists at **neither** leg, since S2 replaced the surface
+   with `views/intent-binding.js` (§ 1.2(b), § 4.2). `re_destined: to:
+   openxfactory` is not expressible: `to` is held to the CLOSED `destinations:`
+   keys, openxFactory is the SOURCE and not one of them, and `re_destined:` on
+   a `not_moved` row refuses `carve-re-destined-not-moved`. **S8 therefore
+   leaves all three untouched in the tree and narrowed out at their legs, and
+   names them RETIRING** — which is why the un-narrowing in § 1.2(d) is
+   measured over the suites that remain.
 
 **RULED, same sitting → S1–S3 START NOW** (Brett Heap, 2026-09-12, #656 comment
 5642758731): none of the three needed a ruling to begin — S1 and S3 never did,
@@ -785,6 +1144,28 @@ reach. **They are openXdox-spec's
 to hold and Brett Heap's to rule; nothing here pre-empts any of them.** S5 does
 not start until they are settled, which is what "precondition, not sequel" means
 on that side of the seam exactly as it does for S4 on this one.
+
+**Amended 2026-09-13 (#3) — ALL TWELVE ARE RULED, and S5 started under them.**
+Brett Heap ruled them by interactive multi-choice across one sitting on
+2026-09-12 and one correction, every RECOMMENDED answer adopted:
+
+| counterpart § 8 | ruled at #656 comment |
+| --- | --- |
+| Q1 (generic mount pass), Q3 (one mount signature), Q5 (composed deployment supplies the bytes) | `5648044785` |
+| Q2 (`exports` tuple), Q4 (dotted `requires` paths), Q7 (CSS with the binding), Q8 (a fourth `shell` region, `page-overlay`) | `5648049748` |
+| Q9 (the two regions stay declared), Q10 (declared non-mount export), Q11 (`ViewBindingError` caught separately), Q12 (a computed route is declared as its literals) | `5648065587` |
+| Q6 (a contributed module may import `./views/helpers.js` and nothing else) | `5649094228` — a CORRECTION: `5648065587`'s closing sentence said all twelve were ruled while the sitting's first batch had ruled THIS note's Q6, not the counterpart's |
+
+The counterpart records them itself in its own amendment #1 —
+openXdox-spec [#14](https://github.com/opensoft/openXdox-spec/pull/14) →
+`e7c399c2`. **Two of the twelve bind this note directly and are carried above**:
+Q10 in § 4.1 and § 4.5 assertion 3, Q12 in § 4.5 assertion 2, and Q9 in
+§ 4.1's unhosted-regions finding. Q5 — where a contributed module's bytes come
+from — is answered by the COMPOSED DEPLOYMENT (openXdox ships its view modules
+as package data; the composed install copies them into openDox's one
+`--web-dir` at assembly), which leaves § 4.4's vendor policy exactly as it
+stands: a column that needs a library vendors it in its own leg and ships it
+with its binding.
 
 ---
 
@@ -883,7 +1264,9 @@ importers.** Brett Heap, 2026-09-12, #656 comment 5642758731, by interactive
 multi-choice.
 
 **Q6 — slice S8 needs a manifest RE-DESTINATION form, and the floor has none.**
-*Added by amendment #2, 2026-09-12 (#656 comment `5647678655`). OPEN.*
+*Added by amendment #2, 2026-09-12 (#656 comment `5647678655`).* ~~*OPEN.*~~
+**RULED 2026-09-12 and REALIZED — see the ruling at the foot of this
+question.**
 
 § 1.2(d) measured the defect S8 exists to repair: 23 test files at
 `openXdox-code` name a `views/<name>.js` path and resolve it under
@@ -995,6 +1378,34 @@ whether `re_destined:` may be used for anything other than a RULED mis-placement
 it, validated present, so the form cannot become a quiet way to move a file
 after the carve is closed.
 
+**RULED — the recommended answer adopted, in both halves.** Brett Heap,
+2026-09-12, #656 comment `5648044785`, by interactive multi-choice: *"an
+optional `re_destined: {from, from_path, to, to_path, ruling, note}` field on a
+moved row, `to` held to the closed `destinations:` keys;
+`validate-carve-manifest.py` refuses it on a `not_moved` row and refuses a
+chain; `verify-carve-arrival.py` reads the EFFECTIVE destination; a `ruling:`
+citation is required — the form serves a RULED mis-placement only. NOT a
+re-cut."* **Realized at openxFactory
+[#1011](https://github.com/opensoft/openxFactory/pull/1011) → `880c821c`** —
+the grammar, both validators, the tests and runbook § 5 — which is S8's
+precondition discharged.
+
+**And then S8 used none of it, which is the finding worth recording.** Q6 was
+written for the 23 mis-pointed files, and the ruling on the S8 premise
+(`5656343213`, § 1.2(d) above) says those files do not move. The form's only
+four uses today are slice **S5**'s, and openxFactory `#1025` — S8's own row
+annotation — carries **zero** `re_destined:` rows and a test that pins the
+zero. That is not the form being wrong: a floor act is authorized by the
+question it answers, and the measurement that made it unnecessary here
+(`ast`-walking the 23 imports) was only possible once the form existed to be
+tried. It is recorded so that a later reader does not infer from "Q6 RULED,
+S8 landed" that S8 re-destined anything. *(Amended 2026-09-13 (#3).)*
+
+**Amendment #3 adds no seventh question.** The two acts the S8 slice found and
+could not perform — a `retired:` row form, and the retirement of the three
+intent-feed suites under it — are RULED already (#656 comment `5656343213`)
+and are registered in § 5.0 as acts, not asked here as questions.
+
 ---
 
 ## 7. The amendment record
@@ -1018,7 +1429,8 @@ re-bucketed (`explorer.js` `?` → C in full; three files RULED **SPLIT**;
 `lens.js` alone left `?`); § 5 marked S2/S4/S6 RULED and S1–S3 START NOW, and
 stated that Q-L1 binds every slice. `Status: draft` kept.
 
-**Amendment #2** — this revision, 2026-09-12. Claim:
+**Amendment #2** — `7d12428c` (openDox-spec [#10](https://github.com/opensoft/openDox-spec/pull/10)),
+merged 2026-09-12T18:15Z. Claim:
 `opensoft/openxFactory#656` comment `5647678655`, lane
 `openxfactory-4-opendox-extraction`. Five corrections and one new open question.
 `Status: draft` kept, and the § 3 census TOTALS are deliberately NOT restated —
@@ -1036,6 +1448,29 @@ slice S4 is in flight and re-derives them at its landing.
 | (g) | header · the opening blockquote · the measurement-heads block · § 7 · `README.md` | this record; the `Amended:` line; the blockquote's note that Q6 gates the LAST slice rather than the first; the statement of WHICH shas amendment #2 read, so a citation added by it is never mistaken for a census measurement; and the README documentation-index row, which read "the five questions (RULED …)" and now reads six — Q1–Q5 ruled, Q6 open — on the precedent of amendment #1, which updated the same row |
 | (h) | the measurement-heads block · § 5.1 · this table's own measurement-discipline paragraph | STATUS CORRECTION, no re-measurement: slice S3's leg, openDox-code PR #14, and its Q-L1 annotation, openxFactory PR #1001, were each stated OPEN (or "since moved to `e176947`" with no landed state) in three places — both have since LANDED: `#14` → `c5edac88` (2026-09-12T18:36Z), `#1001` → `f663b379`. Only the status wording changes; every reading recorded at `a497d715` / `e176947` stands as a reading, and no § 3 total, Q6, or other § 7 row is touched |
 
+**Amendment #3** — this revision, 2026-09-13. Claim:
+`opensoft/openxFactory#656` comment `5656686020`, lane
+`openxfactory-4-opendox-extraction`. **The first amendment that RE-MEASURES**:
+amendments #1 and #2 both deferred § 1.1 and the § 3 census to a slice in
+flight, and the § 3.4 slice arc is now landing, so the measurement they
+deferred is taken here at the trees the measurement-heads block names.
+`Status: draft` kept. Nothing in § 3.2's 42-row design-time table is
+re-transcribed: the LIVE census is data at the leg
+(`tests/fixtures/web_boundary_census.yaml`) with assertion 1 as its ratchet,
+and § 3.1 now says so.
+
+| # | section(s) | what changed |
+| --- | --- | --- |
+| (a) | § 1.2(d) · § 5 (S8) | **the S8 premise, RULED.** *"The path constant moves, the file does not"* (#656 comment `5656343213`). § 1.2(d)'s closing clause — *"pointed the tests at the wrong leg"* — and § 5's S8 row's *"go to the leg the census says owns each bundle file"* do NOT stand: every one of the 23 imports a real `openxdox` module, RULED OQ-G already placed each at the leg that can run it, and the repair is the PIN. S8 re-points 46 sites across 31 files, re-homes **0** files, and openxFactory `#1025` carries **0** `re_destined:` rows. The note's **48 becomes 43** |
+| (b) | § 1.2(d) | **a correction this amendment owes on its own account**: *"a directory openXdox-code does not have"* was true at `af15f712` (0 files under `src/openxdox/web/`) and is FALSE at `main` `c1ad341a` (6 — the class-B modules S5 contributed as that column's package data). It is why three of the four root spellings S8 leaves standing are correct rather than residue |
+| (c) | § 1.1 · § 3.1 · the measurement-heads block | **the deferred RE-MEASUREMENT.** `src/opendox/web/` is 42 blobs / 30,585 lines at `a99eba03`, **47 / 31,792** at openDox-code `main` `05bbde80`, and **42 / 31,912** at the arc-complete tree `a7b7ac28`; the census totals are re-derived from the leg's own fixture (A 26 / 17,840 · B 1 / 73 · C 14 / 12,564 · `?` 1 / 1,435). `SPLIT` is empty — S4 discharged all three. Two instruments are defined so the § 1.2(d) counts cannot be read as correcting each other |
+| (d) | § 2.2 rule 3 · § 3.2 (`views/viewer.js`) · § 4.5 assertion 4 | **a FOURTH and a FIFTH declared class-A tail.** The fourth arrived with S4 (`views/staging-workbench-model.js`, whose class-C substance is what is left once its six route constants travel) and this note still said "three". The fifth is declared here: **`views/viewer.js`:262**, `el("span", "pill stage", doc.stage)` — the snapshot's stage value rendered as visible text out of a class-A file that never reaches the display facet. Assertion 4's scope moves **18 → 19**, and the three things that obliges at the leg — the census `tail:`, the `18` → `19` constant, and a Q-L1 annotation, because `views/viewer.js` is a `moved_verbatim` row with no `edits:` — are named in assertion 4 |
+| (e) | § 5 (**new § 5.0**) | **the landing record for all eight slices**, with merge shas for S1–S4 and S6, placeholders for S5/S7/S8 (which land ahead of this amendment), and the TWO acts the arc registers and does not perform: the `retired:` row form as the next carve-floor act, and the retirement of the three intent-feed suites under it (RULED `5656343213`) |
+| (f) | § 6 (**Q6**) · § 5 (S8) | **Q6 is RULED and REALIZED** — `5648044785`, landed at openxFactory `#1011` → `880c821c` — so § 6's six questions are all closed and S8's block is lifted. Recorded with it: S8 then used **none** of the form, which is a finding rather than a defect |
+| (g) | § 4.1 (twice) · § 4.5 assertions 2 and 3 · § 5.1 | **the § 5.1 counterpart's twelve questions are ALL RULED** (`5648044785` · `5648049748` · `5648065587` · `5649094228`, the last a correction), recorded at openXdox-spec `#14` → `e7c399c2`. The three amendment #2 left open on this side close here: Q9 (the two unhosted regions stay declared), Q10 (the second shell import travels as a declared non-mount export) and Q12 (a computed route is declared as its literals). (ii)'s instrument gap in assertion 2 is NOT closed by Q12 and says so |
+| (h) | § 3.2 (`views/viewer.js`) · § 3.3 | STATUS CORRECTION, no re-measurement: slice **S6 has LANDED** — openXdox-code `#17` → `d6e7bbe3`, openDox-code `#16` → `3661345f`, annotation openxFactory `#1009` → `468371dc` — where amendment #2 wrote "both DRAFT and unlanded". Every reading recorded at `00b69de7` / `7dd0ba5a` stands as a reading |
+| (i) | header · the opening blockquote · § 7 · `README.md` | this record; the `Amended:` line; the blockquote's note that Q6 is closed; and the README documentation-index row, which read "six open questions — Q1–Q5 RULED and Q6 OPEN" and now reads all six RULED, on the precedent of amendments #1 and #2, which each updated the same row |
+
 **Measurement discipline across amendments.** The census tree is
 `a99eba03` and amendment #2 did not re-measure it. Every citation amendment #2
 adds is marked with the sha it was read at, because the shell has moved twice
@@ -1045,9 +1480,40 @@ on `build/s3-view-registry` (`a497d715`, later `e176947`, PR #14 — landed
 line number carried across a head is a false citation. Where a fact is true at
 both the census tree and a later head, both are named.
 
+*(Amended 2026-09-13 (#3).)* **Amendment #3 DOES re-measure, and every figure
+it adds names its tree.** The census tree `a99eba03` is unchanged as a
+historical referent and every line this note cites at it still resolves there.
+What amendment #3 adds is a SECOND set of readings, at openDox-code `main`
+`05bbde80` and the arc-complete tree `a7b7ac28`, openXdox-code `main`
+`c1ad341a` and `080dcfcd`, and openxFactory `main` `bfa90db6` and `ff7c01a6` —
+listed in the measurement-heads block. The one NEW line number it adds,
+`views/viewer.js`:262, is read at `a7b7ac28` and is marked as such on its § 3.2
+row; the file is 403 lines at both trees, but that coincidence is not a licence
+to cite the line at the census tree.
+
 **Open points this note is carrying, collected.** Three of amendment #2's five
 corrections end in a question that is NOT this note's to answer, and all three
 belong to the openXdox-spec counterpart's § 8: Q10 (how the second shell import
 travels), Q12 (how a computed route is declared) and Q9 (whether the two
 unhosted regions stand). A fourth, **Q6**, is this note's own and is in § 6.
 None of the four is written anywhere above as decided.
+
+*(Amended 2026-09-13 (#3): **all four are now decided** — Q9/Q10/Q12 at #656
+comment `5648065587` and Q6 at `5648044785` — and each is recorded under the
+paragraph that raised it. **This note carries NO open question.** What it
+carries instead is a short list of OBLIGATIONS, every one of them someone
+else's act under its own claim, and every one named where it arises rather than
+only here:*
+
+*1. the `retired:` row form, the NEXT carve-floor act (§ 5.0);*
+*2. the retirement of the three intent-feed suites under it (§ 5.0);*
+*3. the fifth class-A tail's realization — census `tail:`, the `18` → `19`
+   constant, and the Q-L1 annotation `views/viewer.js`'s `moved_verbatim` row
+   needs (§ 4.5 assertion 4);*
+*4. assertion 2's instrument still cannot see a route COMPUTED in a class-A or
+   class-C file; Q12 closes it from the declaring side only (§ 4.5);*
+*5. `views/lens.js` stays `?`, and its two openxFactory-lane sites stay
+   assertion 2's declared exception, until a ruling names its destination —
+   the one thing here that is a RULING gap rather than an unbuilt act;*
+*6. the FULL un-narrowing of both legs' `validate`, which RULED Q-L5 (b′) and
+   Q-L8 (b′) both say waits on the BUILD arc (§ 1.2(d)).)*
