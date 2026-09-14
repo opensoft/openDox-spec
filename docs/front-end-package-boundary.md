@@ -613,14 +613,23 @@ the DESIGN-TIME census at `a99eba03` and are not re-transcribed here, because a
 assertion 1 exists to prevent. What the note carries instead is the arithmetic,
 summed from that fixture:
 
-| class | `05bbde80` (pre-S5 leg B) | openDox-code `main` `8efb3cf5` | `#23` head `a7b7ac28` |
-| --- | --- | --- | --- |
-| **A — openDox core** | 25 files / 16,329 lines | **25 / 16,961** | **26 / 17,840** |
-| **B — the gate loop** | 7 / 2,174 | **1 / 73** | **1 / 73** |
-| **C — stage-named region** | 14 / 11,854 | **14 / 12,008** | **14 / 12,564** |
-| **SPLIT** | 0 — *discharged by S4* | **0** | **0** |
-| **? — ruled-later** | 1 / 1,435 (`views/lens.js`) | **1 / 1,435** | **1 / 1,435** |
-| **total** | 47 / 31,792 | **41 / 30,477** | **42 / 31,912** |
+| class | `05bbde80` (pre-S5 leg B) | openDox-code `main` `8efb3cf5` | `#23` head `a7b7ac28` | `#21` head `c7a216c7` — **arc-complete** |
+| --- | --- | --- | --- | --- |
+| **A — openDox core** | 25 files / 16,329 lines | **25 / 16,961** | **26 / 17,840** | **26 / 17,883** |
+| **B — the gate loop** | 7 / 2,174 | **1 / 73** | **1 / 73** | **1 / 73** |
+| **C — stage-named region** | 14 / 11,854 | **14 / 12,008** | **14 / 12,564** | **14 / 12,564** |
+| **SPLIT** | 0 — *discharged by S4* | **0** | **0** | **0** |
+| **? — ruled-later** | 1 / 1,435 (`views/lens.js`) | **1 / 1,435** | **1 / 1,435** | **1 / 1,435** |
+| **total** | 47 / 31,792 | **41 / 30,477** | **42 / 31,912** | **42 / 31,955** |
+
+*(The fourth column was added at amendment #3's fix round 6, 2026-09-14: § 1.1
+names `#21`'s head as the arc-complete bundle, so a census table that stopped at
+`#23`'s was the one place this note left the authoritative tree to prose. Every
+cell is summed from that tree's own `tests/fixtures/web_boundary_census.yaml`,
+the same instrument as the other three columns. The two right-hand columns
+differ in exactly one cell — class A, +43 lines — which is § 1.1's forward-merge
+gap, and B, C and `?` are identical because S7 touched none of them after the
+merge.)*
 
 Four readings of that table, each a slice doing what § 5 said it would.
 **(i) The `SPLIT` bucket is empty.** All three files S4 named are split, so
@@ -825,7 +834,10 @@ The front-end analogue, stated as a contract and not yet built:
   MEASUREMENT: the shell has two class-A→class-B imports, S5 must carry both,
   and § 4.5 assertion 3 and § 5's S5 row now name both.
 
-  **Amended 2026-09-13 (#3) — RULED, and the recommendation was adopted.**
+  **Amended 2026-09-13 (#3) — RULED, and the recommendation was adopted.** The
+  paragraph above — *"How the second one travels is OPEN, and this note does not
+  decide it"* — is **amendment #2's wording of 2026-09-12** and is kept as
+  written; what follows is its answer, not a correction of it.
   Counterpart **Q10** (Brett Heap, 2026-09-12, #656 comment `5648065587`, by
   interactive multi-choice): *"`app.js`:57's `firstEditTransport` travels as a
   DECLARED NON-MOUNT EXPORT of the workbench binding (Q2's `exports` tuple),
@@ -1057,6 +1069,9 @@ assertion that parses the tree and imports nothing:
    neither.
 
    **Amended 2026-09-13 (#3) — (iii) is RULED, recommendation adopted.**
+   (iii) above — *"OPEN — how a binding DECLARES a route it computes"* — is
+   **amendment #2's wording of 2026-09-12**, kept as written because it is the
+   record of what was open; this block answers it.
    Counterpart **Q12** (Brett Heap, 2026-09-12, #656 comment `5648065587`):
    *"a COMPUTED route is declared as its LITERALS: the dispose binding declares
    four `/actions/gate/<verb>` routes; no prefix semantics on the declaring
@@ -1102,7 +1117,10 @@ assertion that parses the tree and imports nothing:
    **Both must be gone for this assertion to go green, so S5 carries both** —
    and HOW the second one travels is OPEN (the counterpart's Q10, § 4.1). This
    amendment does not restate the assertion's measured site count: slice S4 is
-   in flight and re-derives it at its landing.
+   in flight and re-derives it at its landing. *(That last sentence is amendment
+   #2's, 2026-09-12, and is kept as written: S4 has since LANDED — openDox-code
+   `#17` → `69d27602` — and the block directly below is where amendment #3 says
+   so.)*
 
    **Amended 2026-09-13 (#3):** counterpart **Q10** is RULED (#656 comment
    `5648065587`, § 4.1) — a declared non-mount export of the workbench binding,
@@ -1475,6 +1493,19 @@ leg the census says owns each bundle file"*. **That sentence is a change of
 DESTINATION on an already-arrived row, and nothing in the four-part floor can
 express it.**
 
+*(Amended 2026-09-14 (#3, fix round 6): this paragraph's premise — and
+*"S8 is forty-eight"* below it — are **amendment #2's reading of 2026-09-12**,
+kept as written because they are WHY Q6 was asked. Both were ruled on
+afterwards. **"The path constant moves, the file does not"** (#656 comment
+`5656343213`): S8 re-points 46 sites across 31 files, re-homes **zero** files
+and uses none of the form, and its figure is **43**, not 48 (§ 1.2(d), § 5's S8
+row). And `src/openxdox/web/` is a directory openXdox-code **does** have — six
+class-B modules arrived there as package data when S5 leg A landed (§ 1.2(d),
+§ 7 row (b)) — so the sentence was true at `af15f712`, where it was written, and
+is false at `main` `c1ad341a`. Neither ruling makes Q6 wrong: the form was
+needed to be tried before the measurement that made it unnecessary here was
+possible, which is what the paragraph at the foot of this question records.)*
+
 **The constraint, measured at `opensoft/openxFactory`
 `177ba8196e16097e30aeb3f946ca8291b9ba4e92` on 2026-09-12** (every `:n` below is a
 line of `docs/opendox-carve-manifest.yaml` at blob `e6c3925a`, or of
@@ -1674,7 +1705,8 @@ and § 3.1 now says so.
 | fix round 2 | § 1.1 · § 1.2(c) (twice) · § 2.2 rule 3 · § 6's opening · this table's row (c) | **five more review findings on #11, all accurate, one of them ARITHMETIC.** (1) The 43-line gap was accounted for as `app.js` +34 and `views/view_extension.js` **+13 / −2**, which is +45 and not +43. Re-measured with `git diff --numstat` against both pairs — `011c3be0` → `8efb3cf5` and `a7b7ac28` → `c7a216c7`, identical two rows — the second file is **+11 / −2**: 34 + 11 − 2 = 43. The TOTAL was right and one per-file figure was not, which is the failure mode a total can hide, so both are now stated with their instrument. (2) § 2.2 rule 3 called `a7b7ac28` *"the arc-complete tree"* while § 1.1 had just established `c7a216c7` as the arc-complete BUNDLE; the citation is re-labelled and the blob identity (`4bb5637f` at both) is what carries it. (3) § 1.2(c) still said the counterpart's **Q12** *"is OPEN"*, (4) § 1.2(c) still said slice **S6** *"is realizing it"*, and (5) § 6's opening still said **Q6** *"is OPEN … not decided here"* — three occurrences the (g), (h) and (f) corrections each missed, now carrying the same dated no-deletion qualifier the rest of the note uses. **No figure other than the two per-file deltas changes.** |
 | fix round 3 | the opening measurement block · the measurement-discipline sentence · § 5 (S7's plan row) · § 5.1's ruling summary | **four more findings, all accurate, none touching a figure.** (1) The note's opening still said *"everything measured here was read live on 2026-09-11"* — true of the note as landed and of amendments #1 and #2, and FALSE of amendment #3, which is the first to re-measure. It is now qualified in place, so a reader never has to separate the two sets by date: every figure amendment #3 adds carries its own tree. (2) § 5's **S7 plan row** still said *"the three declared class-A tails"* and *"17 files"* while this amendment declares the fourth tail as having arrived with S4 — the plan wording is kept and dated, with the REALIZED scope (18 = 14 class-C + 4 tails, at all three heads) beside it, and the note says plainly that the FIFTH tail is not S7's. (3) § 5.1's summary said *"TWO of the twelve bind this note directly"* and then named THREE (Q9, Q10, Q12); the count follows the enumeration. (4) *"states names the tree"* — one verb too many. |
 | fix round 4 | the opening measurement block · the measurement-discipline sentence · § 4.5 assertion 2 · § 5 (S5's plan row) · § 5.1 (twice) | **five more findings — two raised as review threads, three suppressed — all accurate, and the third of them a disagreement between two parts of this note rather than a defect in either.** (1) The opening said amendment #3 re-measures at *"the six trees its own block below names"* while that block names **eight** and § 7's own discipline paragraph lists all eight; the count now follows the block, and the two 2026-09-11 census heads are named beside it, because § 1.2(d)'s recovered instrument is measured AT them — which is how it was identified. (2) *"Every figure amendment #3 states NAMES THE TREE"* is a reduced relative clause and does parse, but only on a second reading; the relative pronoun is now explicit rather than the sentence rewritten, because the two verbs are both doing work. (3) § 5's **S5 plan row** listed FOUR files where § 1.1's re-measurement says **six** left the bundle — the plan inventory is kept and dated, and the realized six are measured into the row (`git diff --name-status 05bbde80 8efb3cf5 -- src/opendox/web/` returns six `D` rows and no other deletion; 47 − 6 = 41 blobs, § 1.1's 47 → 41 step). The difference is S4's two new gate tails, which did not exist when the row was written; the row's two remaining *"open"*s (Q10, Q12) are dated the same way. (4) § 4.5 assertion 2 deferred TWICE to *"S4 is in flight and re-derives them"* and illustrated its ownership-snapshot rule with *"until openXdox-code #17 and openDox-code #16 land"* — S4, S5 and S6 have all landed. The deferrals are kept and dated, the rule is kept because a rule outlives its example, and what the row now states is what CHANGED: the reason the 18-site table is not restated is no longer a slice in flight but a landed test that measures it. (5) § 5.1's *"none is written there as decided"* and *"S5 does not start until they are settled"* carried no date while the block directly beneath them says all twelve are ruled; both now carry amendment #2's date, and the second records that the precondition HELD — ruled 2026-09-12, S5 landed 2026-09-13 — rather than being waived. |
-| fix round 5 | the repository README's doc-index row · § 1.2(d)'s S8 table · § 3.3's opening · this table's collected-open-points paragraph | **four findings, all SUPPRESSED (no threads), all accurate, none touching a figure.** (1) The README doc index called them *"SIX open questions, ALL RULED"* in one breath; they are the six questions the note ASKS, all since ruled, and the row now says that. (2) § 1.2(d)'s S8 table gave one row label to two columns measured by different parties — the landed predicate (25, which amendment #3 reproduces) and S8's own **20** (which it cannot); the row now carries that distinction where a reader meets it, instead of only in the paragraph below and in row (j). (3) § 3.3's OPENING still had the RULED ownership *"which the two in-flight pull requests under it are realizing"* — dated to amendment #2, with S6's three merge shas beside it, which matters here because § 4.5 assertion 2 turns on the difference between the ownership the TREE has and the ownership a ruling has decided. (4) This table's *"Open points this note is carrying, collected"* paragraph ended on *"none of the four is written anywhere above as decided"* with no date, directly above the amendment #3 paragraph that decides all four; it now carries amendment #2's date. |
+| fix round 5 | the repository README's doc-index row · § 1.2(d)'s S8 table · § 3.3's opening · this table's collected-open-points paragraph | **four findings, all SUPPRESSED (no threads), all accurate, none touching a figure.** (1) **Amendment #3's own rewrite** of the README doc-index row said *"SIX open questions, ALL RULED"* in one breath — the row it replaced said *"six open questions — Q1–Q5 RULED and Q6 OPEN"*, which was correct on its date, so the ambiguity was this amendment's to make and to fix rather than anything the README carried (corrected at fix round 6, which caught the misattribution in this very row); they are the six questions the note ASKS, all since ruled, and the row now says that. (2) § 1.2(d)'s S8 table gave one row label to two columns measured by different parties — the landed predicate (25, which amendment #3 reproduces) and S8's own **20** (which it cannot); the row now carries that distinction where a reader meets it, instead of only in the paragraph below and in row (j). (3) § 3.3's OPENING still had the RULED ownership *"which the two in-flight pull requests under it are realizing"* — dated to amendment #2, with S6's three merge shas beside it, which matters here because § 4.5 assertion 2 turns on the difference between the ownership the TREE has and the ownership a ruling has decided. (4) This table's *"Open points this note is carrying, collected"* paragraph ended on *"none of the four is written anywhere above as decided"* with no date, directly above the amendment #3 paragraph that decides all four; it now carries amendment #2's date. |
+| fix round 6 | § 3.1's census table · § 4.1 (Q10) · § 4.5 assertions 2 and 3 · § 6 (Q6's premise) · this table's fix-round-5 row | **six findings — one thread, five suppressed — all accurate, and one of them ON THIS TABLE.** (1) **§ 3.1's census table stopped at `#23`'s head** while § 1.1 names `#21`'s as the arc-complete bundle, leaving the authoritative tree's own A/B/C totals in prose. A fourth column is added, summed from that tree's `tests/fixtures/web_boundary_census.yaml` like the other three: A 26 / 17,883 · B 1 / 73 · C 14 / 12,564 · `?` 1 / 1,435 = **42 / 31,955**, one cell different from the `#23` column and that cell the +43. (2) § 4.5 assertion 3's *"slice S4 is in flight and re-derives it at its landing"*, (3) § 4.1's *"how the second one travels is OPEN"* and (4) § 4.5 assertion 2's *"(iii) OPEN"* each sat directly above their own amendment #3 answer WITHOUT being named as amendment #2's wording — adjacency is not a date, and each now carries one. (5) § 6's **Q6 premise** still presented *"a directory openXdox-code does not have"* and *"S8 is forty-eight"* as live constraints; both are dated to amendment #2 with the two rulings that overtook them beside them (`5656343213`'s path-constant reading, and the six class-B modules S5 leg A put under `src/openxdox/web/`). (6) **The fix-round-5 row above misattributed its own first finding**: *"SIX open questions, ALL RULED"* was AMENDMENT #3's rewrite of the README row, not anything the README carried — the row it replaced said *"Q1–Q5 RULED and Q6 OPEN"*, which was correct on its date. Corrected in place, because a review record that invents a defect in a document it edited is the one kind of error this table cannot afford. |
 
 **Measurement discipline across amendments.** The census tree is
 `a99eba03` and amendment #2 did not re-measure it. Every citation amendment #2
