@@ -205,8 +205,16 @@ diffstat.
 
 The landed reading is still
 **[FILL AT LANDING — openDox-code `main` sha, blobs, lines, hand-authored]**,
-and it is the only figure in this note deliberately written last: `#21` and
-`#23` are open and may move again before they merge.
+and it is the only figure in this note deliberately written last.
+*(This sentence read "`#21` and `#23` are open and may move again before they
+merge" until S7 landed. **`#21` has since merged** — openDox-code `main` is
+`1e469713`, and the bundle there reads **42 blobs / 31,955 lines, 40
+hand-authored / 31,953**, which is `#21`'s head figure unchanged, because a
+merge that fast-forwards the arc-complete bundle moves nothing in it. `#23`
+alone is still open, and by this section's own measurement it CANNOT move the
+figure: S8 leg B's whole delta is under `tests/`, so whatever sha `main`
+carries when this amendment lands, the four numbers above it are the ones the
+landed reading will state.)*
 
 ### 1.2 There is no boundary — four measurements that say so
 
