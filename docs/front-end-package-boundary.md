@@ -1318,13 +1318,26 @@ merged, and a Q-L1 annotation counts as one of them.
 | **S4** | `#1010` → `bcde1575` | `#17` → `69d27602` | — | **LANDED** |
 | **S6** | `#1009` → `468371dc` | `#16` → `3661345f` | `#17` → `d6e7bbe3` | **LANDED** |
 | **S5** | `#1023` → `ee251d6c` | `#20` → `8efb3cf5` | `#18` → `c1ad341a` | **LANDED** |
-| **S7** | `#1030` → **[FILL AT LANDING — merge sha]** | `#21` → **[FILL AT LANDING — merge sha]** | — | **LANDING** |
+| **S7** | `#1030` → `b3a75537` | `#21` → `1e469713` | — | **LANDED** |
 | **S8** | `#1025` → **[FILL AT LANDING — merge sha]** | `#23` → **[FILL AT LANDING — merge sha]** | `#19` → **[FILL AT LANDING — merge sha]** | **LANDING** |
 
-**Six of the eight are merged and their shas are final.** S7 and S8 are open at
-the moment amendment #3 is authored and land ahead of it in the lane's recorded
+**SEVEN of the eight are merged and their shas are final.** S8 is open at
+the moment amendment #3 is authored and lands ahead of it in the lane's recorded
 order — **S7 → S8** — so this amendment is the LAST act of the arc and fills
-those two rows, and § 1.1's one landed reading, at its own landing. FOUR facts about the order are
+its remaining row, and § 1.1's one landed reading, at its own landing.
+*(S7's row was filled in place on 2026-09-15, at its landing, from the merged
+pull requests themselves: openxFactory `#1030` → `b3a75537217d9b15684501684e9527f412d4e6b6`
+merged **21:40:25Z** and openDox-code `#21` → `1e4697130855e9695a6acc3344b7c925bb3eeb09`
+merged **21:41:36Z** — **RULED Q-L1's annotation-first rule holding for the
+seventh time, here by 71 seconds.** Recorded with it, because it is the act that
+carries S5's and S7's landings into the aggregation rather than a ninth slice:
+the **pin lockstep #2** that followed, openxFactory `#1054` →
+`3c614d340777cb1ff825c04dbc78d98af1dc875e` (23:27:40Z), which moves
+`contracts/opendox-pin.yaml`'s `commit:` to the openDox assembly root `3819625e`
+(`opensoft/openDox` `#8`, 21:48:52Z — the root that names `code` leg `1e469713`,
+S7's own merge) and `contracts/openxdox-pin.yaml`'s to `a6500141`
+(`opensoft/openXdox` `#10`, 21:54:21Z), both gitlinks moving in that one commit.
+That is the bump § 1.2(d)'s SKIP waits on, arriving at the aggregation level.)* FOUR facts about the order are
 worth stating because they are not obvious from the table *(three until fix
 round 7, which put S2's Q-L1 annotation into the table where amendment #3 had
 written `—`)*. **S2's annotation is the first**: openxFactory `#1002` →
