@@ -33,6 +33,7 @@ from __future__ import annotations
 import hashlib
 import re
 from pathlib import Path
+from typing import NamedTuple
 
 import pytest
 
@@ -85,12 +86,24 @@ def _carried_delta() -> Path:
 #: is still OPEN, so the pinned commit — which does not move — is the source
 #: this file's numbers rest on, and the archive is named as a destination only.
 #: This test reads the LOCAL carried file alone and reaches neither.
+#: The DECLARED SECTION KIND is part of each row, because the digest is not.
+#: A requirement block runs from its `### Requirement: ` line, so the enclosing
+#: `## ADDED Requirements` / `## MODIFIED Requirements` heading is outside every
+#: block and outside every digest. Moving a block from one section to the other
+#: therefore preserves its bytes, its digest and the exact title set while
+#: REVERSING what the delta asks OpenSpec to do with it — an ADDED requirement
+#: creates a requirement, a MODIFIED one rewrites an existing one. For a change
+#: whose whole claim is that it carries openxFactory's ratified text unaltered,
+#: that is the cheapest possible way to alter it without tripping a digest.
+#: (Found by Copilot's review at `7609c8d6`.)
 CARRIED_BLOCKS = (
-    ("An unrecognized chat-turn kind is refused in the SURVIVING family, "
+    ("ADDED",
+     "An unrecognized chat-turn kind is refused in the SURVIVING family, "
      "never coerced into a removed one",
      "a16607edf70f89855d6f2b1c55ae87d3de1dd844cc9b623aec414716e0cd5127",
      4150),
-    ("The chat-turn contract release carries the bound buffer and the model",
+    ("MODIFIED",
+     "The chat-turn contract release carries the bound buffer and the model",
      "e7ce5310f2e17f7440abe810b41c364fdcfd926fa594f6baf807f70f30349737",
      5858),
 )
@@ -102,9 +115,27 @@ DOES_NOT_TRAVEL = (
 
 _BLOCK_START = re.compile(r"^### Requirement: ", re.M)
 _BLOCK_END = re.compile(r"^(?:### Requirement: |## )", re.M)
+_SECTION = re.compile(r"^## (ADDED|MODIFIED|REMOVED|RENAMED) Requirements\s*$", re.M)
 
 
-def _blocks(text: str) -> dict[str, bytes]:
+class Block(NamedTuple):
+    """One requirement block: the section that declares it, and its bytes."""
+
+    kind: str
+    body: bytes
+
+
+def _section_kind_at(text: str, offset: int) -> str:
+    """The `## <KIND> Requirements` heading this offset sits under."""
+    kind = ""
+    for match in _SECTION.finditer(text):
+        if match.start() > offset:
+            break
+        kind = match.group(1)
+    return kind
+
+
+def _blocks(text: str) -> dict[str, Block]:
     """Every requirement block, keyed by title, under the stated boundary.
 
     A REPEATED TITLE IS REFUSED rather than overwritten. Keying by title is what
@@ -117,7 +148,7 @@ def _blocks(text: str) -> dict[str, bytes]:
     duplicate fails HERE, where the file is being read, with both offsets named.
     (Found by Copilot's review at `e6a143c8`.)
     """
-    out: dict[str, bytes] = {}
+    out: dict[str, Block] = {}
     seen_at: dict[str, int] = {}
     for match in _BLOCK_START.finditer(text):
         start = match.start()
@@ -135,12 +166,12 @@ def _blocks(text: str) -> dict[str, bytes]:
                 "blocks by title would otherwise hide the extra one behind the "
                 "first.")
         seen_at[title] = start
-        out[title] = chunk.encode("utf-8")
+        out[title] = Block(_section_kind_at(text, start), chunk.encode("utf-8"))
     return out
 
 
 @pytest.fixture(scope="module")
-def carried() -> dict[str, bytes]:
+def carried() -> dict[str, Block]:
     """Read BYTES and decode them, never `read_text()`.
 
     `Path.read_text()` opens in universal-newline mode, so a checkout or an edit
@@ -154,14 +185,24 @@ def carried() -> dict[str, bytes]:
     return _blocks(_carried_delta().read_bytes().decode("utf-8"))
 
 
-@pytest.mark.parametrize("title,digest,size", CARRIED_BLOCKS,
+@pytest.mark.parametrize("kind,title,digest,size", CARRIED_BLOCKS,
                          ids=["added-unrecognized-kind", "modified-release"])
 def test_a_carried_block_still_has_the_bytes_it_arrived_with(
-        carried: dict[str, bytes], title: str, digest: str, size: int) -> None:
+        carried: dict[str, Block], kind: str, title: str, digest: str,
+        size: int) -> None:
     assert title in carried, (
         f"the carried delta no longer holds a requirement titled {title!r}; "
         f"it holds {sorted(carried)}")
-    body = carried[title]
+    block = carried[title]
+    assert block.kind == kind, (
+        f"{title!r} was carried under `## {kind} Requirements` and now sits "
+        f"under `## {block.kind} Requirements`. The digest cannot see this: a "
+        "block's bytes start at its `### Requirement: ` line, so the section "
+        "heading is outside every digest this file pins. But the section is "
+        "what the delta MEANS — ADDED creates a requirement, MODIFIED rewrites "
+        "an existing one — so moving a block between sections changes the act "
+        "while leaving every hash intact. CARRIAGE IS NOT AUTHORING.")
+    body = block.body
     actual = hashlib.sha256(body).hexdigest()
     assert (actual, len(body)) == (digest, size), (
         f"{title!r} was carried as sha256 {digest} / {size} bytes and now "
@@ -173,7 +214,7 @@ def test_a_carried_block_still_has_the_bytes_it_arrived_with(
 
 
 def test_the_block_that_does_not_travel_did_not(
-        carried: dict[str, bytes]) -> None:
+        carried: dict[str, Block]) -> None:
     """openDox removes nothing, so it carries no removal requirement."""
     assert DOES_NOT_TRAVEL not in carried, (
         f"{DOES_NOT_TRAVEL!r} is in this corpus. It is openxFactory's "
@@ -183,9 +224,9 @@ def test_the_block_that_does_not_travel_did_not(
 
 
 def test_the_carried_delta_holds_exactly_the_two_blocks(
-        carried: dict[str, bytes]) -> None:
+        carried: dict[str, Block]) -> None:
     """Not a count — the set is named, so an arrival nobody declared fails."""
-    assert set(carried) == {title for title, _d, _s in CARRIED_BLOCKS}, (
+    assert set(carried) == {title for _k, title, _d, _s in CARRIED_BLOCKS}, (
         f"the carried delta holds {sorted(carried)}; this change carries "
         "exactly the two blocks named in CARRIED_BLOCKS and a third would be "
         "an undeclared arrival")
