@@ -72,9 +72,16 @@ ratification this corpus still owes (§ 1.4).
       The delta also draws the neighbouring distinction the reading might have
       collapsed into this one: an UNREADABLE catalog is not an empty one, and
       intake *"MUST NOT be offered when the catalog could not be READ"*.
-- [ ] 5.2 **If openDox wants the precedence stated in terms rather than
-      derived**, that is a ratification-time amendment in THIS corpus (§ 1.4),
-      not an arrival edit: one sentence in the ordering requirement naming the
-      existence rule as its precondition. Recorded as available, not owed — the
-      text is already consistent, and a re-home is not the act that rewrites what
-      openxFactory ratified.
+**5.2 — AVAILABLE, NOT OWED, AND DELIBERATELY NOT A BOX.** If openDox wants the
+precedence stated in terms rather than derived, that is a ratification-time
+amendment in THIS corpus (§ 1.4), not an arrival edit: one sentence in the
+ordering requirement naming the existence rule as its precondition. The text is
+already consistent, and a re-home is not the act that rewrites what openxFactory
+ratified.
+
+It carried a `- [ ]` until Copilot's reading of openDox-spec #13, which is right:
+in a task ledger an unticked box reports outstanding work, and nothing here is
+owed. Ticking it would have been worse — that claims an amendment was made. So it
+leaves the checklist entirely and stays a note, where neither a reader nor task
+tooling can count an option as an obligation. The number is kept so that
+references to § 5.2 still resolve.
