@@ -23,10 +23,20 @@ would use" — under DIRECTION Q5's three-layer test and RULING C2.
 
 The packet's own per-requirement successor map says where this requirement goes
 and in whose voice: *"the requirement is re-promoted in `opensoft/openDox`'s own
-OpenSpec instance"* (`openspec/changes/split-opendox-two-layer-product/specs/ideation-dashboard/spec.md`,
-the `Composed views are read-only with a repository jump` row). The openxFactory
+OpenSpec instance"* — the `Composed views are read-only with a repository jump`
+row of `opensoft/openxFactory`
+[`openspec/changes/split-opendox-two-layer-product/specs/ideation-dashboard/spec.md`](https://github.com/opensoft/openxFactory/blob/cb2d3a2c24e948d4cc2c10a97046a5cc03cf1f9a/openspec/changes/split-opendox-two-layer-product/specs/ideation-dashboard/spec.md)
+at `cb2d3a2c` (blob `21fea062`). The openxFactory
 disposition therefore promotes NOTHING into openxFactory canon — the packet says
 so twice — and this change is where the delta actually lands.
+
+**EVERY `split-opendox-two-layer-product` CITATION IN THIS CHANGE IS THAT
+PACKET, IN `opensoft/openxFactory`, AT `cb2d3a2c` — never a local one.** It has
+no copy in this corpus and never will: it is openxFactory's own packet, which is
+what makes this change its successor rather than its continuation. Paths written
+bare below (`tasks.md` § 5, § 6.4, § 8.5) are paths in THAT repository at THAT
+revision, pinned because `main` moves and a section number is reproducible there
+and nowhere else by guarantee.
 
 The substance is unchanged and is restated here only so this corpus can be read
 without the other one: `Composed views are read-only with a repository jump`
