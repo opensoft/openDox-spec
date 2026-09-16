@@ -71,9 +71,20 @@ re-derivation of this claim did before the rule was written down.
 re-derives both digests from the carried file on every run, asserts the third
 requirement did NOT travel, and asserts the block set is exactly these two so an
 undeclared arrival fails. It cannot reach openxFactory, so it cannot re-verify
-the source half; that was measured at carriage and again on 2026-09-16, both
-sides, and openxFactory's own suite pins the same numbers against its archived
-packet — so an edit on either side breaks a test on that side.
+the source half; that was measured at carriage and again on 2026-09-16, on both
+sides, against the PINNED COMMIT.
+**WITHDRAWN 2026-09-16, because it was not true:** this paragraph used to add
+that "openxFactory's own suite pins the same numbers against its archived
+packet — so an edit on either side breaks a test on that side." Both halves fail.
+The archive does not exist (openxFactory PR #1066 is still OPEN; the path 404s on
+that repository's `main`, where the ACTIVE packet still stands), and a full grep
+of a fresh clone of openxFactory `main` finds NEITHER digest anywhere in the
+repository — no test there pins them. So there is no mutual breakage, and this
+change should not have claimed a guarantee it does not hold. What is true is the
+narrower thing now written: the digests are pinned HERE, against the source at
+`cb2d3a2c24e948d4cc2c10a97046a5cc03cf1f9a`, and an edit on THIS side fails a test
+on this side. An edit on the openxFactory side would be caught by re-running the
+measurement against that pin, not by a test over there.
 
 ## What changes
 

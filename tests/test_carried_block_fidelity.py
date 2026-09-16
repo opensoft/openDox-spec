@@ -11,10 +11,17 @@ taken.
 WHAT THIS CAN AND CANNOT PROVE. It re-derives the digests from THIS repository's
 carried file and compares them to the pinned values — so an edit here, after the
 carriage, fails. It cannot reach openxFactory, so it cannot re-verify the SOURCE;
-that half was measured once, at carriage, and is recorded in `tasks.md` § 1.1.
-The pinned digests are the shared number between the two halves: openxFactory's
-own suite pins the same values against its archived packet, so an edit on either
-side breaks a test on that side rather than going unnoticed.
+that half was measured once, at carriage, re-measured on 2026-09-16, and is
+recorded in `tasks.md` § 1.1 against the PINNED COMMIT.
+
+WHAT THIS MODULE USED TO CLAIM AND NO LONGER DOES: that "openxFactory's own suite
+pins the same values against its archived packet, so an edit on either side
+breaks a test on that side". Neither half survives measurement. The archive does
+not exist yet — openxFactory PR #1066 is still open — and a full grep of a fresh
+clone of openxFactory `main` finds neither digest anywhere in that repository.
+There is no test over there to break. The guarantee this module actually provides
+is one-sided and worth stating plainly: an edit to the carried bytes HERE fails
+HERE. The source side is protected by the pin, not by a peer test.
 
 THE EXTRACTION BOUNDARY IS THE WHOLE DIFFICULTY and is therefore stated rather
 than left to a reader's judgement. A requirement block runs from its
@@ -59,23 +66,34 @@ def _carried_delta() -> Path:
     (Found by Copilot's review at `e6a143c8`.)
     """
     live = ROOT / "openspec/changes" / CHANGE_ID / DELTA_SUBPATH
-    if live.is_file():
-        return live
     archived = sorted(
         (ROOT / "openspec/changes/archive").glob(f"*-{CHANGE_ID}/{DELTA_SUBPATH}"))
-    if len(archived) == 1:
-        return archived[0]
-    if len(archived) > 1:
+    here = ([live] if live.is_file() else []) + archived
+    if len(here) == 1:
+        return here[0]
+    if not here:
         raise AssertionError(
-            f"{CHANGE_ID} is archived more than once: "
-            f"{[str(a.relative_to(ROOT)) for a in archived]}")
+            f"no carried delta for {CHANGE_ID}: neither "
+            f"{live.relative_to(ROOT)} nor any "
+            f"openspec/changes/archive/*-{CHANGE_ID}/{DELTA_SUBPATH}")
+    # THE TWO LOCATIONS ARE MUTUALLY EXCLUSIVE, and saying so is the point.
+    # Preferring the live copy when both exist would have verified the WRONG
+    # ARTIFACT in silence: archiving is a MOVE, so a live copy surviving beside an
+    # archived one means the move was a copy, and the file still under
+    # `openspec/changes/` is then a stale duplicate that no longer governs. The
+    # fixture would have hashed it, found the pinned digests, and reported the
+    # carriage intact while the governing copy drifted unchecked. openxFactory has
+    # met exactly this failure — its pin suite carries a "copy-not-move" invariant
+    # for the same reason. (Found by Copilot's review at `601c0249`.)
     raise AssertionError(
-        f"no carried delta for {CHANGE_ID}: neither "
-        f"{live.relative_to(ROOT)} nor any "
-        f"openspec/changes/archive/*-{CHANGE_ID}/{DELTA_SUBPATH}")
+        f"{CHANGE_ID} exists in more than one place at once: "
+        f"{[str(x.relative_to(ROOT)) for x in here]}. Archiving is a MOVE; a live "
+        "copy beside an archived one means it was copied, and one of the two is a "
+        "stale duplicate. Which one this test should hash is not for it to guess.")
 
 
-#: (title, FULL sha256 of the block, byte length) — full, never a prefix:
+#: (title, FULL sha256 of the NORMALIZED block, byte length, then the sha256 and
+#: byte length of the RAW slice) — full, never a prefix:
 #: a truncated digest in a provenance claim is a weaker claim than it looks,
 #: which is half of what Copilot's review of this change was about. Measured at
 #: carriage against openxFactory's delta at the PINNED COMMIT `cb2d3a2c`, file
@@ -101,12 +119,28 @@ CARRIED_BLOCKS = (
      "An unrecognized chat-turn kind is refused in the SURVIVING family, "
      "never coerced into a removed one",
      "a16607edf70f89855d6f2b1c55ae87d3de1dd844cc9b623aec414716e0cd5127",
-     4150),
+     4150,
+     "f5ed3366b0698fc7058255854c0986e3b79978e47c578e06962f897697ae2083",
+     4151),
     ("MODIFIED",
      "The chat-turn contract release carries the bound buffer and the model",
      "e7ce5310f2e17f7440abe810b41c364fdcfd926fa594f6baf807f70f30349737",
+     5858,
+     "e7ce5310f2e17f7440abe810b41c364fdcfd926fa594f6baf807f70f30349737",
      5858),
 )
+
+#: WHY BOTH DIGESTS. The extraction boundary trims trailing newlines to one, so
+#: the NORMALIZED digest is the block's identity and is deliberately insensitive
+#: to how many blank lines separate it from the next heading. That insensitivity
+#: was a hole under a claim of VERBATIM carriage: adding or removing a blank line
+#: at the end of a block changed the file's bytes and left the pinned digest and
+#: byte count untouched. MEASURED here — the ADDED block is 4,151 raw bytes and
+#: 4,150 normalized (one newline trimmed), while the MODIFIED block, last in the
+#: file, is identical either way. The RAW digest closes the gap without moving
+#: the boundary the proposal documents: the normalized pair still says "this is
+#: the same requirement", and the raw pair now says "and these are the same
+#: bytes". (Found by Copilot's review at `601c0249`.)
 
 #: The requirement openxFactory's delta carries that this change deliberately
 #: does NOT: openDox removes nothing, so it makes no claim about a removal.
@@ -119,10 +153,11 @@ _SECTION = re.compile(r"^## (ADDED|MODIFIED|REMOVED|RENAMED) Requirements\s*$", 
 
 
 class Block(NamedTuple):
-    """One requirement block: the section that declares it, and its bytes."""
+    """One requirement block: its section, its normalized bytes, its raw slice."""
 
     kind: str
     body: bytes
+    raw: bytes
 
 
 def _section_kind_at(text: str, offset: int) -> str:
@@ -166,7 +201,8 @@ def _blocks(text: str) -> dict[str, Block]:
                 "blocks by title would otherwise hide the extra one behind the "
                 "first.")
         seen_at[title] = start
-        out[title] = Block(_section_kind_at(text, start), chunk.encode("utf-8"))
+        out[title] = Block(_section_kind_at(text, start), chunk.encode("utf-8"),
+                           text[start:end].encode("utf-8"))
     return out
 
 
@@ -185,11 +221,12 @@ def carried() -> dict[str, Block]:
     return _blocks(_carried_delta().read_bytes().decode("utf-8"))
 
 
-@pytest.mark.parametrize("kind,title,digest,size", CARRIED_BLOCKS,
+@pytest.mark.parametrize("kind,title,digest,size,raw_digest,raw_size",
+                         CARRIED_BLOCKS,
                          ids=["added-unrecognized-kind", "modified-release"])
 def test_a_carried_block_still_has_the_bytes_it_arrived_with(
         carried: dict[str, Block], kind: str, title: str, digest: str,
-        size: int) -> None:
+        size: int, raw_digest: str, raw_size: int) -> None:
     assert title in carried, (
         f"the carried delta no longer holds a requirement titled {title!r}; "
         f"it holds {sorted(carried)}")
@@ -202,6 +239,14 @@ def test_a_carried_block_still_has_the_bytes_it_arrived_with(
         "what the delta MEANS — ADDED creates a requirement, MODIFIED rewrites "
         "an existing one — so moving a block between sections changes the act "
         "while leaving every hash intact. CARRIAGE IS NOT AUTHORING.")
+    raw_actual = hashlib.sha256(block.raw).hexdigest()
+    assert (raw_actual, len(block.raw)) == (raw_digest, raw_size), (
+        f"{title!r} was carried as a RAW slice of {raw_size} bytes "
+        f"(sha256 {raw_digest}) and now reads {len(block.raw)} bytes "
+        f"(sha256 {raw_actual}). The normalized digest below cannot see this: "
+        "the extraction boundary trims trailing newlines to one, so blank lines "
+        "added or removed at the end of a block leave it untouched. This pair is "
+        "what makes VERBATIM mean verbatim.")
     body = block.body
     actual = hashlib.sha256(body).hexdigest()
     assert (actual, len(body)) == (digest, size), (
@@ -226,7 +271,7 @@ def test_the_block_that_does_not_travel_did_not(
 def test_the_carried_delta_holds_exactly_the_two_blocks(
         carried: dict[str, Block]) -> None:
     """Not a count — the set is named, so an arrival nobody declared fails."""
-    assert set(carried) == {title for _k, title, _d, _s in CARRIED_BLOCKS}, (
+    assert set(carried) == {t for _k, t, _d, _s, _rd, _rs in CARRIED_BLOCKS}, (
         f"the carried delta holds {sorted(carried)}; this change carries "
         "exactly the two blocks named in CARRIED_BLOCKS and a third would be "
         "an undeclared arrival")
