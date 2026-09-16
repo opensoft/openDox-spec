@@ -89,7 +89,7 @@ that tree rather than silently restated at the later one.
 | openDox-code | `05bbde80` | `main` when amendment #3 began: S1–S4 and S6 landed; S5 leg B, S7 and S8 leg B still open |
 | openDox-code | `main` `8efb3cf5` | `main` at authoring time (2026-09-14): **S1–S6 landed**; S7 and S8 leg B still open |
 | openDox-code | `#21` head `c7a216c7` | S7 **forward-merged onto the landed S5 leg B**. For `src/opendox/web/` this IS the arc-complete tree: S8 leg B (`#23`) touches `tests/` only and not one bundle file (`git diff d672f0c7 a7b7ac28 -- src/opendox/web/` is empty) |
-| openDox-code | `#23` head `a7b7ac28` | S5 leg B (at `011c3be0`), S7 (`d672f0c7`) and S8 leg B stacked, based on `05bbde80`. It PREDATES `#21`'s forward-merge, so its bundle figures are 43 lines short of `c7a216c7`'s — the § 1.1 caveat is that difference, measured |
+| openDox-code | `#23` head `a7b7ac28` — the head this amendment measured, superseded by `ce0f28bf` at its landing | S5 leg B (at `011c3be0`), S7 (`d672f0c7`) and S8 leg B stacked, based on `05bbde80`. It PREDATES `#21`'s forward-merge, so its bundle figures are 43 lines short of `c7a216c7`'s — the § 1.1 caveat is that difference, measured |
 | openXdox-code | `main` `c1ad341a` | S5 leg A (`#18`) landed; S8 leg A still open |
 | openXdox-code | `#19` head `080dcfcd` | S8 leg A |
 | openxFactory | `main` `a80f0e3c` | the carve floor at authoring time (`bfa90db6` when amendment #3 began; the carve-manifest rows this amendment reads are identical at both) |
@@ -169,7 +169,7 @@ and the whole movement is four blob counts:
 | `a99eba03` (the census tree) | 42 | 30,585 | 40 files / 30,583 lines |
 | `05bbde80` (`main` before S5 leg B: S1–S4 and S6 landed) | **47** | **31,792** | 45 files / 31,790 lines |
 | openDox-code `main` `8efb3cf5` (S1–S6 landed) | **41** | **30,477** | 39 files / 30,475 lines |
-| `#23` head `a7b7ac28` (S7 + S8 leg B, on the PRE-merge leg B) | **42** | **31,912** | 40 files / 31,910 lines |
+| `#23` head `a7b7ac28` (S7 + S8 leg B, on the PRE-merge leg B) — the head amendment #3 MEASURED; `#23` forward-merged to `ce0f28bf` before it landed | **42** | **31,912** | 40 files / 31,910 lines |
 | `#21` head `c7a216c7` (S7 forward-merged onto the landed leg B) — **the arc-complete bundle** | **42** | **31,955** | 40 files / 31,953 lines |
 
 **42 → 47 → 41 → 42 is arithmetic, not coincidence**, and each step is a slice
@@ -199,22 +199,46 @@ forward-merged `main` (`d672f0c7` → `c7a216c7`) and its bundle reads 42 /
 The BLOB count is unaffected at every step: that round adds and removes no
 file. **`#21`'s head is the arc-complete bundle and `#23`'s is not**, for a
 reason worth stating rather than assuming: S8 leg B is a TEST slice — its whole
-delta against its base is 7 files under `tests/` (+126 / −9) and not one byte
-under `src/opendox/web/` — which is § 1.2(d)'s ruled reading showing up in the
-diffstat.
+delta against its base is test files and one workflow, **and not one byte under
+`src/opendox/web/`** — which is § 1.2(d)'s ruled reading showing up in the
+diffstat. *(Amended at this amendment's own landing, on two counts. **(i)** This
+sentence read "7 files under `tests/` (+126 / −9)" and the attribution is wrong:
+the last of those files is `.github/workflows/validate.yml` — the UN-NARROWING,
+the second half of S8's own row title and not a test edit at all. At the head
+this note measured (`a7b7ac28` against its base `d672f0c7`) the split is SIX
+files under `tests/` at **+19 / −9** and `validate.yml` at **+107 / −0**, so
+**107 of those 126 lines were mis-attributed**. **(ii)** Neither the count nor
+the total is a constant, because leg B kept moving after this note read it: AS
+MERGED — `0b4e8bbf` against openDox-code `main` `1e469713` — it is **EIGHT files,
++182 / −31**, of which seven are under `tests/` at **+44 / −27** and the workflow is
+**+138 / −4**. What does NOT move at any of those heads is the claim this
+sentence exists to make: `git diff --name-only` over `src/opendox/web/` is
+EMPTY at every one of them.)*
 
-The landed reading is still
-**[FILL AT LANDING — openDox-code `main` sha, blobs, lines, hand-authored]**,
-and it is the only figure in this note deliberately written last.
+**The landed reading, the only figure in this note deliberately written
+last: at openDox-code `main` `0b4e8bbf68fabfcd65d4f0d80e619c20a013e888` — the tree S8 leg B left —
+`src/opendox/web/` is 42 blobs / 31,955 lines, 40
+hand-authored / 31,953.** It is `#21`'s head figure UNCHANGED, and this section
+predicted that it would be before S8 landed, for a reason it measures rather
+than assumes: leg B moves not one byte under `src/opendox/web/`.
 *(This sentence read "`#21` and `#23` are open and may move again before they
-merge" until S7 landed. **`#21` has since merged** — openDox-code `main` is
-`1e469713`, and the bundle there reads **42 blobs / 31,955 lines, 40
-hand-authored / 31,953**, which is `#21`'s head figure unchanged, because a
-merge that fast-forwards the arc-complete bundle moves nothing in it. `#23`
-alone is still open, and by this section's own measurement it CANNOT move the
-figure: S8 leg B's whole delta is under `tests/`, so whatever sha `main`
-carries when this amendment lands, the four numbers above it are the ones the
-landed reading will state.)*
+merge" until S7 landed, and then "`#23` alone is still open … whatever sha
+`main` carries when this amendment lands, the four numbers above it are the
+ones the landed reading will state" until S8 landed. Both are kept as the record
+of what was open when; the figure is now READ at the landed tree rather than
+predicted, and the prediction held.)*
+
+**And the 43-line gap closed exactly where this section said it would, from the
+other side.** `#23` did not land at `a7b7ac28`: it forward-merged `#21`'s head
+and `main` and then kept being fixed (`a7b7ac28` → `ce0f28bf`, whose tree
+`4aaa4bb5` is byte-identical to the squash commit's), and at THAT head
+`src/opendox/web/` reads **42 blobs / 31,955 lines, 40 hand-authored /
+31,953** — the arc-complete figure, not the 43-short one this note measured.
+The two heads § 1.1 separates are therefore the same tree by the time they
+merge, which is what *"the same 43 arriving from the other side"* above means
+when the arriving is finished. The `a7b7ac28` figures are kept everywhere they
+appear, because they are the measurement of the tree this amendment read, and
+that head is now named as such wherever it is cited.
 
 ### 1.2 There is no boundary — four measurements that say so
 
@@ -495,8 +519,22 @@ survivor.)*
 
 **The narrowings have lifted — for the web suites, which is what § 5's S8 row
 says.** openDox-code's `validate` list goes from 10 files / 283 tests to **27
-files / 691 tests** (`#23`); openXdox-code's goes from 154 passed / 16 skipped
-to **301 passed / 23 skipped** (`#19`). The FULL un-narrowing is still not
+files / 691 tests** at `a7b7ac28` and **694** at the head `#23` landed at,
+`ce0f28bf` (see the note below); openXdox-code's goes from 154 passed /
+16 skipped to **301 passed / 23 skipped** (`#19`, whose head did not move).
+*(Amended at this amendment's landing. **691 is the figure at `a7b7ac28`**, the
+head this note measured, and `#23` did not land there: it forward-merged `#21`'s
+head and `main` and went on being fixed, and at its landed head `ce0f28bf` the
+same 27-file list runs **694** — the figure leg B's own squash subject carries
+(*"283 → 694 tests"*, merge `0b4e8bbf`). The +3 is slice S7's leg arriving, and
+it is exactly locatable without re-running anything: the `validate` file list is
+BYTE-IDENTICAL at `a7b7ac28`, `ce0f28bf` and the merge `0b4e8bbf` (38 file
+references, the same 38), while a static count of `def test_` over those files
+rises **849 → 852** with the whole difference in ONE file,
+`tests/test_gate_loop_contributed.py` (**31 → 34**) — which reads 852 at
+openDox-code `main` `1e469713` too, S7's own merge. Both figures are kept, each
+named with its tree, because the lift S8 performs is the same lift either
+way.)* The FULL un-narrowing is still not
 this slice's and is not a finding against it: both legs' own SOURCE modules
 reach openxFactory-only packages at import time — `src/opendox/serve.py:192` →
 `ideation_dashboard.serve_openxfactory_lanes` and
@@ -752,7 +790,13 @@ and it arrives only at an S7 head.
 17,883** — the +43 of § 1.1, all of it in class A — with B, C and `?` byte-identical
 to the `a7b7ac28` column, for a total of **42 / 31,955**. Nothing else in the
 census differs between the two heads, which is the check that the forward-merge
-carried leg B's rows and invented none.
+carried leg B's rows and invented none. *(CHECKED AT THE LANDING and it HELD, to
+the line. `#23` did not land at `a7b7ac28`: it forward-merged first, to
+`ce0f28bf`, whose census fixture is the SAME BLOB as `c7a216c7`'s and as
+openDox-code `main` `1e469713`'s (`67c689c8`, against `839a65dc` at
+`a7b7ac28`). Re-deriving the classes at that head returns **A 26 / 17,883 ·
+B 1 / 73 · C 14 / 12,564 · `?` 1 / 1,435 = 42 / 31,955** — ONE figure
+moved, once, the one this paragraph names, and nothing else.)*
 
 ### 3.2 The rows
 
@@ -1329,12 +1373,19 @@ merged, and a Q-L1 annotation counts as one of them.
 | **S6** | `#1009` → `468371dc` | `#16` → `3661345f` | `#17` → `d6e7bbe3` | **LANDED** |
 | **S5** | `#1023` → `ee251d6c` | `#20` → `8efb3cf5` | `#18` → `c1ad341a` | **LANDED** |
 | **S7** | `#1030` → `b3a75537` | `#21` → `1e469713` | — | **LANDED** |
-| **S8** | `#1025` → **[FILL AT LANDING — merge sha]** | `#23` → **[FILL AT LANDING — merge sha]** | `#19` → **[FILL AT LANDING — merge sha]** | **LANDING** |
+| **S8** | `#1025` → `e5896455` | `#23` → `0b4e8bbf` | `#19` → `0a0265f7` | **LANDED** |
 
-**SEVEN of the eight are merged and their shas are final.** S8 is open at
-the moment amendment #3 is authored and lands ahead of it in the lane's recorded
-order — **S7 → S8** — so this amendment is the LAST act of the arc and fills
-its remaining row, and § 1.1's one landed reading, at its own landing.
+**ALL EIGHT are merged and their shas are final.** *(This paragraph read
+"SEVEN of the eight are merged … S8 is open at the moment amendment #3 is
+authored and lands ahead of it in the lane's recorded order — **S7 → S8**"
+until S8 landed, which is what it said would happen: this amendment is the LAST
+act of the arc, it fills its own remaining row and § 1.1's one landed reading at
+its own landing, and it has now done both.)* **S8 landed in three acts on
+2026-09-15/16, and RULED Q-L1's annotation-first rule holds for an EIGHTH
+time**, read from the merged pull requests themselves: the annotation
+openxFactory `#1025` → `e5896455ac74e126b7baa2ba81cf1cc9ae4d37f1` at **2026-09-15T23:50:29Z**,
+then leg A openXdox-code `#19` → `0a0265f7e53a1db30a0f51deb556231c2001285f` at **2026-09-16T01:11:37Z**, then
+leg B openDox-code `#23` → `0b4e8bbf68fabfcd65d4f0d80e619c20a013e888` at **2026-09-16T01:23:16Z**. The annotation led leg A by **1 h 21 min 08 s** and leg B by **1 h 32 min 47 s**. Leg A landed at exactly the head this note measured, `080dcfcd`, unmoved; leg B did not — it forward-merged and went on being fixed, `a7b7ac28` → `ce0f28bf`, whose tree is byte-identical to the squash commit's (`4aaa4bb5`), and every figure that movement touches is corrected in place below.
 *(S7's row was filled in place on 2026-09-15, at its landing, from the merged
 pull requests themselves: openxFactory `#1030` → `b3a75537217d9b15684501684e9527f412d4e6b6`
 merged **21:40:25Z** and openDox-code `#21` → `1e4697130855e9695a6acc3344b7c925bb3eeb09`
@@ -1842,8 +1893,9 @@ and § 3.1 now says so.
 | fix round 9 | § 1.2(d) (the S8 table's fifth row and a new paragraph under the second table) · the measurement-heads summary · this table's row (d) | **two findings, both from this amendment's OWN re-measurement rather than from a review comment.** The Copilot review that RAN at the previous head `adf8d624` (review `5214830631`, 2026-09-15 19:25:51Z — the NINTH this pull request has had) reported *"Five documentation consistency issues remain"* and enumerated **none** of them — 1 of the 2 changed files read, and no `Suppressed comments` block at all, where each of the four rounds before it listed every finding in full — so it was re-requested (19:38Z) and the note went looking on its own instruments. *(The pull-request description's round table numbers by the head that TOOK a round's findings, so the same sha appears THERE as the head that took the EIGHTH. Two conventions, one commit; fix round 10 states both, in both places.)* (1) **S8's `47 path sites / 46 re-pointed` leaves ONE site standing at openXdox-code `#19`'s head where the ROOT SPELLING instrument leaves TWO** — `tests/test_gate_console.py`:58 and `tests/tools/playwright-smoke.py`:282, byte-identical at `c1ad341a` and at `080dcfcd`, and both CORRECT rather than residue since S5 leg A gave openXdox-code a `src/openxdox/web/` of its own. Measured over `tests/**.py` at three heads: **31 files / 46 spellings** at `af15f712` and at `c1ad341a`, **4 / 4** at `080dcfcd` — the two survivors plus `test_renderer.py`:49 (`OWN_VIEWS`, new, openXdox's own views) and `opendox_bundle.py`:11 (prose, the created helper's docstring quoting § 1.2(d)). S8's figure is KEPT as S8's with the survivors named beside it, because a root spelling IS a path site and no count holding both can re-point more than 45 of 47; the S8 table's fourth row stays at **1**, which its own instrument makes correct. (2) **Row (d) above said assertion 4 names the fifth tail's three obligations *"in the order they must land"*** — it does not: it enumerates them `tail:` / constant / annotation and then states the landing order separately, the openxFactory annotation FIRST and the other two together as one leg commit. The clause now says what assertion 4 does. **No figure of this amendment's own moves, no sha changes and no tick moves.** |
 | fix round 10 | this table's fix-round-9 row · the pull-request description's § 7 (its round table gains the convention line it never carried) | **one review finding, raised as a THREAD, and accurate: this table and the description carried two incompatible accounts of the same commit.** The fix-round-9 row said *"Copilot's ninth review, at `adf8d624`"* with five issues where the description's round table shows `adf8d624` against *"Copilot round 8, three findings"* — because the two number the same sequence from opposite ends of a round: the description's `head` column is **the head that TOOK a round's findings**, and this table's *"at"* is **the head a review RAN at**. Each reading was right and the pair was not, so the row now names the review by its ID and timestamp (`5214830631`, 19:25:51Z) and states both conventions, and the description says which one its table uses. *(Recorded with it, because it is the second review in a row this bot has under-reported: the review carrying THIS finding announced "one moderate issue and four nits", generated the one comment, read 1 of the 2 changed files and enumerated NONE of the four nits. The moderate issue is this row; the note cannot take what it is not shown, and says so rather than claiming a clean round.)* **No figure moves, no sha changes and no tick moves.** |
 | fix round 11 | the measurement-heads block's third instrument · § 1.2(d)'s third table (one cell + a new paragraph) · § 1.2(d)'s MATERIAL CORRECTION paragraph · this table's row (b) | **two findings, both from this amendment's own instruments again — the THIRD review in a row that announced findings and enumerated none.** Copilot's ELEVENTH review, at `a5c30d4a` (review `5215183304`, 2026-09-15 20:03:21Z), reported *"Three documentation consistency nits remain unresolved"*, generated **0** comments, read 1 of the 2 changed files and carried no `Suppressed comments` block at all; it was re-requested at 20:23Z on the precedent of fix round 9, and the note went looking on its own meanwhile. **(1) The third table's `#19` cell could be computed two ways and said so nowhere.** The instrument's second clause is spelled with the `/` operator (`WEB / "views" / "wheel.js"`) while slice S8's created pin resolver reaches `views/helpers.js` as `_MARKER = ("views", "helpers.js")` unpacked into `web.joinpath(*_MARKER)` — a `"views"` segment by function, not by that spelling. Counted over `tests/**.py` at all SEVEN trees, the two readings agree at SIX and differ at `080dcfcd` alone, by exactly that one file: **25** as defined, **26** if the tuple counts. The cell now carries both and the definition names the spelling it means. **The fact under the arithmetic is the real finding**: the file SET is IDENTICAL at `c1ad341a` and `080dcfcd` — none gained, none lost — so this third instrument measures S8 leg A as changing WHICH files name a view not at all, which is *"the path constant moves, the file does not"* from a third side, and is why this table's openXdox column is flat across the arc where its openDox column rises. **(2) Two places still counted S8's own created spellings among its survivors.** § 1.2(d)'s MATERIAL CORRECTION paragraph and row (b) both said *"three of the four root spellings S8 leaves standing"* while the fix-round-9 paragraph five lines above them measures S8 as leaving **two** standing and WRITING the other two; "residue" is a question that can be asked only of a survivor. Both now use fix round 9's own cut. **Checked and HELD while there**: *"32 further files reach openDox's bundle through the pin"* — 34 files at `080dcfcd` name `tests/opendox_bundle`, less the resolver itself and less `test_renderer.py`, which is already one of the four. **No sha changes, no tick moves, and no figure of this amendment's own is restated — one is split into the two readings that produce it.** |
-| **S7 LANDED** (fix round 12) | § 5.0's S7 row and the paragraph under the table · § 1.1's landed-reading sentence · the pull-request description | **the first placeholder fill, and two statements S7's landing made false.** Slice S7 merged at 2026-09-15 while this amendment was open — openxFactory `#1030` → `b3a75537217d9b15684501684e9527f412d4e6b6` at **21:40:25Z** and openDox-code `#21` → `1e4697130855e9695a6acc3344b7c925bb3eeb09` at **21:41:36Z**, each read from the merged pull request itself — so § 5.0's S7 row is filled IN PLACE, as the row said it would be, and the table's summary goes **six of the eight → SEVEN**. **RULED Q-L1's annotation-first rule holds a seventh time, by 71 seconds**, which is the same clock evidence § 5.0 already carries for S2 and S5. Recorded beside it, as an act that carries S5's and S7's landings into the AGGREGATION rather than a ninth slice: **pin lockstep #2**, openxFactory `#1054` → `3c614d340777cb1ff825c04dbc78d98af1dc875e` (23:27:40Z), read from that merge commit's own diff — `contracts/opendox-pin.yaml`'s `commit:` `7cf6c143` → `3819625e` (the openDox assembly root `opensoft/openDox` `#8`, which names `code` leg `1e469713`, S7's own merge) and `contracts/openxdox-pin.yaml`'s `76df74c8` → `a6500141` (`opensoft/openXdox` `#10`), both gitlinks in that one commit. **It is the bump § 1.2(d)'s SKIP waits on, arriving at the aggregation level.** Two statements went stale in the same minute and are corrected under the no-deletion discipline: (1) **§ 1.1's *"`#21` and `#23` are open and may move again before they merge"*** — `#21` has merged, openDox-code `main` is `1e469713`, and the bundle there measures **42 blobs / 31,955 lines, 40 hand-authored / 31,953**, which is `#21`'s head figure UNCHANGED; the sentence now also states what this section already proves, that `#23` CANNOT move the figure because S8 leg B's whole delta is under `tests/`, so those four numbers are what the landed reading will state whatever sha `main` carries. (2) **the pull-request description** still said all five arc pull requests were open and called S7 and S8 the placeholder cells — corrected at 23:41Z, which is also the one review finding Copilot's thirteenth review raised as a THREAD (`5217007704`, 23:43:50Z, reading the description two minutes before the fix); replied and RESOLVED, threads **12 / 0**. That review announced *"four documentation consistency nits"* and enumerated none of them — 1 of 2 files read, no `Suppressed comments` block, the **fifth** such round — which this table records rather than reads as a clean round. **The only figures that move are the two S7 merge shas, which did not exist when this amendment was authored.** |
+| **S7 LANDED** (fix round 12) | § 5.0's S7 row and the paragraph under the table · § 1.1's landed-reading sentence · the pull-request description | **the first placeholder fill, and two statements S7's landing made false.** Slice S7 merged at 2026-09-15 while this amendment was open — openxFactory `#1030` → `b3a75537217d9b15684501684e9527f412d4e6b6` at **21:40:25Z** and openDox-code `#21` → `1e4697130855e9695a6acc3344b7c925bb3eeb09` at **21:41:36Z**, each read from the merged pull request itself — so § 5.0's S7 row is filled IN PLACE, as the row said it would be, and the table's summary goes **six of the eight → SEVEN**. **RULED Q-L1's annotation-first rule holds a seventh time, by 71 seconds**, which is the same clock evidence § 5.0 already carries for S2 and S5. Recorded beside it, as an act that carries S5's and S7's landings into the AGGREGATION rather than a ninth slice: **pin lockstep #2**, openxFactory `#1054` → `3c614d340777cb1ff825c04dbc78d98af1dc875e` (23:27:40Z), read from that merge commit's own diff — `contracts/opendox-pin.yaml`'s `commit:` `7cf6c143` → `3819625e` (the openDox assembly root `opensoft/openDox` `#8`, which names `code` leg `1e469713`, S7's own merge) and `contracts/openxdox-pin.yaml`'s `76df74c8` → `a6500141` (`opensoft/openXdox` `#10`), both gitlinks in that one commit. **It is the bump § 1.2(d)'s SKIP waits on, arriving at the aggregation level.** Two statements went stale in the same minute and are corrected under the no-deletion discipline: (1) **§ 1.1's *"`#21` and `#23` are open and may move again before they merge"*** — `#21` has merged, openDox-code `main` is `1e469713`, and the bundle there measures **42 blobs / 31,955 lines, 40 hand-authored / 31,953**, which is `#21`'s head figure UNCHANGED; the sentence now also states what this section already proves, that `#23` CANNOT move the figure because S8 leg B moves not one byte under `src/opendox/web/`, so those four numbers are what the landed reading will state whatever sha `main` carries *(this row said "S8 leg B's whole delta is under `tests/`" until fix round 14 measured the seventh file — see that row)*. (2) **the pull-request description** still said all five arc pull requests were open and called S7 and S8 the placeholder cells — corrected at 23:41Z, which is also the one review finding Copilot's thirteenth review raised as a THREAD (`5217007704`, 23:43:50Z, reading the description two minutes before the fix); replied and RESOLVED, threads **12 / 0**. That review announced *"four documentation consistency nits"* and enumerated none of them — 1 of 2 files read, no `Suppressed comments` block, the **fifth** such round — which this table records rather than reads as a clean round. **The only figures that move are the two S7 merge shas, which did not exist when this amendment was authored.** |
 | fix round 13 | § 4.5 assertion 2's opening sentence · this table's header paragraph and row (e) | **three findings from two reviews, all accurate, and two of them the SAME defect in two places.** Copilot's FOURTEENTH review, at `8322fa00` (review `5217029539`, 2026-09-15 23:48:25Z), generated **no** comments and yet NAMED two findings in its body — the first body since the eighth review to NAME its findings rather than merely count them (rounds 9 to 13 announced "five issues", "one moderate issue and four nits", "three nits", no count at all and "four nits", in that order, and enumerated none of them in a body) — and the FIFTEENTH, at `48a9c776` (review `5217061412`, 23:54:37Z), raised the first of the two as a THREAD on this table's header paragraph, naming row (e) as its second site. **(1)** This table's header said amendment #3 was *"completed 2026-09-14"* while the rows beneath it are dated 2026-09-15 — a record dating its own later changes after its own completion. It is not a slip that moving the date forward would fix, because the amendment that FILLS § 5.0's landing rows cannot complete before the slices it records have merged: 2026-09-14 is now stated as this amendment's AUTHORING SNAPSHOT, with that reason beside it, and the header's `Amended:` line keeps 2026-09-13 — the day the revision began — on the precedent of amendments #1 and #2. **(2)** Row (e) still described S7 and S8 as *"placeholders"*, which is true of the row AS AUTHORED and false of the table it describes since 2026-09-15; the row is kept as authored and dated, and the realized fills are named beside it. **(3)** § 4.5 assertion 2 opened *"Today it fails on **18 sites**"* — a present tense over the one figure that row's own fix-round-4 block says is NOT restated, precisely because it measures the CENSUS TREE and not the live leg. *"Today"* is pinned in place to the day and the tree it meant when the note landed (2026-09-11, `a99eba03`); the eighteen sites, the table under them and every arithmetic statement about them are untouched. The fifteenth review announced FOUR findings and enumerated one — 1 of 2 changed files read, no `Suppressed comments` block — the **sixth** such round, which this table records rather than reads as a clean round. |
+| **S8 LANDED** (fix round 14) | § 5.0's S8 row and the paragraph under the table · § 1.1 (the landed reading, the delta sentence, the bundle table's `#23` row) · § 1.2(d)'s un-narrowing figures · the measurement-heads block's `#23` row · this table's fix-round-12 row | **the last placeholder fill, and THREE findings of this amendment's own taken with it.** Slice S8 merged while this amendment was open, in three acts, every value read from the merged pull request itself: the Q-L1 annotation openxFactory `#1025` → `e5896455ac74e126b7baa2ba81cf1cc9ae4d37f1` at **2026-09-15T23:50:29Z**, then leg A openXdox-code `#19` → `0a0265f7e53a1db30a0f51deb556231c2001285f` at **2026-09-16T01:11:37Z**, then leg B openDox-code `#23` → `0b4e8bbf68fabfcd65d4f0d80e619c20a013e888` at **2026-09-16T01:23:16Z**. **RULED Q-L1's annotation-first rule holds an EIGHTH time**, and § 5.0's summary goes **SEVEN of the eight → ALL EIGHT**. § 1.1's one deliberately-last figure is filled with it, READ at openDox-code `main` `0b4e8bbf68fabfcd65d4f0d80e619c20a013e888` rather than predicted: 42 blobs / 31,955 lines, 40 hand-authored / 31,953 — `#21`'s head figure UNCHANGED, which is what § 1.1 said it would be. **(1) A finding against § 1.1's own prose, from re-measuring leg B before writing the fill**: *"its whole delta against its base is 7 files under `tests/` (+126 / −9)"* mis-attributes **107 of those 126 lines**. At the head this note measured, SIX of the seven files are under `tests/` (**+19 / −9**) and the SEVENTH is `.github/workflows/validate.yml` (**+107 / −0**) — the UN-NARROWING, the second half of S8's own row title, not a test edit. And neither the count nor the total is a constant, because leg B kept moving after this note read it: measured per file with `git diff --numstat` against openDox-code `main` `1e469713` AS MERGED it is **8 files, +182 / −31** — 7 under `tests/` at **+44 / −27** and the workflow at **+138 / −4**. The claim the sentence exists to make — *not one byte under `src/opendox/web/`* — is untouched and is what the corrected sentence states. The same clause stood in this table's fix-round-12 row and is corrected there too. **(2) `#23` did not land at the head this note measured.** It forward-merged `#21`'s head and `main` and went on being fixed (`a7b7ac28` → `ce0f28bf`, whose tree `4aaa4bb5` is byte-identical to the squash commit's), and at that head `src/opendox/web/` reads **42 / 31,955, 40 hand-authored / 31,953** — the ARC-COMPLETE figure, not the 43-short one. So the 43-line gap § 1.1 measures closed exactly where § 1.1 said it would, from the other side, and the two heads this section separates are one tree by the time they merge. **(3)** The SAME head movement moves one figure and is recorded where the figure is: § 1.2(d)'s un-narrowing reads *"10 files / 283 tests to 27 files / **691** tests"* for `#23`, and 691 is `a7b7ac28`'s — at the landed head the same 27-file list runs **694**. The +3 is slice S7's leg arriving, located exactly rather than asserted: the `validate` file list is BYTE-IDENTICAL at `a7b7ac28`, at the landed head and at the merge (the same 38 references) and a static `def test_` count over it rises **849 → 852** with the whole difference in ONE file, `tests/test_gate_loop_contributed.py` (31 → 34), which reads 852 at openDox-code `main` `1e469713` as well. Both figures are kept, each named with its tree. **And one PREDICTION of this note's was checked at the landed head rather than left standing**: § 3.1's *"one figure in that table moves once more before it lands, and only one"* — `ce0f28bf`'s census fixture is the SAME BLOB as `c7a216c7`'s and as `main` `1e469713`'s (`67c689c8`, against `839a65dc` at `a7b7ac28`), and re-deriving the classes there returns **A 26 / 17,883 · B 1 / 73 · C 14 / 12,564 · `?` 1 / 1,435 = 42 / 31,955**: one figure, once, the named one. Every `a7b7ac28` figure is KEPT throughout, because it is the measurement of the tree amendment #3 read; that head is named as superseded where its identity as `#23`'s HEAD is asserted (the measurement-heads block and § 1.1's bundle table) and where the movement changes a figure (§ 1.2(d)'s un-narrowing, § 3.1's prediction) — everywhere else it is simply a tree a measurement was taken at, which is what it remains. **No other figure, sha or tick moves.** |
 
 **Measurement discipline across amendments.** The census tree is
 `a99eba03` and amendment #2 did not re-measure it. Every citation amendment #2
