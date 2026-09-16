@@ -2,13 +2,27 @@
 
 ## 1. Arrival
 
-- [x] 1.1 The delta is carried byte-identical from the openxFactory packet at
-      `cb2d3a2c` (`sha256 3168ad8f…`, 16,813 bytes) and the openxFactory packet
-      is closed as re-homed in the same window.
+- [x] 1.1 The delta is carried byte-identical from the openxFactory packet, and
+      the source is named so the check can be repeated after `main` moves:
+      `opensoft/openxFactory`
+      `openspec/changes/add-doxchat-model-intake/specs/ideation-dashboard/spec.md`
+      at `cb2d3a2c24e948d4cc2c10a97046a5cc03cf1f9a`, blob
+      `3de54f7ee6f24f890d8e305914b592340b53d274`, 16,813 bytes,
+      `sha256 3168ad8f6f31c8dbacdc772d933508943f7b2c7cf373de2357eb8958d4bebee1`.
+      `git hash-object` reads that same blob id over this repository's copy, so
+      the two files are one git object rather than two that agree. The
+      openxFactory packet is closed as re-homed in the same window.
 - [ ] 1.2 The capability `ideation-dashboard` reaches this corpus with
-      `split-opendox-two-layer-product` § 5's shed. **Until it does, this change
-      cannot archive** — `openspec validate --strict` passes and reports
-      "Archive would refuse this delta: target spec does not exist".
+      `split-opendox-two-layer-product` § 5's shed — pinned, because the
+      condition that blocks archiving must stay checkable after `main` moves:
+      `opensoft/openxFactory`
+      `openspec/changes/split-opendox-two-layer-product/tasks.md` at
+      `cb2d3a2c24e948d4cc2c10a97046a5cc03cf1f9a`, blob
+      `a3470096010d7279b38011e02cefaaada1d7b88f` (114,414 bytes), § 5 at line
+      1095, *"openxFactory consumes and sheds; the MAJOR is cut. BREAKING"*.
+      **Until it does, this change cannot archive** — `openspec validate
+      --strict` passes and reports "Archive would refuse this delta: target spec
+      does not exist".
 - [ ] 1.3 **Re-verify the MODIFIED block against openDox's canon before
       archiving.** The delta's own preamble asks for this against openxFactory's
       canon; the re-home moves the referent, and the instruction is carried out
@@ -23,9 +37,21 @@ Twenty-one of the openxFactory packet's boxes were ticked there; the code moves
 with the carve into `opensoft/openDox-code` rather than being rebuilt.
 
 - [ ] 2.1 Re-verify the built surfaces against `openDox-code` after the carve
-      lands there. They are ticked on the openxFactory evidence, which is the
-      same code; the re-verification is owed because the four-part floor proves
-      test counts per destination rather than inheriting them.
+      lands there. **NOT "the same code" — the same code MODULO DECLARED EDITS,
+      and the distinction decides what the re-verification is for.** They are
+      ticked on the openxFactory evidence, but § 6.3 of the split packet's ledger
+      (`opensoft/openxFactory`
+      `openspec/changes/split-opendox-two-layer-product/tasks.md` at
+      `cb2d3a2c24e948d4cc2c10a97046a5cc03cf1f9a`, blob
+      `a3470096010d7279b38011e02cefaaada1d7b88f`, line 1502) says this packet's
+      code moves "as `moved_with_declared_edit` rows", and `proposal.md`'s Impact
+      section says the same. A declared edit changes the moved bytes, so the
+      openxFactory ticks are evidence about the PRE-CARVE tree. The
+      re-verification is therefore owed twice over: because the four-part floor
+      proves test counts per destination rather than inheriting them, and because
+      the post-carve behaviour is not guaranteed identical to the behaviour those
+      ticks were taken against. Treating the source evidence as evidence for
+      unchanged bytes is the specific error this box exists to prevent.
 
 ## 3. What was still open when it moved, carried OPEN
 
@@ -37,10 +63,22 @@ with the carve into `opensoft/openDox-code` rather than being rebuilt.
 
 ## 4. What did NOT travel
 
-- [x] 4.1 The additive `action` enum member in
-      `contracts/schemas/gate-action-record.schema.yaml` is ALREADY openxFactory
-      contract bytes at `contract-v1.45` and STAYS there (`split-opendox-two-layer-product`
-      `tasks.md` § 6.3). Recorded as a decision, not an omission.
+- [x] 4.1 The additive `action` enum member is ALREADY openxFactory contract
+      bytes at the published tag and STAYS there. Both halves pinned, so the
+      decision is reproducible evidence rather than an assertion about why a file
+      is absent here:
+      **the bytes** — `opensoft/openxFactory`
+      `contracts/schemas/gate-action-record.schema.yaml` at tag `contract-v1.45`
+      (commit `7b7447da8f769c2884d7586959e5fecb4b6eeb00`), blob
+      `7f95006f768fbc2f4422d49642ba5ca0afbbac7f`, 45,078 bytes — PRESENT there,
+      **ABSENT at `cb2d3a2c` and on today's openxFactory `main`** (measured
+      2026-09-16; a filename search over that repository returns zero), which is
+      why the tag is the only reference that can carry this claim;
+      **the decision** — § 6.3 of `openspec/changes/split-opendox-two-layer-product/tasks.md`
+      at `cb2d3a2c24e948d4cc2c10a97046a5cc03cf1f9a`, blob
+      `a3470096010d7279b38011e02cefaaada1d7b88f`, line 1502: *"its one additive
+      schema enum member is already `openxFactory` contract bytes and STAYS."*
+      Recorded as a decision, not an omission.
 
 ## 5. Readings registered at arrival, NOT applied to the carried text
 
@@ -72,6 +110,7 @@ ratification this corpus still owes (§ 1.4).
       The delta also draws the neighbouring distinction the reading might have
       collapsed into this one: an UNREADABLE catalog is not an empty one, and
       intake *"MUST NOT be offered when the catalog could not be READ"*.
+
 **5.2 — AVAILABLE, NOT OWED, AND DELIBERATELY NOT A BOX.** If openDox wants the
 precedence stated in terms rather than derived, that is a ratification-time
 amendment in THIS corpus (§ 1.4), not an arrival edit: one sentence in the
@@ -85,6 +124,7 @@ owed. Ticking it would have been worse — that claims an amendment was made. So
 leaves the checklist entirely and stays a note, where neither a reader nor task
 tooling can count an option as an obligation. The number is kept so that
 references to § 5.2 still resolve.
+
 - [ ] 5.3 **THE CREDENTIAL BAN AND THE INTAKE FLOW READ AS A CONTRADICTION, and
       the resolving distinction is not in the text.** The catalog requirement
       says provider credentials *"MUST NOT enter browser storage, a request body,
@@ -111,4 +151,20 @@ references to § 5.2 still resolve.
       provider/model request bodies or names the broker handoff as the permitted
       ingestion channel in terms. Registered rather than applied: RULING Q6
       carries this delta byte-identical, and openxFactory PR #1057 states that
-      carriage as a `sha256` equality over every file of the packet.
+      carriage as a `sha256` equality over **the carried delta** —
+      `specs/ideation-dashboard/spec.md`, blob
+      `3de54f7ee6f24f890d8e305914b592340b53d274`, 16,813 bytes. **CORRECTED
+      2026-09-16:** this sentence previously said "over every file of the
+      packet", which overclaimed the evidence in a ledger whose whole subject is
+      what the evidence covers. It does not: `proposal.md` and this file are
+      RE-AUTHORED in this corpus, and `proposal.md`'s "What changes" section
+      scopes the digest to the one file explicitly.
+      **RE-RAISED at `4c2d4b9c`, and the registration is unchanged.** The review
+      restated the contradiction from the requirement's own side — a server
+      cannot receive a browser-entered value without a request payload — and
+      asked for a security decision before ratification or implementation. That
+      is this box, and the two ways out it already names are the two the review
+      names. It is recorded here so a later round does not read it as new: the
+      only thing that would change this box is openDox's ratification act
+      (§ 1.4), and no arrival edit can stand in for it without falsifying the
+      byte-identical carriage that is this closure's evidence.
