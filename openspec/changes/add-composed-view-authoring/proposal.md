@@ -59,8 +59,17 @@ bytes, the same digest THIS CHANGE'S OWN
 `openspec/changes/add-composed-view-authoring/specs/ideation-dashboard/spec.md`
 carries — written in full because a bare `specs/ideation-dashboard/spec.md` reads
 as a repository-level path, and this corpus has no such file: the promoted
-specification is openxFactory's and does not travel. The digest is checkable
-against the change-local file and against the openxFactory blob named above, and
+specification is openxFactory's and does not travel. The comparand in
+openxFactory is the SOURCE DELTA'S OWN blob — openxFactory
+`openspec/changes/add-composed-view-authoring/specs/ideation-dashboard/spec.md`
+at `cb2d3a2c`, blob `b14869b2`, 3,557 bytes — and NOT blob `21fea062` cited in
+§ Why, which is the 217,269-byte `split-opendox-two-layer-product` successor map,
+a different file cited for a different purpose: a digest of that file cannot
+verify anything about this one. The byte-fidelity claim is in fact stronger than a
+digest match, and a reader can take it with one command: `git hash-object` over
+this change's carried file returns `b14869b210c92a2d3e71300b4c53a33b95536511`,
+which IS openxFactory's blob id — the same git object, not merely the same bytes.
+So the claim is checkable against the change-local file and against that blob, and
 against nothing else. NOT ONE CHARACTER WAS EDITED, deliberately: the carve's safety property
 is fidelity, the requirement's subject is already the SERVE rather than a
 repository name (so none of the prose edits `split-opendox-two-layer-product`
