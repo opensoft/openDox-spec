@@ -41,9 +41,16 @@ Both blocks are carried **verbatim**, and the claim is made auditable rather tha
 asserted. THE SOURCE, in full: `opensoft/openxFactory` at
 `cb2d3a2c24e948d4cc2c10a97046a5cc03cf1f9a`, file
 `openspec/changes/retire-doxbench-chat-turn-v1/specs/ideation-dashboard/spec.md`
-— the same bytes now at
+That pinned commit is the COMPLETED provenance and the only source this claim
+rests on. openxFactory PR **#1066** PROPOSES to archive the same packet unchanged
+at
 `openspec/changes/archive/2026-09-16-retire-doxbench-chat-turn-v1/specs/ideation-dashboard/spec.md`,
-that packet having archived unchanged under openxFactory PR #1066.
+and **that pull request is still OPEN** — measured 2026-09-16: `state=OPEN`, no
+merge commit, the archive path returns 404 on openxFactory `main`, and the ACTIVE
+packet still stands there at `openspec/changes/retire-doxbench-chat-turn-v1`.
+An earlier draft of this paragraph named the archived path as a present fact; it
+is a destination, and it is named here as one. Nothing in this change waits on it
+— the digests are taken against `cb2d3a2c`, which does not move.
 
 | block | bytes | `sha256` |
 | --- | ---: | --- |

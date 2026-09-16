@@ -14,9 +14,15 @@
       They are deliberately not restated here: this box carried them truncated to
       eight characters, which reads like provenance and is not — and a third copy
       of a number is a third thing to keep in step. Re-measured on both sides
-      2026-09-16, identical; the openxFactory file is now at
-      `openspec/changes/archive/2026-09-16-retire-doxbench-chat-turn-v1/specs/ideation-dashboard/spec.md`,
-      that packet having archived unchanged under openxFactory PR #1066.
+      2026-09-16, identical — on the openxFactory side at the PINNED COMMIT, which
+      is where the completed evidence is. **CORRECTED 2026-09-16:** this box
+      previously said the openxFactory file "is now at"
+      `openspec/changes/archive/2026-09-16-retire-doxbench-chat-turn-v1/…`, "that
+      packet having archived unchanged under openxFactory PR #1066". #1066 is
+      still OPEN (`state=OPEN`, no merge commit; the archive path 404s on
+      openxFactory `main`, where the ACTIVE packet still stands). A proposed
+      destination was written as an accomplished one. The pin does not move and
+      needs no successor; the archive is § 2.1's business, below.
 - [x] 1.2 **The third requirement is deliberately NOT carried.** *The doxBench
       chat-turn v1 envelope family is REMOVED at contract-v3.0* stays in
       openxFactory: the removal is realized in that repository's bytes and
@@ -44,13 +50,25 @@
       asks for is the packaged negative
       `workbench-chat-turn-unrecognized-kind.negative.yaml`, whose kind is
       **deliberately the retired `workbench-chat-turn`**.
-      **§ 7.2 cannot be performed in openxFactory at all any more**: it asks the
-      redesigned fallback be exercised *"against the running serve"*, and § 5.2's
-      shed (`cc4ae9d3`, openxFactory PR #940) removed `serve.py` — and the
-      validator — from that repository. The evidence now exists only at the tag's
-      tree or in the destination repository. **That is a decision for the packet's
-      own bookkeeping, not for this arrival**, and it is recorded here so it is
-      not discovered later as a surprise.
+      **§ 7.2 IS PERFORMED, and this box said otherwise — CORRECTED 2026-09-16.**
+      It previously recorded that § 7.2 "cannot be performed in openxFactory at
+      all any more", because § 5.2's shed (`cc4ae9d3`, openxFactory PR #940) took
+      `serve.py` and the validator off `main`. That reasoning was about the WRONG
+      TREE, and repeating it here would have retired a measurement somebody had
+      already taken. § 7.1 directs the verification AT THE TAG, and the shed
+      removes files from `main` without erasing the tag's tree. MEASURED
+      2026-09-16 against `contract-v3.0` (tag object `59f4f51f`, commit
+      `ff9ed815`): `scripts/ideation_dashboard/serve.py` PRESENT (378,434 B, blob
+      `8aca6ad25ecce1ccd6cb464183ef6f1f41b3cb4c`) and
+      `scripts/validate-ideation-dashboard-contracts.py` PRESENT (95,913 B, blob
+      `e91910b485663dc241535a5e26b89ddf1a0c8ea6`) — both 404 on `main`, both there
+      at the tag. openxFactory PR #1066's closure record reports the box
+      **PERFORMED** on that tree: a real loopback `ThreadingHTTPServer` driven
+      over a real socket by `http.client`, both directions refusing the retired
+      kind with `unrecognized_turn_kind` at HTTP 400. What remains true, and is
+      all that was worth recording here, is that the evidence lives at the tag
+      rather than on `main` — **a decision for the packet's own bookkeeping, not
+      for this arrival**.
       § 1.8's owed Codex pass is routed, by the openxFactory packet's own words,
       to the amendment lane rather than to doubt about the ratification.
 

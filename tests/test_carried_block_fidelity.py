@@ -38,16 +38,53 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 
-CARRIED_DELTA = (
-    ROOT / "openspec/changes/carry-doxbench-chat-turn-v2-family"
-         / "specs/ideation-dashboard/spec.md")
+CHANGE_ID = "carry-doxbench-chat-turn-v2-family"
+DELTA_SUBPATH = "specs/ideation-dashboard/spec.md"
+
+
+def _carried_delta() -> Path:
+    """The carried delta, WHEREVER THE LIFECYCLE HAS PUT IT.
+
+    A hard-coded `openspec/changes/<id>/` path is a test that breaks on a
+    correct act: archiving moves the packet to
+    `openspec/changes/archive/<date>-<id>/`, and a fixture pinned to the
+    in-flight location would then fail for no reason but the move. Pointing it
+    at the PROMOTED spec instead is not the repair either — promotion merges the
+    delta into the capability's own spec, and the exact-two-block assertion
+    below is about the DELTA, so it would start failing against a file that is
+    legitimately larger. So the in-flight path is tried first and the archive
+    second, and only the absence of BOTH is an error. This keeps the carriage
+    claim checkable across the one transition it is guaranteed to outlive.
+    (Found by Copilot's review at `e6a143c8`.)
+    """
+    live = ROOT / "openspec/changes" / CHANGE_ID / DELTA_SUBPATH
+    if live.is_file():
+        return live
+    archived = sorted(
+        (ROOT / "openspec/changes/archive").glob(f"*-{CHANGE_ID}/{DELTA_SUBPATH}"))
+    if len(archived) == 1:
+        return archived[0]
+    if len(archived) > 1:
+        raise AssertionError(
+            f"{CHANGE_ID} is archived more than once: "
+            f"{[str(a.relative_to(ROOT)) for a in archived]}")
+    raise AssertionError(
+        f"no carried delta for {CHANGE_ID}: neither "
+        f"{live.relative_to(ROOT)} nor any "
+        f"openspec/changes/archive/*-{CHANGE_ID}/{DELTA_SUBPATH}")
+
 
 #: (title, FULL sha256 of the block, byte length) — full, never a prefix:
 #: a truncated digest in a provenance claim is a weaker claim than it looks,
-#: which is half of what Copilot's review of this change was about. Measured at carriage against
-#: openxFactory's delta at `cb2d3a2c` — the same file now archived there at
-#: `openspec/changes/archive/2026-09-16-retire-doxbench-chat-turn-v1/specs/`
-#: `ideation-dashboard/spec.md` — and re-measured on both sides on 2026-09-16.
+#: which is half of what Copilot's review of this change was about. Measured at
+#: carriage against openxFactory's delta at the PINNED COMMIT `cb2d3a2c`, file
+#: `openspec/changes/retire-doxbench-chat-turn-v1/specs/ideation-dashboard/`
+#: `spec.md`, and re-measured there on 2026-09-16. openxFactory PR #1066
+#: PROPOSES to archive that packet unchanged at
+#: `openspec/changes/archive/2026-09-16-retire-doxbench-chat-turn-v1/…`; that PR
+#: is still OPEN, so the pinned commit — which does not move — is the source
+#: this file's numbers rest on, and the archive is named as a destination only.
+#: This test reads the LOCAL carried file alone and reaches neither.
 CARRIED_BLOCKS = (
     ("An unrecognized chat-turn kind is refused in the SURVIVING family, "
      "never coerced into a removed one",
@@ -68,14 +105,36 @@ _BLOCK_END = re.compile(r"^(?:### Requirement: |## )", re.M)
 
 
 def _blocks(text: str) -> dict[str, bytes]:
-    """Every requirement block, keyed by title, under the stated boundary."""
+    """Every requirement block, keyed by title, under the stated boundary.
+
+    A REPEATED TITLE IS REFUSED rather than overwritten. Keying by title is what
+    makes the exact-set assertion below readable, but a plain `out[title] = …`
+    made the dictionary lossy in exactly the direction that matters: a second
+    copy of a carried requirement — identical or not — replaced the first, the
+    key set was unchanged, and `test_the_carried_delta_holds_exactly_the_two_blocks`
+    passed over a file holding three blocks. A test whose whole claim is "exactly
+    these two" must not be satisfiable by a delta that holds an extra one, so the
+    duplicate fails HERE, where the file is being read, with both offsets named.
+    (Found by Copilot's review at `e6a143c8`.)
+    """
     out: dict[str, bytes] = {}
+    seen_at: dict[str, int] = {}
     for match in _BLOCK_START.finditer(text):
         start = match.start()
         end_match = _BLOCK_END.search(text, start + 1)
         end = end_match.start() if end_match else len(text)
         chunk = text[start:end].rstrip("\n") + "\n"
         title = chunk.split("\n", 1)[0][len("### Requirement: "):]
+        if title in out:
+            raise AssertionError(
+                f"the delta holds MORE THAN ONE requirement titled {title!r} "
+                f"(character offsets {seen_at[title]} and {start}). A repeated "
+                "title is a defect in the delta whether or not the two copies "
+                "agree: `openspec` addresses a requirement by its title, so a "
+                "second copy makes the addressed text ambiguous, and keying "
+                "blocks by title would otherwise hide the extra one behind the "
+                "first.")
+        seen_at[title] = start
         out[title] = chunk.encode("utf-8")
     return out
 
@@ -92,8 +151,7 @@ def carried() -> dict[str, bytes]:
     Copilot's review of openDox-spec #15; the digests are unchanged, because the
     file is LF today — what changed is whether the test could tell.)
     """
-    assert CARRIED_DELTA.is_file(), f"no carried delta at {CARRIED_DELTA}"
-    return _blocks(CARRIED_DELTA.read_bytes().decode("utf-8"))
+    return _blocks(_carried_delta().read_bytes().decode("utf-8"))
 
 
 @pytest.mark.parametrize("title,digest,size", CARRIED_BLOCKS,
