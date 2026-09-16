@@ -1,0 +1,59 @@
+# Tasks: carry-doxbench-chat-turn-v2-family
+
+## 1. Arrival
+
+- [x] 1.1 The two carried blocks are verbatim from the openxFactory delta at
+      `cb2d3a2c` — the ADDED *An unrecognized chat-turn kind is refused in the
+      SURVIVING family…* (4,150 B, `sha256 a16607ed…`) and the MODIFIED *The
+      chat-turn contract release carries the bound buffer and the model*
+      (5,858 B, `sha256 e7ce5310…`) — each asserted to occur byte-for-byte in
+      that file rather than re-typed.
+- [x] 1.2 **The third requirement is deliberately NOT carried.** *The doxBench
+      chat-turn v1 envelope family is REMOVED at contract-v3.0* stays in
+      openxFactory: the removal is realized in that repository's bytes and
+      `contract-v3.0` is its published bundle tag. Recorded as a decision, not an
+      omission.
+- [ ] 1.3 The capability `ideation-dashboard` reaches this corpus with
+      `split-opendox-two-layer-product` § 5's shed. **Until it does, this change
+      cannot archive.**
+- [ ] 1.4 This change's standing in THIS corpus is openDox's own act. The text
+      arrives ratified in openxFactory (Brett Heap, 2026-09-01) and
+      `Status: draft` here until openDox ratifies it.
+
+## 2. What the openxFactory side still owes, named here because this arrival depends on it
+
+- [ ] 2.1 **`retire-doxbench-chat-turn-v1` archives in openxFactory on its own
+      evidence.** `split-opendox-two-layer-product` § 8.5 requires it *"first"*,
+      and § 6.2 sequences it BEFORE § 8. It is NOT closed as re-homed and this
+      change does not stand in for that archive.
+      **Measured 2026-09-16, and this is the part worth reading:** of its seven
+      open boxes, § 7.1 and § 8.4 are DISCHARGED BY MEASUREMENT at the tag —
+      a detached worktree at `contract-v3.0` (`ff9ed815`) runs
+      `scripts/validate-ideation-dashboard-contracts.py` to **`0 error(s), 0
+      warning(s)`**, with 42 valid examples confirmed valid, 80 negatives
+      confirmed invalid and 8 transition pairs confirmed; the v1 refusal the box
+      asks for is the packaged negative
+      `workbench-chat-turn-unrecognized-kind.negative.yaml`, whose kind is
+      **deliberately the retired `workbench-chat-turn`**.
+      **§ 7.2 cannot be performed in openxFactory at all any more**: it asks the
+      redesigned fallback be exercised *"against the running serve"*, and § 5.2's
+      shed (`cc4ae9d3`, openxFactory PR #940) removed `serve.py` — and the
+      validator — from that repository. The evidence now exists only at the tag's
+      tree or in the destination repository. **That is a decision for the packet's
+      own bookkeeping, not for this arrival**, and it is recorded here so it is
+      not discovered later as a surprise.
+      § 1.8's owed Codex pass is routed, by the openxFactory packet's own words,
+      to the amendment lane rather than to doubt about the ratification.
+
+## 3. The realization that travelled with it
+
+- [ ] 3.1 Re-verify the unrecognized-kind refusal path against `openDox-code`
+      after the carve lands there — the surviving family's failure shape, the
+      explicit unknown-kind code, and the pre-identity refusal left unchanged
+      where the request carries no wire-valid turn identity.
+- [ ] 3.2 Re-verify that the carried MODIFIED requirement's obligations hold
+      against whatever openDox's chat-turn contract becomes. **Its additive
+      obligations were discharged by the widening release in openxFactory and are
+      not a perpetual guarantee** — the block says so itself — so openDox reads
+      them as the history of a released contract it inherits, not as a standing
+      bar on its own majors.
