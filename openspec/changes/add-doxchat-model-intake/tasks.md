@@ -41,3 +41,40 @@ with the carve into `opensoft/openDox-code` rather than being rebuilt.
       `contracts/schemas/gate-action-record.schema.yaml` is ALREADY openxFactory
       contract bytes at `contract-v1.45` and STAYS there (`split-opendox-two-layer-product`
       `tasks.md` § 6.3). Recorded as a decision, not an omission.
+
+## 5. Readings registered at arrival, NOT applied to the carried text
+
+RULING Q6 freezes this packet where it stands and § 6.3 carries its delta
+**byte-identical** — `sha256 3168ad8f…`, 16,813 bytes, `diff`-verified against
+the archived copy in openxFactory. That equality is the closure's own evidence
+on openxFactory PR #1057, so a reading of the TEXT cannot be answered by editing
+the text here without falsifying the act. It is recorded instead, against the
+ratification this corpus still owes (§ 1.4).
+
+- [x] 5.1 **ANSWERED from the delta's own text, no change owed.** Copilot,
+      reviewing openDox-spec #13 at `9925fd0`, read *"The model selector SHALL
+      render its intake affordance as the FIRST option … and SHALL make it the
+      DEFAULT selection when the catalog discloses no available entry"* as an
+      UNCONDITIONAL rule contradicting two others: the affordance is *"not
+      rendered at all"* when the broker this flow requires is unavailable, and
+      *"MUST be absent"* on the hosted plane. The three do not collide, and the
+      delta says why in terms:
+      **whether the affordance EXISTS is one question and WHERE IT SITS is
+      another.** *The intake affordance ships with the flow behind it* governs
+      existence — *"Where the flow's dependencies are not yet met, the selector
+      SHALL keep its present behaviour unchanged rather than showing a disabled
+      or explanatory intake option"* — and the hosted-plane scenario governs it
+      again, for the stated reason that *"a plane that may not run a turn may not
+      enrol a provider either"*. The ordering-and-default rule speaks to the
+      selector that HAS the affordance. An empty catalog with no broker is
+      therefore not a case with two outcomes: there is no affordance to order,
+      and the selector keeps the behaviour it has today.
+      The delta also draws the neighbouring distinction the reading might have
+      collapsed into this one: an UNREADABLE catalog is not an empty one, and
+      intake *"MUST NOT be offered when the catalog could not be READ"*.
+- [ ] 5.2 **If openDox wants the precedence stated in terms rather than
+      derived**, that is a ratification-time amendment in THIS corpus (§ 1.4),
+      not an arrival edit: one sentence in the ordering requirement naming the
+      existence rule as its precondition. Recorded as available, not owed — the
+      text is already consistent, and a re-home is not the act that rewrites what
+      openxFactory ratified.
