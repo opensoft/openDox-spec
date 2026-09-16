@@ -85,3 +85,30 @@ owed. Ticking it would have been worse — that claims an amendment was made. So
 leaves the checklist entirely and stays a note, where neither a reader nor task
 tooling can count an option as an obligation. The number is kept so that
 references to § 5.2 still resolve.
+- [ ] 5.3 **THE CREDENTIAL BAN AND THE INTAKE FLOW READ AS A CONTRADICTION, and
+      the resolving distinction is not in the text.** The catalog requirement
+      says provider credentials *"MUST NOT enter browser storage, a request body,
+      response body, dashboard snapshot, chat transcript, thread file, log, gate
+      record, git artifact, or exception detail"*; the intake requirement says an
+      intake flow *"SHALL pass the supplied value directly to the declared
+      credential broker"*, with a scenario that begins *"WHEN a key is entered in
+      the intake flow"*. A key a human types in the browser reaches the broker
+      through a request body or it does not reach it at all, so read flatly the
+      two cannot both be satisfied and no conforming implementation can support
+      the API-key path the change exists to add.
+      **THE READING THAT RESOLVES THEM is INGESTION versus STEADY STATE**: the
+      ban governs a credential the SERVER holds and uses — which "MUST come only
+      from the deployment's approved server-side credential mechanism", the
+      clause the enumeration attaches to — while intake is the act that CREATES
+      such a credential, whose one-way passage to the broker the intake
+      requirement then constrains far more tightly than the ban does (no file, no
+      state outliving the request, no echo, no log, no snapshot). On that reading
+      the intake path is the single declared exception and everything after it is
+      a broker reference rather than a secret.
+      **BUT THAT IS A READING, NOT THE TEXT**, and a reader who does not reach
+      for it is left with a flat prohibition that forbids the flow. **§ 1.4's
+      business** — openDox's own ratification either narrows the ban to
+      provider/model request bodies or names the broker handoff as the permitted
+      ingestion channel in terms. Registered rather than applied: RULING Q6
+      carries this delta byte-identical, and openxFactory PR #1057 states that
+      carriage as a `sha256` equality over every file of the packet.
