@@ -34,9 +34,13 @@ so twice — and this change is where the delta actually lands.
 PACKET, IN `opensoft/openxFactory`, AT `cb2d3a2c` — never a local one.** It has
 no copy in this corpus and never will: it is openxFactory's own packet, which is
 what makes this change its successor rather than its continuation. Paths written
-bare below (`tasks.md` § 5, § 6.4, § 8.5) are paths in THAT repository at THAT
-revision, pinned because `main` moves and a section number is reproducible there
-and nowhere else by guarantee.
+bare below (`tasks.md` § 5, § 6.4, § 8.5, and `design.md` § D9) are paths in THAT
+repository at THAT revision, pinned because `main` moves and a section number is
+reproducible there and nowhere else by guarantee. `design.md` is named in this
+list explicitly: the sentence enumerated only the `tasks.md` references until
+Copilot's reading of openDox-spec #12 pointed out that a reader following the
+lone `design.md` citation would resolve it as a local file and fail, this corpus
+having no such file either.
 
 The substance is unchanged and is restated here only so this corpus can be read
 without the other one: `Composed views are read-only with a repository jump`
@@ -51,8 +55,13 @@ is visible the one view unable to act on it.
 **One `## MODIFIED` block, carried BYTE-IDENTICAL from the openxFactory delta**
 at openxFactory `main` `cb2d3a2c` —
 `sha256 1754e5d3f9803ea80b4e8a177fda8359a96d6c4b1024fce69893ee3cb3d716e1`, 3,557
-bytes, the same digest this repository's `specs/ideation-dashboard/spec.md`
-carries. NOT ONE CHARACTER WAS EDITED, deliberately: the carve's safety property
+bytes, the same digest THIS CHANGE'S OWN
+`openspec/changes/add-composed-view-authoring/specs/ideation-dashboard/spec.md`
+carries — written in full because a bare `specs/ideation-dashboard/spec.md` reads
+as a repository-level path, and this corpus has no such file: the promoted
+specification is openxFactory's and does not travel. The digest is checkable
+against the change-local file and against the openxFactory blob named above, and
+against nothing else. NOT ONE CHARACTER WAS EDITED, deliberately: the carve's safety property
 is fidelity, the requirement's subject is already the SERVE rather than a
 repository name (so none of the prose edits `split-opendox-two-layer-product`
 permits at the seam — "the subject `openxFactory SHALL` becomes the receiving
