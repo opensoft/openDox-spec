@@ -52,10 +52,24 @@ An earlier draft of this paragraph named the archived path as a present fact; it
 is a destination, and it is named here as one. Nothing in this change waits on it
 — the digests are taken against `cb2d3a2c`, which does not move.
 
-| block | bytes | `sha256` |
-| --- | ---: | --- |
-| ADDED *An unrecognized chat-turn kind is refused in the SURVIVING family…* | 4,150 | `a16607edf70f89855d6f2b1c55ae87d3de1dd844cc9b623aec414716e0cd5127` |
-| MODIFIED *The chat-turn contract release carries the bound buffer and the model* | 5,858 | `e7ce5310f2e17f7440abe810b41c364fdcfd926fa594f6baf807f70f30349737` |
+**TWO DIGESTS PER BLOCK, and the difference is the point.** The NORMALIZED pair is
+the block's identity under the extraction boundary below, which trims trailing
+newlines to one — it answers *"is this the same requirement?"*. The RAW pair is the
+slice exactly as it sits in the file, separator blank lines included — it answers
+*"are these the same bytes?"*. Only the second makes "byte-for-byte" mean what it
+says: normalization is blind to a blank line added or removed at a block's end, and
+a fidelity claim that cannot see that is weaker than it reads. Both are pinned in
+`tests/test_carried_block_fidelity.py` and re-derived on every run.
+
+| block | normalized bytes | normalized `sha256` | raw bytes | raw `sha256` |
+| --- | ---: | --- | ---: | --- |
+| ADDED *An unrecognized chat-turn kind is refused in the SURVIVING family…* | 4,150 | `a16607edf70f89855d6f2b1c55ae87d3de1dd844cc9b623aec414716e0cd5127` | 4,151 | `f5ed3366b0698fc7058255854c0986e3b79978e47c578e06962f897697ae2083` |
+| MODIFIED *The chat-turn contract release carries the bound buffer and the model* | 5,858 | `e7ce5310f2e17f7440abe810b41c364fdcfd926fa594f6baf807f70f30349737` | 5,858 | `e7ce5310f2e17f7440abe810b41c364fdcfd926fa594f6baf807f70f30349737` |
+
+The ADDED block differs by one byte between the two columns — the single newline the
+boundary trims before `## MODIFIED Requirements`. The MODIFIED block is last in the
+file and has nothing to trim, so its two columns are identical; that is the expected
+shape, not a copy-paste.
 
 **THE EXTRACTION BOUNDARY IS STATED, because without it the digests are not
 reproducible and two honest readers get two answers.** A block runs from its
