@@ -3,7 +3,7 @@ Status: draft
 Re-homed-from: openxFactory `openspec/changes/add-doxchat-model-intake`, closed as re-homed 2026-09-16 under RULING Q6
 Ratified-in-openxFactory: 2026-08-21 by Brett Heap — in-session, verbatim: "proposal approved", after the proposal landed on PR #236. The five Open Questions were ruled the same day in a follow-up in-session multiple-choice round (all five recommendations adopted).
 code_surface: openDox-code (the doxBench chat rail's model selector and its intake affordance, the workbench model view's rungs, the catalog transport, the pending-declaration surface and approval gate action beside the model port, the proposed-vs-approved distinction in the model module, and the tests that prove all of it — as they arrive with the carve)
-Depends-on: add-model-provider-broker (the credential broker and the binding this flow writes into) — an openxFactory change, and DISCHARGED — archived 2026-08-27 at `opensoft/openxFactory` `openspec/changes/archive/2026-08-27-add-model-provider-broker` (archive commit `fff79620`, 2026-08-27T03:19:38Z, "The surface merged and ran green on main, so the broker's four requirements reach canon"), present under that path both at the frozen source `cb2d3a2c` and on today's openxFactory `main`. CORRECTED 2026-09-16 — this field previously read "itself blocked on openProfiler, unbuilt", which was the source packet's status from before that archive and is false now — it is corrected rather than carried because this field is re-authored prose in this corpus and not part of the carried delta, which is `specs/ideation-dashboard/spec.md` alone
+Depends-on: add-model-provider-broker (the credential broker and the binding this flow writes into) — an openxFactory change, and DISCHARGED — archived 2026-08-27 at `opensoft/openxFactory` `openspec/changes/archive/2026-08-27-add-model-provider-broker` (archive commit `fff79620`, 2026-08-27T03:19:38Z, "The surface merged and ran green on main, so the broker's four requirements reach canon"), present under that path both at the frozen source `cb2d3a2c` and on today's openxFactory `main`. CORRECTED 2026-09-16 — this field previously read "itself blocked on openProfiler, unbuilt", which was the source packet's status from before that archive and is false now — it is corrected rather than carried because this field is re-authored prose in this corpus and not part of the carried delta, which is this change's `specs/ideation-dashboard/spec.md` alone
 ---
 
 # Proposal: add-doxchat-model-intake
@@ -58,10 +58,18 @@ BYTE-IDENTICAL from the openxFactory delta.** THE SOURCE, in full and immutably:
 `openspec/changes/add-doxchat-model-intake/specs/ideation-dashboard/spec.md`,
 blob `3de54f7ee6f24f890d8e305914b592340b53d274` — 16,813 bytes,
 `sha256 3168ad8f6f31c8dbacdc772d933508943f7b2c7cf373de2357eb8958d4bebee1`. This
-repository's `specs/ideation-dashboard/spec.md` carries that digest and that byte
-count, and — because git names content — that same blob id: `git hash-object`
-reads `3de54f7e…` on BOTH sides, so the two files are ONE GIT OBJECT rather than
-two copies that happen to agree. The digest is of THAT FILE; it is not a claim
+repository's copy carries that digest and that byte count, and — because git
+names content — that same blob id: `git hash-object` reads `3de54f7e…` on BOTH
+sides, so the two files are ONE GIT OBJECT rather than
+two copies that happen to agree. **The copy is at
+`openspec/changes/add-doxchat-model-intake/specs/ideation-dashboard/spec.md`**,
+spelled from this repository's root, because that is the file a reader has to run
+`sha256sum` over. A change's delta is conventionally written change-relative as
+`specs/<capability>/spec.md`, and this sentence used to spell it that way while
+saying "this repository's" — which points at a root-level `specs/` directory that
+does not exist here, next door to `openspec/specs/`, the canon location, which
+holds a different thing entirely. A hash instruction is the last place to leave
+that ambiguity. The digest is of THAT FILE; it is not a claim
 about every file of the packet (see § 5's preamble in `tasks.md`).
 NOT ONE CHARACTER WAS EDITED. The seam permits one class of prose edit — "the
 subject `openxFactory SHALL` becomes the receiving repository's" — and none is

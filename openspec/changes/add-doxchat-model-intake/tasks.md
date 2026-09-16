@@ -168,7 +168,7 @@ references to § 5.2 still resolve.
       ingestion channel in terms. Registered rather than applied: RULING Q6
       carries this delta byte-identical, and openxFactory PR #1057 states that
       carriage as a `sha256` equality over **the carried delta** —
-      `specs/ideation-dashboard/spec.md`, blob
+      this change's `specs/ideation-dashboard/spec.md`, blob
       `3de54f7ee6f24f890d8e305914b592340b53d274`, 16,813 bytes. **CORRECTED
       2026-09-16:** this sentence previously said "over every file of the
       packet", which overclaimed the evidence in a ledger whose whole subject is
