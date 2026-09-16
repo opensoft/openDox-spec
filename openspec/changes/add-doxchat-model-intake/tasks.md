@@ -30,6 +30,22 @@
 - [ ] 1.4 This change's standing in THIS corpus is openDox's own act. The text
       arrives ratified in openxFactory (Brett Heap, 2026-08-21) and
       `Status: draft` here until openDox ratifies it.
+- [ ] 1.5 **DISPOSITION THE `credential-contracts` DEPENDENCY: carried, pinned,
+      or external — named before this change closes.** The carried requirements
+      consume that capability's binding shape directly (*"a binding of the shape
+      `credential-contracts` already owns — provider, secret reference, owner,
+      rotation policy"*), and this corpus holds no such specification. The source
+      is pinned in `proposal.md` (`opensoft/openxFactory`
+      `openspec/specs/credential-contracts/spec.md` at
+      `cb2d3a2c24e948d4cc2c10a97046a5cc03cf1f9a`, blob
+      `36201e058d1f06bc88383473a2ec1ebc9f02ce28`, 65,999 bytes), so an implementer
+      can READ it; what is undecided is whether openDox carries the contract,
+      pins it as an external product, or keeps it a named dependency.
+      **Opened 2026-09-16 because the proposal was routing this to § 1.4, which
+      records only the ratification act.** A ratification can be performed
+      without ever naming a contract source, so the decision could have fallen
+      through the gap between the two: this box is the gap closed. It is NOT
+      satisfied by ratification and NOT satisfied by the pin alone.
 
 ## 2. The realization that travelled with it
 
@@ -168,3 +184,52 @@ references to § 5.2 still resolve.
       only thing that would change this box is openDox's ratification act
       (§ 1.4), and no arrival edit can stand in for it without falsifying the
       byte-identical carriage that is this closure's evidence.
+- [ ] 5.4 **EXPIRY IS RECORDED AND NEVER ACTED ON.** The approval requirement
+      says the act carries *"who issued, who approved, when it expires, and the
+      audit reference"*, and its scenario repeats *"the record carries issuer,
+      approver, expiry, and audit reference"*. Nothing in the delta says what
+      expiry DOES. Availability is gated on the record's EXISTENCE — *"Until that
+      record exists the proposed declaration MUST be disclosed to the human as
+      pending and MUST NOT appear as an available catalog entry"* — and an
+      expired record still exists, so a conforming implementation may keep
+      serving turns on a model whose approval lapsed and still satisfy every
+      sentence here. Expiry is audit-only as written. **§ 1.4's business**:
+      openDox's ratification says that expiry WITHDRAWS availability and that
+      turns are refused until a new approval is recorded, or it says in terms
+      that the field is a record of intent and nothing more. Either is a
+      defensible rule; silence is not, because the two readings differ on
+      whether a lapsed approval still authorizes governed work.
+- [ ] 5.5 **THE PRESENCE GATE REACHES MODEL CONSUMERS, AND INTAKE IS NOT ONE.**
+      The catalog requirement gates *"The model catalog and EVERY model-consuming
+      route … only on a loopback human console with a real checkout, resolved
+      actor, and demonstrated console presence; the hosted/read-only plane MUST
+      offer NONE of them."* An intake route consumes a CREDENTIAL, not a model,
+      so that sentence does not reach it on its own terms. What the delta says
+      about intake on the hosted plane is about the AFFORDANCE — *"the intake
+      affordance MUST be absent with them, because a plane that may not run a
+      turn may not enrol a provider either"* — and an absent affordance is a
+      hidden button, not a refusing route. A direct caller could therefore submit
+      a provider credential to the intake endpoint on a plane whose own stated
+      reason says it may not enrol a provider at all. **§ 1.4's business**: the
+      ratification puts the intake route behind the same presence gate and gives
+      it a refusal scenario of its own, so the rule binds the SERVER and not only
+      the renderer. The reason is already written in the delta; only the binding
+      is missing.
+- [ ] 5.6 **THE APPROVAL RECORD'S FIELD LIST IS SHORT OF THE CONTRACT IT NAMES,
+      and the pin this change added is what makes that checkable.** The delta
+      names four fields — issuer, approver, expiry, audit reference. The schema it
+      says those bytes already live in requires FIVE and conditions a sixth:
+      `opensoft/openxFactory` `contracts/schemas/gate-action-record.schema.yaml`
+      at tag `contract-v1.45` (commit
+      `7b7447da8f769c2884d7586959e5fecb4b6eeb00`), blob
+      `7f95006f768fbc2f4422d49642ba5ca0afbbac7f`, reads at line 671
+      `required: [issued_by, approved_by, expires_at, audit_ref, install_posture]`
+      and at lines 735-741 makes `consent_ref` REQUIRED when
+      `install_posture: shared` and FORBIDDEN when `install_posture:
+      single-operator`. So an implementation can satisfy every sentence of this
+      requirement and emit an approval record the published schema REJECTS — or,
+      worse, approve a shared install with no consent instrument named. **§ 1.4's
+      business**: the ratification names `install_posture` and the consent
+      condition, or states that the record's full shape is the schema's and this
+      requirement enumerates only the accountability subset. The second is
+      probably what was meant; as written it reads as an exhaustive list.

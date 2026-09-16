@@ -41,10 +41,14 @@ at `cb2d3a2c24e948d4cc2c10a97046a5cc03cf1f9a`, blob
 `36201e058d1f06bc88383473a2ec1ebc9f02ce28`, 65,999 bytes. An implementer reading
 the required binding fields — provider, secret reference, owner, rotation policy —
 reads them there, at that blob, and nowhere else by guarantee. Whether openDox
-carries that contract, pins it, or keeps it an external dependency is a
-ratification-time decision for this corpus (`tasks.md` § 1.4); this change makes
-no claim to own it and does not restate its fields, because a restatement in a
-corpus that cannot validate it is a second source of truth.
+carries that contract, pins it, or keeps it an external dependency is an OWED
+DECISION with a box of its own — **`tasks.md` § 1.5** — not a side effect of
+ratification. (It pointed at § 1.4 until 2026-09-16; § 1.4 records only this
+corpus's ratification act and would have let this change close with the contract
+source still unnamed, which is the one outcome a carried requirement consuming an
+external binding shape must not permit.) This change makes no claim to own the
+contract and does not restate its fields, because a restatement in a corpus that
+cannot validate it is a second source of truth.
 
 ## What changes
 
@@ -80,7 +84,15 @@ the selector and the adapter.
 Carried with it, and disclosed rather than silently dropped: the delta's preamble
 declares itself relative to `add-doxbench-distilled-abstract` and cites
 `release-realization/spec.md:64-74`. Both are openxFactory referents, and both are
-carried because byte-fidelity is the property being preserved. The preamble's
+carried because byte-fidelity is the property being preserved. **The carried
+spelling is not reproducible from this corpus** — that relative path exists in
+neither repository as written — so the referent is pinned HERE, beside the
+disclosure, without touching the carried bytes: `opensoft/openxFactory`
+`openspec/specs/release-realization/spec.md` at
+`cb2d3a2c24e948d4cc2c10a97046a5cc03cf1f9a`, blob
+`5572301996e8e3714b0e79aa3d71474b266d88a6`, 47,106 bytes. Lines 64-74 are lines
+of THAT blob and of no branch; `main` moves and the preamble's bare path does
+not follow it. The preamble's
 closing instruction — *"Re-verify this block against canon before archiving"* —
 is now owed against OPENDOX's canon, and `tasks.md` § 1.3 carries it as an open
 box rather than leaving it inside prose nobody re-reads.
