@@ -3,11 +3,20 @@
 ## 1. Arrival
 
 - [x] 1.1 The two carried blocks are verbatim from the openxFactory delta at
-      `cb2d3a2c` — the ADDED *An unrecognized chat-turn kind is refused in the
-      SURVIVING family…* (4,150 B, `sha256 a16607ed…`) and the MODIFIED *The
-      chat-turn contract release carries the bound buffer and the model*
-      (5,858 B, `sha256 e7ce5310…`) — each asserted to occur byte-for-byte in
-      that file rather than re-typed.
+      `cb2d3a2c24e948d4cc2c10a97046a5cc03cf1f9a`, file
+      `openspec/changes/retire-doxbench-chat-turn-v1/specs/ideation-dashboard/spec.md`
+      — the ADDED *An unrecognized chat-turn kind is refused in the SURVIVING
+      family…* (4,150 B) and the MODIFIED *The chat-turn contract release carries
+      the bound buffer and the model* (5,858 B), each asserted to occur
+      byte-for-byte in that file rather than re-typed.
+      **THE FULL DIGESTS AND THE EXTRACTION BOUNDARY ARE IN THE PROPOSAL'S TABLE,
+      ONCE, AND CHECKED ON EVERY RUN** by `tests/test_carried_block_fidelity.py`.
+      They are deliberately not restated here: this box carried them truncated to
+      eight characters, which reads like provenance and is not — and a third copy
+      of a number is a third thing to keep in step. Re-measured on both sides
+      2026-09-16, identical; the openxFactory file is now at
+      `openspec/changes/archive/2026-09-16-retire-doxbench-chat-turn-v1/specs/ideation-dashboard/spec.md`,
+      that packet having archived unchanged under openxFactory PR #1066.
 - [x] 1.2 **The third requirement is deliberately NOT carried.** *The doxBench
       chat-turn v1 envelope family is REMOVED at contract-v3.0* stays in
       openxFactory: the removal is realized in that repository's bytes and

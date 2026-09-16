@@ -37,9 +37,36 @@ without claiming an act openDox never performed.
   buffer and the model* — one of the FOUR promoted titles the split packet's
   § THE SIBLING COLLISION table (a) names, destination openDox.
 
-Both blocks are carried **verbatim** from the openxFactory delta at `cb2d3a2c`:
-4,150 bytes (`sha256 a16607ed…`) and 5,858 bytes (`sha256 e7ce5310…`), each
-asserted to occur in the openxFactory file byte-for-byte.
+Both blocks are carried **verbatim**, and the claim is made auditable rather than
+asserted. THE SOURCE, in full: `opensoft/openxFactory` at
+`cb2d3a2c24e948d4cc2c10a97046a5cc03cf1f9a`, file
+`openspec/changes/retire-doxbench-chat-turn-v1/specs/ideation-dashboard/spec.md`
+— the same bytes now at
+`openspec/changes/archive/2026-09-16-retire-doxbench-chat-turn-v1/specs/ideation-dashboard/spec.md`,
+that packet having archived unchanged under openxFactory PR #1066.
+
+| block | bytes | `sha256` |
+| --- | ---: | --- |
+| ADDED *An unrecognized chat-turn kind is refused in the SURVIVING family…* | 4,150 | `a16607edf70f89855d6f2b1c55ae87d3de1dd844cc9b623aec414716e0cd5127` |
+| MODIFIED *The chat-turn contract release carries the bound buffer and the model* | 5,858 | `e7ce5310f2e17f7440abe810b41c364fdcfd926fa594f6baf807f70f30349737` |
+
+**THE EXTRACTION BOUNDARY IS STATED, because without it the digests are not
+reproducible and two honest readers get two answers.** A block runs from its
+`### Requirement: ` line to the next `### Requirement: ` line OR the next `## `
+section heading, WHICHEVER COMES FIRST, with trailing blank lines trimmed to a
+single newline. The "whichever comes first" is load-bearing: the ADDED block is
+the last requirement of its section, so a rule that looked only for the next
+`### Requirement: ` swallows the `## MODIFIED Requirements` heading and reports
+4,176 bytes for a 4,150-byte block. That is not hypothetical — it is what a
+re-derivation of this claim did before the rule was written down.
+
+**AND IT IS CHECKED, not just described.** `tests/test_carried_block_fidelity.py`
+re-derives both digests from the carried file on every run, asserts the third
+requirement did NOT travel, and asserts the block set is exactly these two so an
+undeclared arrival fails. It cannot reach openxFactory, so it cannot re-verify
+the source half; that was measured at carriage and again on 2026-09-16, both
+sides, and openxFactory's own suite pins the same numbers against its archived
+packet — so an edit on either side breaks a test on that side.
 
 ## What changes
 
