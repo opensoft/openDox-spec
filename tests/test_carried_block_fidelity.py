@@ -82,8 +82,18 @@ def _blocks(text: str) -> dict[str, bytes]:
 
 @pytest.fixture(scope="module")
 def carried() -> dict[str, bytes]:
+    """Read BYTES and decode them, never `read_text()`.
+
+    `Path.read_text()` opens in universal-newline mode, so a checkout or an edit
+    that turned the carried file's line endings into CRLF would be translated
+    back to LF before the digest was taken — and a test whose whole claim is
+    "byte-for-byte" would pass over bytes it never saw. `decode()` performs no
+    such translation, so a CRLF file fails here, which is the point. (Found by
+    Copilot's review of openDox-spec #15; the digests are unchanged, because the
+    file is LF today — what changed is whether the test could tell.)
+    """
     assert CARRIED_DELTA.is_file(), f"no carried delta at {CARRIED_DELTA}"
-    return _blocks(CARRIED_DELTA.read_text(encoding="utf-8"))
+    return _blocks(CARRIED_DELTA.read_bytes().decode("utf-8"))
 
 
 @pytest.mark.parametrize("title,digest,size", CARRIED_BLOCKS,
