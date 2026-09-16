@@ -57,3 +57,28 @@
       not a perpetual guarantee** — the block says so itself — so openDox reads
       them as the history of a released contract it inherits, not as a standing
       bar on its own majors.
+
+## 4. The reading the split leaves behind, registered at arrival
+
+RULING Q6 freezes the openxFactory packet where it stands and § 6.2 carries only
+its forward half, so the carried text cannot be edited here — the byte-for-byte
+carriage is this arrival's own evidence. One consequence is worth naming rather
+than discovering.
+
+- [ ] 4.1 **The carried MODIFIED block's history names `contract-v2.0` as the
+      recorded removal target, and the removal happened at `contract-v3.0`.**
+      Read alone, the block looks internally inconsistent. It is not: the
+      restatement-with-reason the block's own scenario asks for IS the openxFactory
+      packet's third requirement — *The doxBench chat-turn v1 envelope family is
+      REMOVED at contract-v3.0* — **which deliberately did not travel** (§ 1.2),
+      because it records an act openxFactory performed in its own released
+      bundle. **The explanation stayed behind with the act it explains.**
+      Raised by Copilot on openDox-spec #15 and registered here rather than
+      answered by editing carried text.
+      **What openDox decides at ratification (§ 1.4)**, and the options are these
+      two: cite openxFactory's removal requirement as this block's restatement of
+      record — the citation being cross-repository, in the house form
+      `opensoft/openxFactory` + path + an immutable revision — or re-author the
+      block's history paragraph in openDox's own voice once the capability
+      arrives. **Not a third option:** editing the carried block now, which would
+      make this the arrival that rewrote what it carried.
