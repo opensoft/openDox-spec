@@ -22,10 +22,13 @@
 # views match them through SNAPSHOT_VALUES, whose defaults T054 moves to
 # these values.
 #
-# DETERMINISTIC. The same tree yields a byte-identical snapshot, so no field
-# is read from the wall clock. FORWARD-COMPATIBLE. A reader ignores unknown
-# properties, so no object sets additionalProperties false, and an additive
-# field needs no schema_version bump.
+# DETERMINISTIC, which is the generator's to keep and no schema can check: the
+# same tree yields a byte-identical snapshot, so nothing in it records when
+# the generator ran. generated_at, when present, is fixed by the source
+# revision (its commit date, or a date recorded with it), never read from the
+# clock. FORWARD-COMPATIBLE. A reader ignores unknown properties, so no object
+# sets additionalProperties false, and an additive field needs no
+# schema_version bump.
 #
 # RULES. Every rule has an identifier. A subschema names, in x-rule, the rule
 # its keywords enforce; x-rules lists every rule with its class; and a
@@ -87,7 +90,7 @@
       "items": {"$ref": "#/$defs/submission"}
     },
     "keyword_index": {
-      "description": "Optional. The keyword rail's seed: one entry per topic, with the number of documents that carry it.",
+      "description": "Optional. The keyword rail's seed. When present, every topic the documents carry has one entry, and each entry counts the documents that carry its keyword.",
       "x-rule": "section-is-a-list",
       "type": "array",
       "items": {"$ref": "#/$defs/keyword_entry"}
@@ -132,7 +135,7 @@
           "x-rule": "generated-at-is-rfc3339",
           "type": "string",
           "format": "date-time",
-          "pattern": "^(?![\\s\\S]*[\\u0000-\\u001f])[0-9]{4}-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12][0-9]|3[01])[Tt](?:[01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](?:\\.[0-9]+)?(?:[Zz]|[+-](?:[01][0-9]|2[0-3]):[0-5][0-9])$"
+          "pattern": "^(?![\\s\\S]*[\\u0000-\\u001f])(?:[0-9]{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12][0-9]|3[01])|(?:0[469]|11)-(?:0[1-9]|[12][0-9]|30)|02-(?:0[1-9]|1[0-9]|2[0-8]))|(?:[0-9]{2}(?:0[48]|[2468][048]|[13579][26])|(?:[02468][048]|[13579][26])00)-02-29)[Tt](?:[01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](?:\\.[0-9]+)?(?:[Zz]|[+-](?:[01][0-9]|2[0-3]):[0-5][0-9])$"
         },
         "generator_version": {"x-rule": "generation-anchored", "type": "string", "minLength": 1}
       }
@@ -295,7 +298,7 @@
     {
       "id": "generated-at-is-rfc3339",
       "class": "shape",
-      "says": "generation.generated_at, when present, is an RFC 3339 date-time with no control character. It is derived from the source revision, never read from the clock."
+      "says": "generation.generated_at, when present, is an RFC 3339 date-time on a day the calendar has (the pattern knows each month's length and the leap years), with no control character. It is fixed by the source revision, never read from the clock."
     },
     {
       "id": "section-is-a-list",
@@ -403,6 +406,11 @@
       "says": "Every group edge names a document in documents."
     },
     {
+      "id": "one-edge-per-document",
+      "class": "reference",
+      "says": "Within one group, the edges name each document once: one edge per member document. A document may feed several groups."
+    },
+    {
       "id": "candidate-names-a-group",
       "class": "reference",
       "says": "Every group that a candidate's claiming_clusters names is in clusters."
@@ -416,6 +424,11 @@
       "id": "target-names-a-submission",
       "class": "reference",
       "says": "A selection's target_change names an entry in changes."
+    },
+    {
+      "id": "keyword-index-matches-topics",
+      "class": "reference",
+      "says": "keyword_index, when present, agrees with the documents: every topic a document carries has an entry, no keyword has two, and each entry's declared_doc_count is the number of documents that carry its keyword, 0 for a keyword that none carries."
     }
   ]
 }

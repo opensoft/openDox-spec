@@ -1,7 +1,7 @@
 # expected_failure: keyword-entry-keys
-# INVALID: a keyword_index entry counts fewer than no documents.
-# The no-front-matter example with this one change, so it breaks this
-# shape rule and no other.
+# INVALID: a keyword_index entry's count is text, not a whole number.
+# The no-front-matter example with a correct keyword_index added, and
+# this one change, so it breaks this shape rule and no other.
 {
   "schema_version": 1,
   "kind": "opendox-snapshot",
@@ -47,5 +47,10 @@
   "possibles": [],
   "staged_topics": [],
   "changes": [],
-  "keyword_index": [{"keyword": "bread", "declared_doc_count": -1}]
+  "keyword_index": [
+    {"keyword": "bread", "declared_doc_count": 2},
+    {"keyword": "flour", "declared_doc_count": 1},
+    {"keyword": "herbs", "declared_doc_count": 1},
+    {"keyword": "oven", "declared_doc_count": "one"}
+  ]
 }

@@ -35,6 +35,7 @@ from __future__ import annotations
 
 import json
 import re
+from datetime import date
 from pathlib import Path
 from typing import Any, Callable, Iterator, NamedTuple
 
@@ -256,6 +257,55 @@ def _edge_names_a_document(snap: Any) -> Iterator[Violation]:
                                 f"no document has the id {ref!r}")
 
 
+def _one_edge_per_document(snap: Any) -> Iterator[Violation]:
+    for gi, group in _entries(snap, "clusters"):
+        edges = group.get("document_edges")
+        seen: set[str] = set()
+        for ei, edge in enumerate(edges if isinstance(edges, list) else []):
+            ref = edge.get("document") if isinstance(edge, dict) else None
+            if isinstance(ref, str):
+                if ref in seen:
+                    yield Violation("one-edge-per-document",
+                                    f"/clusters/{gi}/document_edges/{ei}/document", "reference",
+                                    f"{ref!r} already has an edge in this group")
+                seen.add(ref)
+
+
+def _keyword_index_matches_topics(snap: Any) -> Iterator[Violation]:
+    """Present, the index never contradicts the documents, so a reader that
+    seeds its rail from it sees what the documents say: every topic they carry
+    has one entry, and every entry counts the documents that carry its keyword.
+    An entry for a keyword no document carries is lawful at 0, which leaves
+    room for a later count of another kind without reopening this rule."""
+    index = snap.get("keyword_index") if isinstance(snap, dict) else None
+    if not isinstance(index, list):
+        return                  # absent is lawful; not a list is section-is-a-list's
+    carried: dict[str, int] = {}
+    for _i, document in _entries(snap, "documents"):
+        topics = document.get("topics")
+        for topic in {t for t in topics if isinstance(t, str)} if isinstance(topics, list) else ():
+            carried[topic] = carried.get(topic, 0) + 1
+    listed: set[str] = set()
+    rule = "keyword-index-matches-topics"
+    for ki, entry in enumerate(index):
+        keyword = entry.get("keyword") if isinstance(entry, dict) else None
+        if not isinstance(keyword, str):
+            continue            # keyword-entry-keys and topic-is-trimmed-text say why
+        if keyword in listed:
+            yield Violation(rule, f"/keyword_index/{ki}/keyword", "reference",
+                            f"{keyword!r} already has an entry")
+            continue
+        listed.add(keyword)
+        count = entry.get("declared_doc_count")
+        if _is_type(count, "integer") and count != carried.get(keyword, 0):
+            yield Violation(rule, f"/keyword_index/{ki}/declared_doc_count", "reference",
+                            f"{count} documents, but {carried.get(keyword, 0)} carry {keyword!r}")
+    unlisted = sorted(set(carried) - listed)
+    if unlisted:
+        yield Violation(rule, "/keyword_index", "reference",
+                        f"topics the documents carry and the index does not list: {unlisted}")
+
+
 def _candidate_names_a_group(snap: Any) -> Iterator[Violation]:
     known = _ids(snap, "clusters")
     for pi, candidate in _entries(snap, "possibles"):
@@ -289,9 +339,11 @@ def _target_names_a_submission(snap: Any) -> Iterator[Violation]:
 REFERENCE_CHECKS: dict[str, Callable[[Any], Iterator[Violation]]] = {
     "ids-are-unique": _ids_are_unique,
     "edge-names-a-document": _edge_names_a_document,
+    "one-edge-per-document": _one_edge_per_document,
     "candidate-names-a-group": _candidate_names_a_group,
     "pick-names-a-selection": _pick_names_a_selection,
     "target-names-a-submission": _target_names_a_submission,
+    "keyword-index-matches-topics": _keyword_index_matches_topics,
 }
 
 
@@ -459,6 +511,47 @@ def test_the_six_station_example_fills_every_station() -> None:
     assert {p["state"] for p in snap["possibles"]} == set(CANDIDATE_STATES)
     assert snap["clusters"] and snap["staged_topics"]
     assert {c["status"] for c in snap["changes"]} == set(SUBMISSION_STATUSES)
+    # one-edge-per-document holds within a group: a document feeds several.
+    fed = [e["document"] for c in snap["clusters"] for e in c["document_edges"]]
+    assert len(fed) > len(set(fed)), "no document feeds two groups"
+
+
+SIX_INDEX = [{"keyword": "compost", "declared_doc_count": 3},
+             {"keyword": "reuse", "declared_doc_count": 3},
+             {"keyword": "soil", "declared_doc_count": 1},
+             {"keyword": "tools", "declared_doc_count": 1},
+             {"keyword": "water", "declared_doc_count": 4}]
+
+
+@pytest.mark.parametrize("change, where", [
+    ("keeps the example's own index", set()),
+    ("adds moss, which no document carries, at 0", set()),
+    ("adds moss, which no document carries, at 1", {"/keyword_index/5/declared_doc_count"}),
+    ("drops soil, which a document carries", {"/keyword_index"}),
+    ("gives compost a second entry", {"/keyword_index/5/keyword"}),
+    ("counts water at 3 where 4 documents carry it", {"/keyword_index/4/declared_doc_count"}),
+    ("counts water in words", set()),
+], ids=lambda v: v if isinstance(v, str) else "")
+def test_the_keyword_index_agrees_with_the_documents(change: str, where: set[str]) -> None:
+    """keyword-index-matches-topics, branch by branch, over the six-station
+    example's documents. A count in words is keyword-entry-keys' to refuse."""
+    snap = read(EXAMPLES / "opendox-snapshot-six-stations.example.yaml")[1]
+    assert snap["keyword_index"] == SIX_INDEX
+    index = [dict(e) for e in SIX_INDEX]
+    if "moss" in change:
+        index.append({"keyword": "moss", "declared_doc_count": 1 if change.endswith("1") else 0})
+    elif "drops soil" in change:
+        index = [e for e in index if e["keyword"] != "soil"]
+    elif "second entry" in change:
+        index.append({"keyword": "compost", "declared_doc_count": 3})
+    elif "at 3" in change:
+        index[4]["declared_doc_count"] = 3
+    elif "in words" in change:
+        index[4]["declared_doc_count"] = "four"
+    snap["keyword_index"] = index
+    found = list(_keyword_index_matches_topics(snap))
+    assert {v.where for v in found} == where, found
+    assert all(v.rule == "keyword-index-matches-topics" for v in found)
 
 
 def test_the_no_front_matter_example_is_the_smallest_shape() -> None:
@@ -491,9 +584,17 @@ def test_the_no_front_matter_example_is_the_smallest_shape() -> None:
         ("topic-is-trimmed-text", "", False),
         ("generated-at-is-rfc3339", "2026-09-27T12:00:00Z", True),
         ("generated-at-is-rfc3339", "2026-09-27t12:00:00.25+05:30", True),
+        ("generated-at-is-rfc3339", "2024-02-29T00:00:00Z", True),
+        ("generated-at-is-rfc3339", "2000-02-29T00:00:00Z", True),
         ("generated-at-is-rfc3339", "2026-09-27", False),
         ("generated-at-is-rfc3339", "2026-09-27T12:00:00", False),
+        ("generated-at-is-rfc3339", "27 September 2026", False),
         ("generated-at-is-rfc3339", "2026-13-27T12:00:00Z", False),
+        ("generated-at-is-rfc3339", "2026-02-31T12:00:00Z", False),
+        ("generated-at-is-rfc3339", "2026-04-31T12:00:00Z", False),
+        ("generated-at-is-rfc3339", "2026-02-29T12:00:00Z", False),
+        ("generated-at-is-rfc3339", "1900-02-29T12:00:00Z", False),
+        ("generated-at-is-rfc3339", "2026-09-27T24:00:00Z", False),
         ("generated-at-is-rfc3339", "2026-09-27T12:00:00Z\n", False),
     ])
 def test_a_pattern_rule_admits_and_refuses(rule: str, value: str, admitted: bool) -> None:
@@ -508,6 +609,43 @@ def test_a_pattern_rule_admits_and_refuses(rule: str, value: str, admitted: bool
     found = list(_check(value, subschema, ""))
     assert (not found) is admitted, found
     assert {v.rule for v in found} <= {rule}
+
+
+@pytest.mark.parametrize("count, admitted", [
+    (0, True), (2, True), (2.0, True),
+    (-1, False), ("one", False), (True, False), (1.5, False), (None, False),
+], ids=repr)
+def test_a_keyword_entry_counts_in_whole_numbers(count: Any, admitted: bool) -> None:
+    """keyword-entry-keys on the count alone: a whole number no less than 0,
+    where JSON's 2.0 is the number 2 and JSON's true is not the number 1. Only
+    this table holds `minimum`, because a negative count in a snapshot is also a
+    count that keyword-index-matches-topics refuses."""
+    found = list(_check({"keyword": "bread", "declared_doc_count": count},
+                        _resolve("#/$defs/keyword_entry"), ""))
+    assert (not found) is admitted, found
+    assert {v.rule for v in found} <= {"keyword-entry-keys"}
+
+
+def test_the_timestamp_pattern_knows_the_calendar() -> None:
+    """The pattern, not `format`, is what the required check asserts, so the
+    pattern carries the calendar: each month's length and the leap years. It is
+    held here to Python's own calendar, day by day, over every month of years
+    chosen for their leap rules: ordinary, divisible by 4, by 100 and by 400."""
+    pattern = SCHEMA["$defs"]["generation"]["properties"]["generated_at"]["pattern"]
+    wrong = []
+    for year in (1, 4, 100, 400, 1600, 1700, 1800, 1900, 1996, 1999, 2000, 2023, 2024,
+                 2025, 2026, 2100, 2400, 9996, 9999):
+        for month in range(1, 13):
+            for day in range(1, 32):
+                try:
+                    date(year, month, day)
+                    real = True
+                except ValueError:
+                    real = False
+                stamp = f"{year:04d}-{month:02d}-{day:02d}T00:00:00Z"
+                if bool(re.search(pattern, stamp)) is not real:
+                    wrong.append(stamp)
+    assert not wrong, f"the pattern and the calendar disagree on {wrong[:10]}"
 
 
 # ---------------------------------------------------------------------------
