@@ -509,7 +509,8 @@ def test_the_six_station_example_fills_every_station() -> None:
     snap = read(EXAMPLES / "opendox-snapshot-six-stations.example.yaml")[1]
     assert {d["stage"] for d in snap["documents"]} == set(STAGE_ROLES)
     assert {p["state"] for p in snap["possibles"]} == set(CANDIDATE_STATES)
-    assert snap["clusters"] and snap["staged_topics"]
+    assert snap["clusters"], "the grouping station is empty"
+    assert snap["staged_topics"], "the selection station is empty"
     assert {c["status"] for c in snap["changes"]} == set(SUBMISSION_STATUSES)
     # one-edge-per-document holds within a group: a document feeds several.
     fed = [e["document"] for c in snap["clusters"] for e in c["document_edges"]]
