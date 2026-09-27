@@ -135,16 +135,16 @@
           "x-rule": "generated-at-is-rfc3339",
           "type": "string",
           "format": "date-time",
-          "pattern": "^(?![\\s\\S]*[\\u0000-\\u001f\\u007f-\\u009f])(?:[0-9]{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12][0-9]|3[01])|(?:0[469]|11)-(?:0[1-9]|[12][0-9]|30)|02-(?:0[1-9]|1[0-9]|2[0-8]))|(?:[0-9]{2}(?:0[48]|[2468][048]|[13579][26])|(?:[02468][048]|[13579][26])00)-02-29)[Tt](?:[01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](?:\\.[0-9]+)?(?:[Zz]|[+-](?:[01][0-9]|2[0-3]):[0-5][0-9])$"
+          "pattern": "^(?![\\s\\S]*[\\u0000-\\u001f\\u007f-\\u009f])(?!0000)(?:[0-9]{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12][0-9]|3[01])|(?:0[469]|11)-(?:0[1-9]|[12][0-9]|30)|02-(?:0[1-9]|1[0-9]|2[0-8]))|(?:[0-9]{2}(?:0[48]|[2468][048]|[13579][26])|(?:[02468][048]|[13579][26])00)-02-29)[Tt](?:[01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](?:\\.[0-9]+)?(?:[Zz]|[+-](?:[01][0-9]|2[0-3]):[0-5][0-9])$"
         },
         "generator_version": {"x-rule": "generation-anchored", "type": "string", "minLength": 1}
       }
     },
     "document": {
-      "description": "One document the corpus adapter lists. title and summary are the default adapter's small neutral field set (R1Q13 (a)). Neither is required, and the generator writes null for one the document does not give. topics are the topics the generator assigns: the ones the document declares, or the ones its topic rule derives when it declares none.",
+      "description": "One document the corpus adapter lists. title and summary are the default adapter's small neutral field set (R1Q13 (a)). Neither is required, and the generator writes null for one the document does not give. topics, which every entry carries, are the topics the generator assigns: the ones the document declares, or the ones its topic rule derives when it declares none, and an empty list when there are none.",
       "x-rule": "document-keys",
       "type": "object",
-      "required": ["id", "path", "stage"],
+      "required": ["id", "path", "stage", "topics"],
       "properties": {
         "id": {"$ref": "#/$defs/id"},
         "path": {"$ref": "#/$defs/path"},
@@ -307,7 +307,7 @@
     {
       "id": "generated-at-is-rfc3339",
       "class": "shape",
-      "says": "generation.generated_at, when present, is an RFC 3339 date-time on a day the calendar has (the pattern knows each month's length and the leap years), with no control character. It is narrower than RFC 3339 in one place: its seconds run from 00 to 59 and are never a leap second's 60, which a git commit date cannot hold and neither Python's datetime nor a browser's Date can read. It is fixed by the source revision, never read from the clock."
+      "says": "generation.generated_at, when present, is an RFC 3339 date-time on a day the calendar has (the pattern knows each month's length and the leap years), with no control character. It is narrower than RFC 3339 in two places. Its year is never 0000, which Python's datetime cannot hold. Its seconds run from 00 to 59 and are never a leap second's 60, which a git commit date cannot hold and neither Python's datetime nor a browser's Date can read. jsonschema's date-time checker refuses both. It is fixed by the source revision, never read from the clock."
     },
     {
       "id": "section-is-a-list",
@@ -322,7 +322,7 @@
     {
       "id": "document-keys",
       "class": "shape",
-      "says": "A document is an object carrying id, path and stage."
+      "says": "A document is an object carrying id, path, stage and topics."
     },
     {
       "id": "path-is-repo-relative",

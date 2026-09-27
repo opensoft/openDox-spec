@@ -564,6 +564,19 @@ def test_the_keyword_index_agrees_with_the_documents(change: str, where: set[str
     assert all(v.rule == "keyword-index-matches-topics" for v in found)
 
 
+def test_a_document_carries_its_topics() -> None:
+    """document-keys requires topics, as it requires stage: every entry carries
+    what the generator assigned, an empty list when that is nothing, so no
+    reader supplies a default."""
+    snap = read(EXAMPLES / "opendox-snapshot-no-front-matter.example.yaml")[1]
+    document = dict(snap["documents"][0])
+    assert not list(_check(document, _resolve("#/$defs/document"), ""))
+    assert not list(_check({**document, "topics": []}, _resolve("#/$defs/document"), ""))
+    del document["topics"]
+    found = list(_check(document, _resolve("#/$defs/document"), ""))
+    assert [(v.rule, v.keyword) for v in found] == [("document-keys", "required")], found
+
+
 def test_the_no_front_matter_example_is_the_smallest_shape() -> None:
     """AT-R1's plain repository: every document a source, at least one group
     (the tile the chat pane opens from), and every other station empty."""
@@ -617,6 +630,10 @@ PATTERN_CASES: list[tuple[str, str, bool]] = [
         ("generated-at-is-rfc3339", "1900-02-29T12:00:00Z", False),
         ("generated-at-is-rfc3339", "2026-09-27T24:00:00Z", False),
         ("generated-at-is-rfc3339", "2016-12-31T23:59:59Z", True),
+    # year 0000 is RFC 3339's and not this contract's: Python's datetime cannot hold it
+    ("generated-at-is-rfc3339", "0000-01-01T00:00:00Z", False),
+    ("generated-at-is-rfc3339", "0000-02-29T00:00:00Z", False),
+    ("generated-at-is-rfc3339", "0001-01-01T00:00:00Z", True),
         # RFC 3339 allows a leap second's 60, and this contract does not: a git
         # commit date cannot hold one, and neither Python nor a browser reads one.
         ("generated-at-is-rfc3339", "2016-12-31T23:59:60Z", False),
@@ -787,6 +804,7 @@ def test_the_format_checker_admits_whatever_the_pattern_admits() -> None:
     pattern = SCHEMA["$defs"]["generation"]["properties"]["generated_at"]["pattern"]
     stamps = [f"{y:04d}-{m:02d}-{d:02d}T23:59:59+05:30"
               for y in (1900, 2000, 2023, 2024, 2100) for m in range(1, 13) for d in range(1, 32)]
+    stamps += ["0000-01-01T00:00:00Z", "0000-02-29T00:00:00Z", "0001-01-01T00:00:00Z"]
     stamps += ["2026-09-27T12:00:00Z", "2026-09-27t12:00:00.25+05:30", "2016-12-31T23:59:60Z",
                "2026-02-31T12:00:00Z", "2026-09-27T12:00:00", "2026-09-27T24:00:00Z"]
     looser = [s for s in stamps if re.search(pattern, s) and not checker.conforms(s, "date-time")]
