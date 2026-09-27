@@ -596,6 +596,10 @@ def test_the_no_front_matter_example_is_the_smallest_shape() -> None:
         ("generated-at-is-rfc3339", "2026-02-29T12:00:00Z", False),
         ("generated-at-is-rfc3339", "1900-02-29T12:00:00Z", False),
         ("generated-at-is-rfc3339", "2026-09-27T24:00:00Z", False),
+        ("generated-at-is-rfc3339", "2016-12-31T23:59:59Z", True),
+        # RFC 3339 allows a leap second's 60, and this contract does not: a git
+        # commit date cannot hold one, and neither Python nor a browser reads one.
+        ("generated-at-is-rfc3339", "2016-12-31T23:59:60Z", False),
         ("generated-at-is-rfc3339", "2026-09-27T12:00:00Z\n", False),
     ])
 def test_a_pattern_rule_admits_and_refuses(rule: str, value: str, admitted: bool) -> None:
@@ -610,6 +614,24 @@ def test_a_pattern_rule_admits_and_refuses(rule: str, value: str, admitted: bool
     found = list(_check(value, subschema, ""))
     assert (not found) is admitted, found
     assert {v.rule for v in found} <= {rule}
+
+
+@pytest.mark.parametrize("station, entry, keys", [
+    ("selection", {"staging_id": "loaf-club"}, "selection-keys"),
+    ("submission", {"id": "bake-sale", "status": "active"}, "submission-keys"),
+], ids=["selection", "submission"])
+@pytest.mark.parametrize("files, broken", [
+    (["notes/a.md", "notes/b.md"], set()),
+    (["notes/a.md", "notes/a.md"], {"keys"}),
+    (["/notes/a.md"], {"path-is-repo-relative"}),
+    ("notes/a.md", {"keys"}),
+], ids=["two paths", "a path twice", "an absolute path", "not a list"])
+def test_a_files_list_names_repository_paths_once(
+        station: str, entry: dict[str, Any], keys: str, files: Any, broken: set[str]) -> None:
+    """A selection's files and a changes entry's files take one shape: repository-
+    relative paths, each once. The tile that opens onto them lists them as given."""
+    found = list(_check({**entry, "files": files}, _resolve(f"#/$defs/{station}"), ""))
+    assert {v.rule for v in found} == {keys if b == "keys" else b for b in broken}, found
 
 
 @pytest.mark.parametrize("count, admitted", [
@@ -677,6 +699,25 @@ def test_pyyaml_reads_every_file_as_the_same_object() -> None:
     differ = [p.name for p in [SCHEMA_PATH, *POSITIVE, *NEGATIVE]
               if yaml.safe_load(p.read_text(encoding="utf-8")) != read(p)[1]]
     assert not differ, f"PyYAML and json read these files differently: {differ}"
+
+
+def test_the_format_checker_admits_whatever_the_pattern_admits() -> None:
+    """The pattern is what the required check enforces, so it must never be
+    looser than the standard `date-time` checker. Over the pattern table's
+    stamps and the calendar sweep, a stamp the pattern admits is one the
+    checker admits. A leap second is refused by both."""
+    jsonschema = pytest.importorskip("jsonschema")
+    pytest.importorskip("rfc3339_validator")     # jsonschema's date-time checker
+    checker = jsonschema.Draft202012Validator.FORMAT_CHECKER
+    pattern = SCHEMA["$defs"]["generation"]["properties"]["generated_at"]["pattern"]
+    stamps = [f"{y:04d}-{m:02d}-{d:02d}T23:59:59+05:30"
+              for y in (1900, 2000, 2023, 2024, 2100) for m in range(1, 13) for d in range(1, 32)]
+    stamps += ["2026-09-27T12:00:00Z", "2026-09-27t12:00:00.25+05:30", "2016-12-31T23:59:60Z",
+               "2026-02-31T12:00:00Z", "2026-09-27T12:00:00", "2026-09-27T24:00:00Z"]
+    looser = [s for s in stamps if re.search(pattern, s) and not checker.conforms(s, "date-time")]
+    assert not looser, f"the pattern admits what the date-time checker refuses: {looser[:10]}"
+    leap = "2016-12-31T23:59:60Z"
+    assert not re.search(pattern, leap) and not checker.conforms(leap, "date-time")
 
 
 def test_jsonschema_agrees_rule_for_rule() -> None:

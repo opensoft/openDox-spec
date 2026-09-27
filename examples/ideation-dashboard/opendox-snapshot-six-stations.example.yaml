@@ -4,7 +4,8 @@
 # the three that declare `source` could as well have declared nothing. Three
 # groups form around shared topics. The candidates show all four states, and
 # the selected one's pick names the selection, whose target names the entry in
-# the submission station. keyword_index is present, which it need not be.
+# the submission station. Each changes entry lists its files, as the selection
+# does. keyword_index is present, which it need not be.
 {
   "schema_version": 1,
   "kind": "opendox-snapshot",
@@ -146,8 +147,12 @@
     }
   ],
   "changes": [
-    {"id": "rain-harvest-build", "status": "active"},
-    {"id": "compost-rota", "status": "archived"}
+    {
+      "id": "rain-harvest-build",
+      "status": "active",
+      "files": ["work/rain-harvest-build/plan.md", "work/rain-harvest-build/steps.md"]
+    },
+    {"id": "compost-rota", "status": "archived", "files": ["work/compost-rota/plan.md"]}
   ],
   "keyword_index": [
     {"keyword": "compost", "declared_doc_count": 3},

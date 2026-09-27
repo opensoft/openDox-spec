@@ -256,11 +256,20 @@
       }
     },
     "submission": {
-      "description": "One entry of the submission or the completion station.",
+      "description": "One entry of the submission or the completion station. files lists what it is made of, as a selection's files do, and the tile opens onto them.",
       "x-rule": "submission-keys",
       "type": "object",
       "required": ["id", "status"],
-      "properties": {"id": {"$ref": "#/$defs/id"}, "status": {"$ref": "#/$defs/submission_status"}}
+      "properties": {
+        "id": {"$ref": "#/$defs/id"},
+        "status": {"$ref": "#/$defs/submission_status"},
+        "files": {
+          "x-rule": "submission-keys",
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/path"}
+        }
+      }
     },
     "keyword_entry": {
       "description": "declared_doc_count counts the documents whose topics carry the keyword.",
@@ -298,7 +307,7 @@
     {
       "id": "generated-at-is-rfc3339",
       "class": "shape",
-      "says": "generation.generated_at, when present, is an RFC 3339 date-time on a day the calendar has (the pattern knows each month's length and the leap years), with no control character. It is fixed by the source revision, never read from the clock."
+      "says": "generation.generated_at, when present, is an RFC 3339 date-time on a day the calendar has (the pattern knows each month's length and the leap years), with no control character. It is narrower than RFC 3339 in one place: its seconds run from 00 to 59 and are never a leap second's 60, which a git commit date cannot hold and neither Python's datetime nor a browser's Date can read. It is fixed by the source revision, never read from the clock."
     },
     {
       "id": "section-is-a-list",
@@ -383,7 +392,7 @@
     {
       "id": "submission-keys",
       "class": "shape",
-      "says": "A changes entry, a submission or a completed item, is an object carrying id and status."
+      "says": "A changes entry, a submission or a completed item, is an object carrying id and status; files, when present, lists repository-relative paths, each once."
     },
     {
       "id": "submission-status-is-known",
