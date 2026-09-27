@@ -102,7 +102,7 @@
       "description": "A path relative to the repository root, as the corpus adapter lists it.",
       "x-rule": "path-is-repo-relative",
       "type": "string",
-      "pattern": "^(?!/)(?![\\s\\S]*[\\\\\\u0000-\\u001f\\u007f-\\u009f])(?!(?:[\\s\\S]*/)?\\.\\.(?:/|$))[\\s\\S]+$"
+      "pattern": "^(?!/)(?![A-Za-z]:)(?![\\s\\S]*[\\\\\\u0000-\\u001f\\u007f-\\u009f])(?!(?:[\\s\\S]*/)?\\.\\.(?:/|$))[\\s\\S]+$"
     },
     "topic": {
       "x-rule": "topic-is-trimmed-text",
@@ -327,7 +327,7 @@
     {
       "id": "path-is-repo-relative",
       "class": "shape",
-      "says": "A path is relative to the repository root: it does not start with a slash, holds no backslash and no control character (U+0000 to U+001F, U+007F to U+009F), and has no .. segment."
+      "says": "A path is relative to the repository root: it does not start with a slash or with a drive letter and a colon (C:/x or C:x, which Windows joins onto a root as a path outside it), holds no backslash and no control character (U+0000 to U+001F, U+007F to U+009F), and has no .. segment."
     },
     {
       "id": "stage-is-a-station-role",

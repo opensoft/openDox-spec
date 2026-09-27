@@ -415,7 +415,7 @@ def test_the_stage_values_are_the_six_role_keys() -> None:
     assert SCHEMA["$defs"]["stage_role"]["enum"] == STAGE_ROLES
 
 
-def test_the_other_closed_values_are_openDoxs_own() -> None:
+def test_the_candidate_and_submission_values_are_neutral() -> None:
     assert SCHEMA["$defs"]["candidate_state"]["enum"] == CANDIDATE_STATES
     assert SCHEMA["$defs"]["submission_status"]["enum"] == SUBMISSION_STATUSES
 
@@ -604,6 +604,11 @@ PATTERN_CASES: list[tuple[str, str, bool]] = [
         ("path-is-repo-relative", "notes/a\u0085b.md", False),
         ("path-is-repo-relative", "notes/a\u009fb.md", False),
         ("path-is-repo-relative", "notes/caf\u00e9.md", True),
+    # a drive letter and a colon: Windows joins it onto a root as a path outside it
+    ("path-is-repo-relative", "C:/outside.txt", False),
+    ("path-is-repo-relative", "C:outside.txt", False),
+    ("path-is-repo-relative", "c:/outside.txt", False),
+    ("path-is-repo-relative", "notes/C:/inside.md", True),
         ("topic-is-trimmed-text", "two words", True),
         ("topic-is-trimmed-text", " leading", False),
         ("topic-is-trimmed-text", "trailing ", False),
