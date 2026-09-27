@@ -60,7 +60,7 @@
     "repository": {"x-rule": "repository-is-text", "type": "string", "minLength": 1},
     "generation": {"$ref": "#/$defs/generation"},
     "documents": {
-      "description": "The source station, and the product's whole document list: every document the corpus adapter lists, in the station its stage names. A document that declares no stage is a source.",
+      "description": "The source station, and the product's whole document list: every document the corpus adapter lists, in the station its stage names. Every entry carries its stage, and no reader supplies one: the generator writes source for a document that declares no stage.",
       "x-rule": "section-is-a-list",
       "type": "array",
       "items": {"$ref": "#/$defs/document"}
@@ -110,7 +110,7 @@
       "pattern": "^(?!\\s)(?![\\s\\S]*\\s$)[^\\u0000-\\u001f]+$"
     },
     "stage_role": {
-      "description": "The station a document sits in: one of the six station role keys, in spine order, exactly openDox's display_profile.STAGE_ROLES. The set is closed. A declared value outside it is not a declaration, so it never reaches a snapshot, and its document is read as a source.",
+      "description": "The station a document sits in: one of the six station role keys, in spine order, exactly openDox's display_profile.STAGE_ROLES. The set is closed. A declared value outside it is not a declaration: the generator reads that document as a source and writes stage source, so the value never reaches a snapshot.",
       "x-rule": "stage-is-a-station-role",
       "enum": ["source", "grouping", "candidate", "selection", "submission", "completion"]
     },
@@ -141,7 +141,7 @@
       }
     },
     "document": {
-      "description": "One document the corpus adapter lists. title and summary are the default adapter's small neutral field set (R1Q13 (a)), and each is null when the document gives none. topics are the topics the generator assigns: the ones the document declares, or the ones its topic rule derives when it declares none.",
+      "description": "One document the corpus adapter lists. title and summary are the default adapter's small neutral field set (R1Q13 (a)). Neither is required, and the generator writes null for one the document does not give. topics are the topics the generator assigns: the ones the document declares, or the ones its topic rule derives when it declares none.",
       "x-rule": "document-keys",
       "type": "object",
       "required": ["id", "path", "stage"],
