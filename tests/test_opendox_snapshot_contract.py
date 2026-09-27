@@ -35,6 +35,8 @@ from __future__ import annotations
 
 import json
 import re
+import shutil
+import subprocess
 from datetime import date
 from pathlib import Path
 from typing import Any, Callable, Iterator, NamedTuple
@@ -83,13 +85,20 @@ def _no_duplicate_keys(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
     return out
 
 
+def _no_constants(name: str) -> Any:
+    """`json` reads NaN, Infinity and -Infinity, which JSON does not define and
+    PyYAML reads as text. A body that spells one is refused."""
+    raise ValueError(f"{name} is not JSON")
+
+
 def read(path: Path) -> tuple[list[str], Any]:
     """The comment header's lines and the parsed JSON body of `path`."""
     lines = path.read_text(encoding="utf-8").splitlines(keepends=True)
     header: list[str] = []
     while lines and (lines[0].startswith("#") or not lines[0].strip()):
         header.append(lines.pop(0).rstrip("\n"))
-    return header, json.loads("".join(lines), object_pairs_hook=_no_duplicate_keys)
+    return header, json.loads("".join(lines), object_pairs_hook=_no_duplicate_keys,
+                              parse_constant=_no_constants)
 
 
 SCHEMA = read(SCHEMA_PATH)[1]
@@ -565,9 +574,9 @@ def test_the_no_front_matter_example_is_the_smallest_shape() -> None:
     assert snap["possibles"] == snap["staged_topics"] == snap["changes"] == []
 
 
-@pytest.mark.parametrize(
-    "rule, value, admitted",
-    [
+#: The pattern rules' table, value by value: `(rule, value, admitted)`. It is
+#: read here, and again through a browser's regex engine below.
+PATTERN_CASES: list[tuple[str, str, bool]] = [
         ("path-is-repo-relative", "notes/soil-test.md", True),
         ("path-is-repo-relative", "a..b/c.md", True),
         ("path-is-repo-relative", "/notes/soil-test.md", False),
@@ -577,12 +586,23 @@ def test_the_no_front_matter_example_is_the_smallest_shape() -> None:
         ("path-is-repo-relative", "notes\\soil.md", False),
         ("path-is-repo-relative", "notes/soil.md\n", False),
         ("path-is-repo-relative", "", False),
+        # every control character is refused, DEL and C1 as well as C0
+        ("path-is-repo-relative", "notes/a\u007fb.md", False),
+        ("path-is-repo-relative", "notes/a\u0085b.md", False),
+        ("path-is-repo-relative", "notes/a\u009fb.md", False),
+        ("path-is-repo-relative", "notes/caf\u00e9.md", True),
         ("topic-is-trimmed-text", "two words", True),
         ("topic-is-trimmed-text", " leading", False),
         ("topic-is-trimmed-text", "trailing ", False),
         ("topic-is-trimmed-text", "newline\n", False),
         ("topic-is-trimmed-text", "tab\there", False),
         ("topic-is-trimmed-text", "", False),
+        ("topic-is-trimmed-text", "bre\u007fad", False),
+        ("topic-is-trimmed-text", "bread\u0085", False),
+        # U+FEFF is whitespace to a browser and not to Python: named, so both refuse it
+        ("topic-is-trimmed-text", "\ufeffbread", False),
+        ("topic-is-trimmed-text", "bread\u00a0", False),
+        ("topic-is-trimmed-text", "two\u00a0words", True),
         ("generated-at-is-rfc3339", "2026-09-27T12:00:00Z", True),
         ("generated-at-is-rfc3339", "2026-09-27t12:00:00.25+05:30", True),
         ("generated-at-is-rfc3339", "2024-02-29T00:00:00Z", True),
@@ -601,7 +621,17 @@ def test_the_no_front_matter_example_is_the_smallest_shape() -> None:
         # commit date cannot hold one, and neither Python nor a browser reads one.
         ("generated-at-is-rfc3339", "2016-12-31T23:59:60Z", False),
         ("generated-at-is-rfc3339", "2026-09-27T12:00:00Z\n", False),
-    ])
+]
+
+
+def _pattern_of(rule: str) -> str:
+    return {"path-is-repo-relative": _resolve("#/$defs/path"),
+            "topic-is-trimmed-text": _resolve("#/$defs/topic"),
+            "generated-at-is-rfc3339":
+                SCHEMA["$defs"]["generation"]["properties"]["generated_at"]}[rule]["pattern"]
+
+
+@pytest.mark.parametrize("rule, value, admitted", PATTERN_CASES)
 def test_a_pattern_rule_admits_and_refuses(rule: str, value: str, admitted: bool) -> None:
     """The pattern rules, value by value. Each pattern guards its own tail with
     a lookahead, because a Python `$` also matches before a final newline and an
@@ -614,6 +644,51 @@ def test_a_pattern_rule_admits_and_refuses(rule: str, value: str, admitted: bool
     found = list(_check(value, subschema, ""))
     assert (not found) is admitted, found
     assert {v.rule for v in found} <= {rule}
+
+
+#: The characters where Python's and a browser's regex engines could part:
+#: every control, every character either engine counts as whitespace, the
+#: zero-width and invisible neighbours of those, and two ordinary letters.
+_EDGE_CHARACTERS = [*range(0x00, 0xA1), 0x1680, 0x180E, *range(0x2000, 0x2010),
+                    *range(0x2028, 0x2030), 0x205F, 0x2060, 0x3000, 0xFEFF, 0xFFFE, 0x10FFFF]
+
+
+def test_a_browser_reads_every_pattern_as_python_does() -> None:
+    """A JSON Schema pattern is an ECMA-262 regular expression, and openDox's
+    views run in a browser, so a pattern must give a browser's engine the
+    verdict it gives Python's. Node's RegExp with the `u` flag, which is how
+    JSON Schema validators in JavaScript compile a pattern, reads the pattern
+    table and a sweep of the characters where the two engines could part:
+    each one leading, trailing and inside a topic, and inside a path."""
+    node = shutil.which("node")
+    if node is None:
+        pytest.skip("node is not installed; validate.yml installs it")
+    cases = [(_pattern_of(rule), value) for rule, value, _admitted in PATTERN_CASES]
+    for code in _EDGE_CHARACTERS:
+        ch = chr(code)
+        cases += [(_pattern_of("topic-is-trimmed-text"), v) for v in (f"x{ch}", f"{ch}x", f"a{ch}b")]
+        cases.append((_pattern_of("path-is-repo-relative"), f"n/a{ch}b.md"))
+    script = ("const c = JSON.parse(require('fs').readFileSync(0, 'utf8'));"
+              "process.stdout.write(JSON.stringify(c.map(([p, v]) => new RegExp(p, 'u').test(v))));")
+    run = subprocess.run([node, "-e", script], input=json.dumps(cases), capture_output=True,
+                         text=True, check=True)
+    theirs = json.loads(run.stdout)
+    parted = [(p[:24], v, ours) for (p, v), ours, js in
+              zip(cases, (bool(re.search(p, v)) for p, v in cases), theirs) if ours is not js]
+    assert not parted, f"Python and a browser read these differently: {parted[:10]}"
+
+
+@pytest.mark.parametrize("body", ['{"a": NaN}', '{"a": Infinity}', '{"a": -Infinity}',
+                                  '{"a": 1, "a": 2}'],
+                         ids=["NaN", "Infinity", "-Infinity", "a repeated key"])
+def test_the_reader_refuses_what_json_does_not_mean(tmp_path: Path, body: str) -> None:
+    """The reader is strict where Python's `json` is lenient. It refuses the
+    constants JSON does not define, which PyYAML would read as text, and a key
+    repeated in one object, which `json` would drop in silence."""
+    path = tmp_path / "body.yaml"
+    path.write_text(f"# a header line\n{body}\n", encoding="utf-8")
+    with pytest.raises(ValueError):
+        read(path)
 
 
 @pytest.mark.parametrize("station, entry, keys", [

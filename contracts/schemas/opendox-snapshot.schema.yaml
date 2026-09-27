@@ -102,12 +102,12 @@
       "description": "A path relative to the repository root, as the corpus adapter lists it.",
       "x-rule": "path-is-repo-relative",
       "type": "string",
-      "pattern": "^(?!/)(?![\\s\\S]*[\\\\\\u0000-\\u001f])(?!(?:[\\s\\S]*/)?\\.\\.(?:/|$))[\\s\\S]+$"
+      "pattern": "^(?!/)(?![\\s\\S]*[\\\\\\u0000-\\u001f\\u007f-\\u009f])(?!(?:[\\s\\S]*/)?\\.\\.(?:/|$))[\\s\\S]+$"
     },
     "topic": {
       "x-rule": "topic-is-trimmed-text",
       "type": "string",
-      "pattern": "^(?!\\s)(?![\\s\\S]*\\s$)[^\\u0000-\\u001f]+$"
+      "pattern": "^(?![\\s\\ufeff])(?![\\s\\S]*[\\s\\ufeff]$)[^\\u0000-\\u001f\\u007f-\\u009f]+$"
     },
     "stage_role": {
       "description": "The station a document sits in: one of the six station role keys, in spine order, exactly openDox's display_profile.STAGE_ROLES. The set is closed. A declared value outside it is not a declaration: the generator reads that document as a source and writes stage source, so the value never reaches a snapshot.",
@@ -135,7 +135,7 @@
           "x-rule": "generated-at-is-rfc3339",
           "type": "string",
           "format": "date-time",
-          "pattern": "^(?![\\s\\S]*[\\u0000-\\u001f])(?:[0-9]{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12][0-9]|3[01])|(?:0[469]|11)-(?:0[1-9]|[12][0-9]|30)|02-(?:0[1-9]|1[0-9]|2[0-8]))|(?:[0-9]{2}(?:0[48]|[2468][048]|[13579][26])|(?:[02468][048]|[13579][26])00)-02-29)[Tt](?:[01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](?:\\.[0-9]+)?(?:[Zz]|[+-](?:[01][0-9]|2[0-3]):[0-5][0-9])$"
+          "pattern": "^(?![\\s\\S]*[\\u0000-\\u001f\\u007f-\\u009f])(?:[0-9]{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12][0-9]|3[01])|(?:0[469]|11)-(?:0[1-9]|[12][0-9]|30)|02-(?:0[1-9]|1[0-9]|2[0-8]))|(?:[0-9]{2}(?:0[48]|[2468][048]|[13579][26])|(?:[02468][048]|[13579][26])00)-02-29)[Tt](?:[01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](?:\\.[0-9]+)?(?:[Zz]|[+-](?:[01][0-9]|2[0-3]):[0-5][0-9])$"
         },
         "generator_version": {"x-rule": "generation-anchored", "type": "string", "minLength": 1}
       }
@@ -327,7 +327,7 @@
     {
       "id": "path-is-repo-relative",
       "class": "shape",
-      "says": "A path is relative to the repository root: it does not start with a slash, holds no backslash and no control character, and has no .. segment."
+      "says": "A path is relative to the repository root: it does not start with a slash, holds no backslash and no control character (U+0000 to U+001F, U+007F to U+009F), and has no .. segment."
     },
     {
       "id": "stage-is-a-station-role",
@@ -347,7 +347,7 @@
     {
       "id": "topic-is-trimmed-text",
       "class": "shape",
-      "says": "A topic is non-empty text with no leading or trailing whitespace and no control character."
+      "says": "A topic is non-empty text with no leading or trailing whitespace and no control character (U+0000 to U+001F, U+007F to U+009F). Whitespace is what both Python and a browser count as whitespace, U+FEFF included, so both refuse the same topics."
     },
     {
       "id": "group-keys",
