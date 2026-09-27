@@ -717,7 +717,8 @@ def test_the_format_checker_admits_whatever_the_pattern_admits() -> None:
     looser = [s for s in stamps if re.search(pattern, s) and not checker.conforms(s, "date-time")]
     assert not looser, f"the pattern admits what the date-time checker refuses: {looser[:10]}"
     leap = "2016-12-31T23:59:60Z"
-    assert not re.search(pattern, leap) and not checker.conforms(leap, "date-time")
+    assert not re.search(pattern, leap), "the pattern admits a leap second"
+    assert not checker.conforms(leap, "date-time"), "the date-time checker admits a leap second"
 
 
 def test_jsonschema_agrees_rule_for_rule() -> None:
