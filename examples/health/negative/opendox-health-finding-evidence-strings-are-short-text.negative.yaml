@@ -1,5 +1,5 @@
-# expected_failure: identity-names-no-text
-# INVALID: an identity with a key named text.
+# expected_failure: evidence-strings-are-short-text
+# INVALID: evidence holding a passage of the document, 201 characters long.
 # The broken-link example with this one change, so it breaks this
 # rule and no other.
 {
@@ -8,11 +8,11 @@
   "pack_id": "opendox",
   "pack_version": "0.2.0",
   "path": "notes/plan.md",
-  "identity": {"target": "../old/brief.md", "text": "see the old brief"},
+  "identity": {"target": "../old/brief.md"},
   "locator": {"line_start": 12, "line_end": 12},
   "severity": "warning",
   "resolution_class": "auto-fix",
   "message": "link target does not exist; a unique file of that name exists elsewhere",
-  "evidence": {"candidate": "archive/brief.md", "family_version": "1"},
+  "evidence": {"candidate": "archive/brief.md", "family_version": "1", "context": "The old brief said the launch would wait for the second review, and that the budget would be settled by the steering group before any vendor was asked to quote; this sentence is document text, two hund"},
   "baseline_class": "new"
 }

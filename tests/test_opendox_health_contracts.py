@@ -134,9 +134,13 @@ OPENDOX_VALIDATOR_KEYWORDS = frozenset({
 
 
 class Violation(NamedTuple):
-    rule: str       # the broken rule's id, from `x-rule` or a reference check
-    where: str      # a JSON pointer into the instance ("" is the root)
-    keyword: str    # the schema keyword that failed, or "reference"
+    """One broken rule: its id (from `x-rule`, or a reference check's), a JSON
+    pointer into the instance ("" is the root), the keyword that failed
+    ("reference" for a reference rule), and what was found."""
+
+    rule: str
+    where: str
+    keyword: str
     detail: str
 
 
@@ -144,39 +148,45 @@ def _pointer(parts: Any) -> str:
     return "".join("/" + str(p).replace("~", "~0").replace("/", "~1") for p in parts)
 
 
+def _not_bool(test: Callable[[Any], bool]) -> Callable[[Any], bool]:
+    """JSON's true and false are not the numbers 1 and 0."""
+    return lambda value: not isinstance(value, bool) and test(value)
+
+
+#: JSON Schema's seven types, as predicates over a value `json` read. A float
+#: with no fraction is an integer, as JSON Schema 2020-12 has it.
+_TYPES: dict[str, Callable[[Any], bool]] = {
+    "object": lambda value: isinstance(value, dict),
+    "array": lambda value: isinstance(value, list),
+    "string": lambda value: isinstance(value, str),
+    "null": lambda value: value is None,
+    "boolean": lambda value: isinstance(value, bool),
+    "number": _not_bool(lambda value: isinstance(value, (int, float))),
+    "integer": _not_bool(lambda value: isinstance(value, int)
+                         or (isinstance(value, float) and value.is_integer())),
+}
+
+
 def _is_type(value: Any, name: str) -> bool:
-    if name == "object":
-        return isinstance(value, dict)
-    if name == "array":
-        return isinstance(value, list)
-    if name == "string":
-        return isinstance(value, str)
-    if name == "null":
-        return value is None
-    if name == "boolean":
-        return isinstance(value, bool)
-    if isinstance(value, bool):          # JSON true is not the number 1
-        return False
-    if name == "integer":
-        return isinstance(value, int) or (isinstance(value, float) and value.is_integer())
-    if name == "number":
-        return isinstance(value, (int, float))
-    raise AssertionError(f"a contract names a type this evaluator does not know: {name!r}")
+    return _TYPES[name](value)
 
 
 def _canon(value: Any) -> Any:
-    """JSON equality: `true` is not `1`, `1` is `1.0`, and key order is noise."""
-    if isinstance(value, bool):
-        return ("boolean", value)
-    if isinstance(value, (int, float)):
-        return ("number", value)
-    if isinstance(value, str):
-        return ("string", value)
-    if value is None:
-        return ("null",)
-    if isinstance(value, list):
-        return ("array", tuple(_canon(v) for v in value))
-    return ("object", tuple(sorted((k, _canon(v)) for k, v in value.items())))
+    """JSON equality as JSON Schema defines it: true is not 1, 1 is 1.0, and an
+    object's key order is noise."""
+    match value:
+        case bool():
+            return ("boolean", value)
+        case int() | float():
+            return ("number", value)
+        case None:
+            return ("null",)
+        case str():
+            return ("string", value)
+        case list():
+            return ("array", tuple(map(_canon, value)))
+        case _:
+            return ("object", tuple(sorted((key, _canon(item)) for key, item in value.items())))
 
 
 def _resolve(schema: dict[str, Any], ref: str) -> dict[str, Any]:
@@ -188,67 +198,90 @@ def _resolve(schema: dict[str, Any], ref: str) -> dict[str, Any]:
     return node
 
 
-def _check(root: dict[str, Any], value: Any, schema: dict[str, Any],
+def _extra(value: dict[str, Any], node: dict[str, Any]) -> list[str]:
+    """The keys of `value` that `node`'s `properties` do not name."""
+    return [key for key in value if key not in node.get("properties", {})]
+
+
+#: Each keyword that can fail, as a judge of (its argument, the value, the
+#: subschema) that names what it found, once per failure. A keyword that
+#: applies only to strings, numbers or objects passes every other value.
+_JUDGES: dict[str, Callable[[Any, Any, dict[str, Any]], list[str]]] = {
+    "type": lambda arg, value, node: [] if any(
+        _is_type(value, name) for name in (arg if isinstance(arg, list) else [arg])
+    ) else [f"{value!r} is not of type {arg}"],
+    "const": lambda arg, value, node: [] if _canon(value) == _canon(arg) else [
+        f"{value!r} is not {arg!r}"],
+    "enum": lambda arg, value, node: [] if _canon(value) in set(map(_canon, arg)) else [
+        f"{value!r} is not one of {arg}"],
+    "minLength": lambda arg, value, node: [
+        f"{len(value)} characters, fewer than {arg}"] if isinstance(value, str)
+        and len(value) < arg else [],
+    "maxLength": lambda arg, value, node: [
+        f"{len(value)} characters, more than {arg}"] if isinstance(value, str)
+        and len(value) > arg else [],
+    "pattern": lambda arg, value, node: [
+        f"{value!r} does not match the rule's pattern"] if isinstance(value, str)
+        and not re.search(arg, value) else [],
+    "minimum": lambda arg, value, node: [
+        f"{value!r} is less than {arg}"] if _is_type(value, "number") and value < arg else [],
+    "required": lambda arg, value, node: [
+        f"{key!r} is required" for key in arg if key not in value
+    ] if isinstance(value, dict) else [],
+    "dependentRequired": lambda arg, value, node: [
+        f"{key!r} needs {needs}" for key, needs in arg.items()
+        if key in value and any(need not in value for need in needs)
+    ] if isinstance(value, dict) else [],
+    "minProperties": lambda arg, value, node: [
+        f"{len(value)} keys, fewer than {arg}"] if isinstance(value, dict)
+        and len(value) < arg else [],
+    "additionalProperties": lambda arg, value, node: [
+        f"keys this contract does not name: {_extra(value, node)}"] if arg is False
+        and isinstance(value, dict) and _extra(value, node) else [],
+}
+
+
+def _check(root: dict[str, Any], value: Any, node: dict[str, Any],
            where: str) -> Iterator[Violation]:
-    if "$ref" in schema:
-        yield from _check(root, value, _resolve(root, schema["$ref"]), where)
-    rule = schema.get("x-rule", "<no rule named>")
+    """Every violation of `node` by `value`, located at `where`."""
+    rule = node.get("x-rule", "<no rule named>")
+    if "$ref" in node:
+        yield from _check(root, value, _resolve(root, node["$ref"]), where)
+    for keyword, judge in _JUDGES.items():
+        if keyword in node:
+            for detail in judge(node[keyword], value, node):
+                yield Violation(rule, where, keyword, detail)
+    if "not" in node and _passes(root, value, node["not"]):
+        yield Violation(rule, where, "not", f"{value!r} is what this rule refuses")
+    yield from _applied(root, value, node, where)
 
-    def broken(keyword: str, detail: str) -> Violation:
-        return Violation(rule, where, keyword, detail)
 
-    if "type" in schema:
-        names = schema["type"] if isinstance(schema["type"], list) else [schema["type"]]
-        if not any(_is_type(value, n) for n in names):
-            yield broken("type", f"{value!r} is not of type {names}")
-    if "const" in schema and _canon(value) != _canon(schema["const"]):
-        yield broken("const", f"{value!r} is not {schema['const']!r}")
-    if "enum" in schema and _canon(value) not in {_canon(v) for v in schema["enum"]}:
-        yield broken("enum", f"{value!r} is not one of {schema['enum']}")
-    if isinstance(value, str):
-        if len(value) < schema.get("minLength", 0):
-            yield broken("minLength", f"{value!r} is shorter than {schema['minLength']}")
-        if "maxLength" in schema and len(value) > schema["maxLength"]:
-            yield broken("maxLength", f"{len(value)} characters, more than {schema['maxLength']}")
-        if "pattern" in schema and not re.search(schema["pattern"], value):
-            yield broken("pattern", f"{value!r} does not match the rule's pattern")
-    if _is_type(value, "number") and "minimum" in schema and value < schema["minimum"]:
-        yield broken("minimum", f"{value!r} is less than {schema['minimum']}")
-    if isinstance(value, list) and "items" in schema:
-        for i, item in enumerate(value):
-            yield from _check(root, item, schema["items"], f"{where}/{i}")
+def _applied(root: dict[str, Any], value: Any, node: dict[str, Any],
+             where: str) -> Iterator[Violation]:
+    """The violations of the subschemas `node` applies to `value` or its parts."""
+    if isinstance(value, list) and "items" in node:
+        for index, item in enumerate(value):
+            yield from _check(root, item, node["items"], f"{where}/{index}")
     if isinstance(value, dict):
-        for key in schema.get("required", ()):
-            if key not in value:
-                yield broken("required", f"{key!r} is required")
-        for key, needs in schema.get("dependentRequired", {}).items():
-            if key in value and any(n not in value for n in needs):
-                yield broken("dependentRequired", f"{key!r} needs {needs}")
-        if len(value) < schema.get("minProperties", 0):
-            yield broken("minProperties", f"{len(value)} keys, fewer than {schema['minProperties']}")
-        named = schema.get("properties", {})
-        for key, sub in named.items():
+        for key, sub in node.get("properties", {}).items():
             if key in value:
                 yield from _check(root, value[key], sub, where + _pointer([key]))
-        extra = [key for key in value if key not in named]
-        if schema.get("additionalProperties") is False and extra:
-            yield broken("additionalProperties", f"keys this contract does not name: {extra}")
-        elif isinstance(schema.get("additionalProperties"), dict):
-            for key in extra:
-                yield from _check(root, value[key], schema["additionalProperties"],
+        if isinstance(node.get("additionalProperties"), dict):
+            for key in _extra(value, node):
+                yield from _check(root, value[key], node["additionalProperties"],
                                   where + _pointer([key]))
-        if "propertyNames" in schema:
-            # A key is judged where its object is, as JSON Schema reports it.
-            for key in value:
-                yield from _check(root, key, schema["propertyNames"], where)
-    if "not" in schema and not any(True for _ in _check(root, value, schema["not"], where)):
-        yield broken("not", f"{value!r} is what this rule refuses")
-    for sub in schema.get("allOf", ()):
+        # A key is judged where its object is, as JSON Schema reports it.
+        for key in (value if "propertyNames" in node else ()):
+            yield from _check(root, key, node["propertyNames"], where)
+    for sub in node.get("allOf", ()):
         yield from _check(root, value, sub, where)
     # `if` is a test, never a failure: it only chooses whether `then` applies.
-    if "if" in schema and "then" in schema:
-        if not any(True for _ in _check(root, value, schema["if"], where)):
-            yield from _check(root, value, schema["then"], where)
+    if "if" in node and "then" in node and _passes(root, value, node["if"]):
+        yield from _check(root, value, node["then"], where)
+
+
+def _passes(root: dict[str, Any], value: Any, node: dict[str, Any]) -> bool:
+    return next(_check(root, value, node, ""), None) is None
 
 
 def shape_violations(contract: str, instance: Any) -> list[Violation]:
@@ -279,7 +312,7 @@ def _admits(contract: str, pointer: str, value: Any) -> bool:
     judges only parts whose own shape rules hold, as each shape rule says why
     the others do not."""
     schema = SCHEMAS[contract]
-    return not any(True for _ in _check(schema, value, _resolve(schema, pointer), ""))
+    return _passes(schema, value, _resolve(schema, pointer))
 
 
 def _finding_parts(finding: Any) -> tuple[str, str, str, str] | None:
@@ -306,8 +339,11 @@ def _id_names_its_pack_and_kind(finding: Any) -> Iterator[Violation]:
 
 
 def _id_is_the_hash_of_its_key(finding: Any) -> Iterator[Violation]:
+    """Judged only over a key whose every part its own shape rules admit, the
+    identity whole, so a malformed identity is reported once, by its own rule,
+    and a string UTF-8 cannot encode never reaches the hash."""
     parts = _finding_parts(finding)
-    if parts is None or not isinstance(finding.get("identity"), dict):
+    if parts is None or not _admits(FINDING, "#/properties/identity", finding.get("identity")):
         return
     fid, kind, pack_id, path = parts
     want = finding_id(finding["identity"], kind, pack_id, path).rsplit(".", 1)[1]
@@ -694,6 +730,11 @@ def test_one_id_pattern_and_one_name_pattern_across_the_three() -> None:
 
 _SHORT = "x" * 200
 _LONG = "x" * 201
+#: A lone surrogate, as `os.fsdecode` gives one for a file name byte that is
+#: not UTF-8, and as JSON spells one ("\udc80"). UTF-8 cannot encode it.
+_LONE = "\udc80"
+_EVIDENCE_TEXT = "evidence-strings-are-short-text"
+_IDENTITY_TEXT = "identity-strings-are-short-text"
 
 
 @pytest.mark.parametrize("field, value, where, rule", [
@@ -701,38 +742,69 @@ _LONG = "x" * 201
     ("evidence", {"span": [3, 4], "ok": True, "none": None, "digest": "ab" * 32}, None, None),
     ("evidence", {"a": _SHORT}, None, None),
     ("evidence", {_SHORT: "a"}, None, None),
-    ("evidence", {"a": _LONG}, "/evidence/a", "evidence-strings-are-short"),
-    ("evidence", {"a": {"b": [_LONG]}}, "/evidence/a/b/0", "evidence-strings-are-short"),
-    ("evidence", {_LONG: "a"}, "/evidence", "evidence-strings-are-short"),
-    ("evidence", {"a": {_LONG: 1}}, "/evidence/a", "evidence-strings-are-short"),
+    ("evidence", {"a": "\U0001f50e caf\u00e9"}, None, None),
+    ("evidence", {"a": _LONG}, "/evidence/a", _EVIDENCE_TEXT),
+    ("evidence", {"a": {"b": [_LONG]}}, "/evidence/a/b/0", _EVIDENCE_TEXT),
+    ("evidence", {_LONG: "a"}, "/evidence", _EVIDENCE_TEXT),
+    ("evidence", {"a": {_LONG: 1}}, "/evidence/a", _EVIDENCE_TEXT),
+    ("evidence", {"a": f"notes/{_LONE}.md"}, "/evidence/a", _EVIDENCE_TEXT),
+    ("evidence", {"a": [{_LONE: 1}]}, "/evidence/a/0", _EVIDENCE_TEXT),
     ("evidence", {"quote": "a"}, "/evidence", "evidence-names-no-text"),
     ("evidence", {"a": [{"content": "a"}]}, "/evidence/a/0", "evidence-names-no-text"),
     ("evidence", {"Text": "a", "excerpts": "a", "context": "a"}, None, None),
     ("evidence", ["a"], "/evidence", "evidence-is-an-object"),
     ("identity", {}, None, None),
     ("identity", {"pair": ["a.md", "b.md"], "anchor": None, "flag": False}, None, None),
+    ("identity", {"target": "\U0001f50e caf\u00e9.md"}, None, None),
     ("identity", {"line": 12}, "/identity/line", "identity-holds-no-number"),
     ("identity", {"at": {"n": 1.5}}, "/identity/at/n", "identity-holds-no-number"),
     ("identity", {"pair": ["a.md", 2]}, "/identity/pair/1", "identity-holds-no-number"),
-    ("identity", {"a": _LONG}, "/identity/a", "identity-strings-are-short"),
-    ("identity", {_LONG: "a"}, "/identity", "identity-strings-are-short"),
+    ("identity", {"a": _LONG}, "/identity/a", _IDENTITY_TEXT),
+    ("identity", {_LONG: "a"}, "/identity", _IDENTITY_TEXT),
+    ("identity", {"target": f"../{_LONE}.md"}, "/identity/target", _IDENTITY_TEXT),
+    ("identity", {_LONE: "a"}, "/identity", _IDENTITY_TEXT),
     ("identity", {"excerpt": "a"}, "/identity", "identity-names-no-text"),
     ("identity", "../old/brief.md", "/identity", "identity-is-an-object"),
-], ids=lambda v: v if isinstance(v, str) and len(v) < 40 else "")
+], ids=lambda v: v if isinstance(v, str) and v.isascii() and len(v) < 40 else "")
 def test_identity_and_evidence_are_bounded_at_every_depth(
         field: str, value: Any, where: str | None, rule: str | None) -> None:
-    """Every string, key or value, at any depth, is at most 200 characters, and
-    no key at any depth is named excerpt, text, content or quote, exactly as
-    the contract spells them. identity holds no number. The id is computed
-    again over a changed identity, so only the bound under test can break."""
+    """Every string, key or value, at any depth, is at most 200 characters with
+    no lone surrogate, and no key at any depth is named excerpt, text, content
+    or quote, exactly as the contract spells them. identity holds no number.
+    A changed identity that is admitted gets its id computed again, so only the
+    bound under test can break; a refused one is never hashed."""
     finding = {**_finding_example("broken-link"), field: value}
-    if field == "identity" and isinstance(value, dict):
+    if field == "identity" and rule is None:
         finding["id"] = finding_id(value, finding["kind"], finding["pack_id"], finding["path"])
     found = violations(FINDING, finding)
     if rule is None:
         assert not found, _lines(found)
     else:
         assert {(v.rule, v.where) for v in found} == {(rule, where)}, _lines(found)
+
+
+@pytest.mark.parametrize("field, value, rule", [
+    ("pack_version", f"0.2.0{_LONE}", "pack-version-is-text"),
+    ("path", f"notes/{_LONE}.md", "path-is-corpus-relative"),
+    ("message", f"no file named {_LONE}", "message-is-one-bounded-line"),
+    ("locator", {"target": f"../{_LONE}.md"}, "locator-target-is-short-text"),
+    ("identity", {"target": _LONE}, _IDENTITY_TEXT),
+    ("identity", {_LONE: "x"}, _IDENTITY_TEXT),
+    ("evidence", {"candidate": _LONE}, _EVIDENCE_TEXT),
+    ("evidence", {_LONE: "x"}, _EVIDENCE_TEXT),
+], ids=["pack_version", "path", "message", "locator target", "identity value",
+        "identity key", "evidence value", "evidence key"])
+def test_no_string_a_finding_carries_holds_a_lone_surrogate(field: str, value: Any,
+                                                             rule: str) -> None:
+    """UTF-8 cannot encode a lone surrogate, so the id could not hash a key
+    holding one, and no store or JSON reader could take the finding. Each is
+    refused by its own rule, and the id rule is never asked to hash it: the
+    finding keeps its old id, and only the one rule breaks."""
+    finding = {**_finding_example("broken-link"), field: value}
+    found = violations(FINDING, finding)
+    assert {v.rule for v in found} == {rule}, _lines(found)
+    with pytest.raises(UnicodeEncodeError):
+        _LONE.encode("utf-8")
 
 
 def test_every_bound_is_the_contracts_200_characters() -> None:
@@ -772,9 +844,9 @@ def test_a_message_is_one_line_of_at_most_200_characters(message: str, admitted:
     ({"line_start": True, "line_end": 5}, {"locator-line-is-a-line-number"}),
     ({"line_start": "3", "line_end": 5}, {"locator-line-is-a-line-number"}),
     ({"line_start": 2.5, "line_end": 5}, {"locator-line-is-a-line-number"}),
-    ({"target": ""}, {"locator-target-is-short"}),
+    ({"target": ""}, {"locator-target-is-short-text"}),
     ({"target": _SHORT}, set()),
-    ({"target": _LONG}, {"locator-target-is-short"}),
+    ({"target": _LONG}, {"locator-target-is-short-text"}),
     ({"line_start": 5, "line_end": 4}, {"locator-span-is-ordered"}),
 ], ids=repr)
 def test_a_locator_is_a_span_a_target_or_both(locator: dict[str, Any], rules: set[str]) -> None:
@@ -821,6 +893,10 @@ PATTERNS: dict[str, tuple[str, str]] = {
     "digest-value-is-64-hex": (PACKS, "#/$defs/digest/properties/value"),
     "finding-is-a-finding-id": (DISPOSITIONS, "#/$defs/exception/properties/finding"),
     "reason-is-text": (DISPOSITIONS, "#/$defs/exception/properties/reason"),
+    "version-is-text": (PACKS, "#/$defs/entry/properties/version"),
+    "locator-target-is-short-text": (FINDING, "#/properties/locator/properties/target"),
+    "identity-strings-are-short-text": (FINDING, "#/$defs/identity_value/allOf/1"),
+    "evidence-strings-are-short-text": (FINDING, "#/$defs/evidence_value"),
 }
 
 _H16 = "0123456789abcdef"
@@ -931,6 +1007,28 @@ PATTERN_CASES: list[tuple[str, str, bool]] = [
     ("reason-is-text", "\ufeff", False),
     ("reason-is-text", "\u001c\u0085", False),
     ("reason-is-text", "\u00a0\u3000", False),
+    # a lone surrogate, which UTF-8 cannot encode, in every string a finding
+    # carries; an astral character, which is one code point, is text
+    ("pack-version-is-text", "0.2.0\udc80", False),
+    ("version-is-text", "1.4.0", True),
+    ("version-is-text", "1.4.0\udc80", False),
+    ("version-is-text", "1.4\n", False),
+    ("path-is-corpus-relative", "notes/\udc80.md", False),
+    ("path-is-corpus-relative", "notes/\U0001f50e.md", True),
+    ("message-is-one-bounded-line", "no file named \udc80", False),
+    ("message-is-one-bounded-line", "a \U0001f50e b", True),
+    ("source-is-a-git-url-or-corpus-path", "tools/\udc80/a", False),
+    ("git-source-test", "git@example.invalid:packs/\udc80.git", False),
+    ("corpus-source-test", "tools/\udc80/a", False),
+    ("locator-target-is-short-text", "../old/brief.md", True),
+    ("locator-target-is-short-text", "../\ud800.md", False),
+    ("locator-target-is-short-text", "../\U0001f50e.md", True),
+    ("identity-strings-are-short-text", "../old/brief.md", True),
+    ("identity-strings-are-short-text", "\ud800", False),
+    ("identity-strings-are-short-text", "a\udfff", False),
+    ("identity-strings-are-short-text", "\U0001f50e", True),
+    ("evidence-strings-are-short-text", "\udbff", False),
+    ("evidence-strings-are-short-text", "\U0010ffff", True),
 ]
 
 
@@ -945,9 +1043,12 @@ def test_a_pattern_admits_and_refuses(rule: str, value: str, admitted: bool) -> 
 
 #: Every character where Python's and a browser's regex engines could part,
 #: as in the snapshot's test: every control, every character either engine
-#: counts as whitespace, the invisible neighbours of those, and two letters.
+#: counts as whitespace, the invisible neighbours of those, and two letters;
+#: and, for the lone-surrogate rules, both ends of each surrogate half and two
+#: astral characters, which each engine reads as one code point.
 _EDGE_CHARACTERS = [*range(0x00, 0xA1), 0x1680, 0x180E, *range(0x2000, 0x2010),
-                    *range(0x2028, 0x2030), 0x205F, 0x2060, 0x3000, 0xFEFF, 0xFFFE, 0x10FFFF]
+                    *range(0x2028, 0x2030), 0x205F, 0x2060, 0x3000,
+                    0xD800, 0xDBFF, 0xDC00, 0xDC80, 0xDFFF, 0xFEFF, 0xFFFE, 0x1F50E, 0x10FFFF]
 
 
 def test_a_browser_reads_every_pattern_as_python_does() -> None:
@@ -1020,6 +1121,18 @@ def test_where_a_pack_lives_decides_its_commit(source: str, commit: str | None,
         entry["commit"] = commit
     manifest["packs"] = [entry]
     assert {v.rule for v in violations(PACKS, manifest)} == rules
+
+
+def test_the_digest_is_taken_over_the_tree_the_source_names() -> None:
+    """OQ-H15-12, as plan 038's manifest contract states it: a corpus-relative
+    source's digest is over the subtree <corpus-commit>:<source>, and a git
+    URL's over the fetched repository's root tree at its commit, never over a
+    tree-ish holding the URL. The header is where a reader learns which."""
+    header = "\n".join(read(SCHEMA_PATHS[PACKS])[0])
+    assert "<corpus-commit>:<source>" in header
+    assert "<commit>^{tree}" in header
+    assert "The URL is never part of a tree-ish." in header
+    assert "<commit>:<source>" not in header
 
 
 @pytest.mark.parametrize("key", ["timeout", "budget", "memory", "pids", "nproc", "cpu"])

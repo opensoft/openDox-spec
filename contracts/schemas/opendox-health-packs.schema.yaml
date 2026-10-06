@@ -17,23 +17,32 @@
 # commit for a git-URL source only. Where the source lives decides commit:
 #
 #   a git URL (https://, ssh://, or scp-like user@host:path) MUST carry the
-#     commit the engine fetches, and the digest is taken over that commit;
+#     commit the engine fetches;
 #   a corpus-relative source MUST NOT carry one: its referent is the corpus
 #     commit that holds both this file and the pack, so the corpus's own
 #     history pins the pack. A commit there is refused, because it would name
 #     a commit the corpus cannot check (15.1a).
 #
 # THE DIGEST is sorted-ls-tree-r-v1, the source-tree digest neutral-product-pin
-# defines over a commit (openxFactory's contracts/opendox-pin.yaml), applied to
-# the tree-ish <commit>:<source> with paths relative to the source (OQ-H15-12):
+# defines over a commit: openxFactory's contracts/opendox-pin.yaml, lines
+# 123-134, read at openxFactory 0f2a87f6 (blob 6bd24448). Over a tree-ish T:
 #
-#   records = `git ls-tree -r -z <commit>:<source>` split on NUL, empties dropped
+#   records = `git ls-tree -r -z T` split on NUL, empties dropped
 #   each record is `<mode> SP <type> SP <oid> TAB <path>`, path unquoted
 #   sort the records bytewise ascending
 #   value   = sha256(b"".join(record + b"\n" for record in records)), in hex
 #
-# For a corpus-relative source, <commit> is the corpus commit the run reads:
-# HEAD's in a working-state run, so an uncommitted edit to a pack never runs.
+# Which tree T is depends on the source (OQ-H15-12, as plan 038's
+# contracts/health-packs-manifest.md states it at opensoft/openxFactory#1245's
+# f9cc2d02):
+#
+#   a corpus-relative source: the subtree <corpus-commit>:<source>, so each path
+#     is relative to the source. <corpus-commit> is the commit the run reads:
+#     HEAD's in a working-state run, so an uncommitted edit to a pack never runs;
+#   a git URL: the fetched repository's ROOT tree at the entry's commit,
+#     <commit>^{tree}, exactly as neutral-product-pin defines it over a commit.
+#     The URL is never part of a tree-ish.
+#
 # A gitlink inside a pack (a `160000 commit` record) is refused, and the engine
 # checks the digest before it imports a single line of the pack. Those checks
 # need the pack's tree, so the engine makes them, not this schema.
@@ -83,7 +92,7 @@
           "x-rule": "version-is-text",
           "type": "string",
           "minLength": 1,
-          "pattern": "^(?![\\s\\S]*[\\u0000-\\u001f\\u007f-\\u009f])"
+          "pattern": "^(?![\\s\\S]*[\\u0000-\\u001f\\u007f-\\u009f\\ud800-\\udfff])"
         },
         "source": {
           "description": "Where the pack lives: a path relative to the corpus root, or a git URL the engine fetches over https:// or ssh:// (scp-like user@host:path included) into a cache under OPENDOX_STATE_DIR (OQ-H15-14). A file:// or ext:: URL, any other scheme, an absolute path and a path with a .. segment are refused, and so is a URL that carries a credential.",
@@ -91,7 +100,7 @@
             {
               "x-rule": "source-is-a-git-url-or-corpus-path",
               "type": "string",
-              "pattern": "^(?![\\s\\S]*[\\u0000-\\u001f\\u007f-\\u009f])(?:https://[^/\\s\\ufeff]+/[^\\s\\ufeff]+|ssh://[^/\\s\\ufeff]+/[^\\s\\ufeff]+|[^/@:\\s\\ufeff]+@[^/@:\\s\\ufeff]+:[^\\s\\ufeff]+|(?!/)(?![\\s\\S]*[:\\\\])(?!(?:[\\s\\S]*/)?\\.\\.(?:/|$))[\\s\\S]+)$"
+              "pattern": "^(?![\\s\\S]*[\\u0000-\\u001f\\u007f-\\u009f\\ud800-\\udfff])(?:https://[^/\\s\\ufeff]+/[^\\s\\ufeff]+|ssh://[^/\\s\\ufeff]+/[^\\s\\ufeff]+|[^/@:\\s\\ufeff]+@[^/@:\\s\\ufeff]+:[^\\s\\ufeff]+|(?!/)(?![\\s\\S]*[:\\\\])(?!(?:[\\s\\S]*/)?\\.\\.(?:/|$))[\\s\\S]+)$"
             },
             {
               "x-rule": "source-carries-no-credential",
@@ -100,7 +109,7 @@
           ]
         },
         "commit": {
-          "description": "For a git-URL source only: the full commit id the engine fetches and digests.",
+          "description": "For a git-URL source only: the full commit id the engine fetches, whose root tree the digest is taken over.",
           "x-rule": "commit-is-40-hex",
           "type": "string",
           "pattern": "^[0-9a-f]{40}$(?!\\n)"
@@ -114,7 +123,7 @@
             "properties": {
               "source": {
                 "type": "string",
-                "pattern": "^(?![\\s\\S]*[\\u0000-\\u001f\\u007f-\\u009f])(?:https://|ssh://|[^/@:\\s\\ufeff]+@[^/@:\\s\\ufeff]+:)"
+                "pattern": "^(?![\\s\\S]*[\\u0000-\\u001f\\u007f-\\u009f\\ud800-\\udfff])(?:https://|ssh://|[^/@:\\s\\ufeff]+@[^/@:\\s\\ufeff]+:)"
               }
             }
           },
@@ -126,7 +135,7 @@
             "properties": {
               "source": {
                 "type": "string",
-                "pattern": "^(?!/)(?![\\s\\S]*[:\\\\\\u0000-\\u001f\\u007f-\\u009f])(?!(?:[\\s\\S]*/)?\\.\\.(?:/|$))[\\s\\S]"
+                "pattern": "^(?!/)(?![\\s\\S]*[:\\\\\\u0000-\\u001f\\u007f-\\u009f\\ud800-\\udfff])(?!(?:[\\s\\S]*/)?\\.\\.(?:/|$))[\\s\\S]"
               }
             }
           },
@@ -142,7 +151,7 @@
       ]
     },
     "digest": {
-      "description": "The pack tree's digest, required for every source (15.1a), by the algorithm in this file's comment header.",
+      "description": "The pack tree's digest, required for every source (15.1a), by the algorithm in this file's comment header: over <corpus-commit>:<source> for a corpus-relative source, and over <commit>^{tree} for a git URL.",
       "x-rule": "digest-keys",
       "type": "object",
       "required": ["algorithm", "value"],
@@ -188,12 +197,12 @@
     {
       "id": "version-is-text",
       "class": "shape",
-      "says": "An entry's version is non-empty text with no control character (U+0000 to U+001F, U+007F to U+009F). A number is refused, so a YAML version such as 1.4 is quoted."
+      "says": "An entry's version is non-empty text with no control character (U+0000 to U+001F, U+007F to U+009F) and no lone surrogate (U+D800 to U+DFFF), so it is always a finding's pack_version. A number is refused, so a YAML version such as 1.4 is quoted."
     },
     {
       "id": "source-is-a-git-url-or-corpus-path",
       "class": "shape",
-      "says": "An entry's source is a git URL over https:// or ssh://, or scp-like user@host:path, each with a path and no whitespace; or a path relative to the corpus root that does not start with a slash and holds no colon, no backslash and no .. segment. No source holds a control character. file://, ext::, http://, git:// and every other scheme, and every absolute path, are refused (OQ-H15-14)."
+      "says": "An entry's source is a git URL over https:// or ssh://, or scp-like user@host:path, each with a path and no whitespace; or a path relative to the corpus root that does not start with a slash and holds no colon, no backslash and no .. segment. No source holds a control character or a lone surrogate. file://, ext::, http://, git:// and every other scheme, and every absolute path, are refused (OQ-H15-14)."
     },
     {
       "id": "source-carries-no-credential",

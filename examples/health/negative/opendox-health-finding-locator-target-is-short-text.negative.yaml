@@ -1,4 +1,4 @@
-# expected_failure: locator-target-is-short
+# expected_failure: locator-target-is-short-text
 # INVALID: a locator target of 201 characters.
 # The broken-link example with this one change, so it breaks this
 # rule and no other.

@@ -39,6 +39,11 @@
 # excerpt, text, content or quote. The finding is CLOSED: a field this schema
 # does not name would be a channel around those bounds, so it is refused.
 #
+# TEXT UTF-8 CAN ENCODE. No string a finding carries holds a lone surrogate
+# (U+D800 to U+DFFF). JSON can spell one (\ud800), and a file name that is not
+# UTF-8 decodes to them, but UTF-8 cannot encode one, so the id could not be
+# computed and the finding could not be stored or emitted.
+#
 # RULES. Every rule has an identifier, as in opendox-snapshot.schema.yaml. A
 # subschema names in x-rule the rule its keywords enforce, and x-rules lists
 # every rule with its class. A shape rule is enforced by this schema's own
@@ -89,16 +94,16 @@
       "x-rule": "pack-version-is-text",
       "type": "string",
       "minLength": 1,
-      "pattern": "^(?![\\s\\S]*[\\u0000-\\u001f\\u007f-\\u009f])"
+      "pattern": "^(?![\\s\\S]*[\\u0000-\\u001f\\u007f-\\u009f\\ud800-\\udfff])"
     },
     "path": {
       "description": "The document the finding is about, relative to the corpus root and separated by slashes. Empty for an install-level or pre-run finding, which names no document.",
       "x-rule": "path-is-corpus-relative",
       "type": "string",
-      "pattern": "^(?!/)(?![A-Za-z]:)(?![\\s\\S]*[\\\\\\u0000-\\u001f\\u007f-\\u009f])(?!(?:[\\s\\S]*/)?\\.\\.(?:/|$))"
+      "pattern": "^(?!/)(?![A-Za-z]:)(?![\\s\\S]*[\\\\\\u0000-\\u001f\\u007f-\\u009f\\ud800-\\udfff])(?!(?:[\\s\\S]*/)?\\.\\.(?:/|$))"
     },
     "identity": {
-      "description": "The position-independent key the family supplies, which the id hashes: a link target as written, a pair of paths, a heading key. Empty when the family raises at most one finding per document. It holds no number, because a line number moves with every edit above it and a number has no one canonical JSON spelling across languages (1.0 and 1, 1e21). Its strings and keys are bounded as evidence's are.",
+      "description": "The position-independent key the family supplies, which the id hashes: a link target as written, a pair of paths, a heading key. Empty when the family raises at most one finding per document. It holds no number, because a line number moves with every edit above it and a number has no one canonical JSON spelling across languages (1.0 and 1, 1e21). Its strings and keys are bounded as evidence's are, and hold no lone surrogate.",
       "x-rule": "identity-is-an-object",
       "type": "object",
       "propertyNames": {"$ref": "#/$defs/identity_key"},
@@ -115,10 +120,11 @@
         "line_start": {"$ref": "#/$defs/line"},
         "line_end": {"$ref": "#/$defs/line"},
         "target": {
-          "x-rule": "locator-target-is-short",
+          "x-rule": "locator-target-is-short-text",
           "type": "string",
           "minLength": 1,
-          "maxLength": 200
+          "maxLength": 200,
+          "pattern": "^(?![\\s\\S]*[\\ud800-\\udfff])"
         }
       }
     },
@@ -132,15 +138,15 @@
       "enum": ["auto-fix", "assisted", "human-only"]
     },
     "message": {
-      "description": "One line, written by the family in its own words, never document text (ADV-27): at most 200 characters, with no control character and no line or paragraph separator.",
+      "description": "One line, written by the family in its own words, never document text (ADV-27): at most 200 characters, with no control character, no line or paragraph separator and no lone surrogate.",
       "x-rule": "message-is-one-bounded-line",
       "type": "string",
       "minLength": 1,
       "maxLength": 200,
-      "pattern": "^(?![\\s\\S]*[\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029])"
+      "pattern": "^(?![\\s\\S]*[\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029\\ud800-\\udfff])"
     },
     "evidence": {
-      "description": "Locators only, never document text (R2Q25 (a)): paths, line spans, link targets as written, digests, the family's own family_version, a refused patch's refused_patch and reason (15.2a). An empty object when the family has none. Every string in it, key or value, at any depth, is at most 200 characters, and no key is named excerpt, text, content or quote.",
+      "description": "Locators only, never document text (R2Q25 (a)): paths, line spans, link targets as written, digests, the family's own family_version, a refused patch's refused_patch and reason (15.2a). An empty object when the family has none. Every string in it, key or value, at any depth, is at most 200 characters with no lone surrogate, and no key is named excerpt, text, content or quote.",
       "x-rule": "evidence-is-an-object",
       "type": "object",
       "propertyNames": {"$ref": "#/$defs/evidence_key"},
@@ -179,13 +185,13 @@
     "identity_key": {
       "allOf": [
         {"x-rule": "identity-names-no-text", "not": {"enum": ["excerpt", "text", "content", "quote"]}},
-        {"x-rule": "identity-strings-are-short", "maxLength": 200}
+        {"x-rule": "identity-strings-are-short-text", "maxLength": 200, "pattern": "^(?![\\s\\S]*[\\ud800-\\udfff])"}
       ]
     },
     "identity_value": {
       "allOf": [
         {"x-rule": "identity-holds-no-number", "type": ["string", "boolean", "null", "array", "object"]},
-        {"x-rule": "identity-strings-are-short", "maxLength": 200}
+        {"x-rule": "identity-strings-are-short-text", "maxLength": 200, "pattern": "^(?![\\s\\S]*[\\ud800-\\udfff])"}
       ],
       "items": {"$ref": "#/$defs/identity_value"},
       "propertyNames": {"$ref": "#/$defs/identity_key"},
@@ -194,12 +200,13 @@
     "evidence_key": {
       "allOf": [
         {"x-rule": "evidence-names-no-text", "not": {"enum": ["excerpt", "text", "content", "quote"]}},
-        {"x-rule": "evidence-strings-are-short", "maxLength": 200}
+        {"x-rule": "evidence-strings-are-short-text", "maxLength": 200, "pattern": "^(?![\\s\\S]*[\\ud800-\\udfff])"}
       ]
     },
     "evidence_value": {
-      "x-rule": "evidence-strings-are-short",
+      "x-rule": "evidence-strings-are-short-text",
       "maxLength": 200,
+      "pattern": "^(?![\\s\\S]*[\\ud800-\\udfff])",
       "items": {"$ref": "#/$defs/evidence_value"},
       "propertyNames": {"$ref": "#/$defs/evidence_key"},
       "additionalProperties": {"$ref": "#/$defs/evidence_value"}
@@ -229,12 +236,12 @@
     {
       "id": "pack-version-is-text",
       "class": "shape",
-      "says": "pack_version is non-empty text with no control character (U+0000 to U+001F, U+007F to U+009F)."
+      "says": "pack_version is non-empty text with no control character (U+0000 to U+001F, U+007F to U+009F) and no lone surrogate (U+D800 to U+DFFF)."
     },
     {
       "id": "path-is-corpus-relative",
       "class": "shape",
-      "says": "path is relative to the corpus root: it does not start with a slash or with a drive letter and a colon, holds no backslash and no control character, and has no .. segment. It is empty for an install-level or pre-run finding."
+      "says": "path is relative to the corpus root: it does not start with a slash or with a drive letter and a colon, holds no backslash, no control character and no lone surrogate, and has no .. segment. It is empty for an install-level or pre-run finding."
     },
     {
       "id": "identity-is-an-object",
@@ -247,9 +254,9 @@
       "says": "No value in identity, at any depth, is a number: never a line number, and never a value whose canonical JSON differs between languages. Text, true, false, null, lists and objects are admitted."
     },
     {
-      "id": "identity-strings-are-short",
+      "id": "identity-strings-are-short-text",
       "class": "shape",
-      "says": "Every string in identity, key or value, at any depth, is at most 200 characters."
+      "says": "Every string in identity, key or value, at any depth, is at most 200 characters and holds no lone surrogate (U+D800 to U+DFFF), which UTF-8 cannot encode and so the id could not hash."
     },
     {
       "id": "identity-names-no-text",
@@ -267,9 +274,9 @@
       "says": "locator.line_start and locator.line_end are whole numbers no less than 1."
     },
     {
-      "id": "locator-target-is-short",
+      "id": "locator-target-is-short-text",
       "class": "shape",
-      "says": "locator.target is non-empty text of at most 200 characters."
+      "says": "locator.target is non-empty text of at most 200 characters, with no lone surrogate (U+D800 to U+DFFF)."
     },
     {
       "id": "severity-is-known",
@@ -284,7 +291,7 @@
     {
       "id": "message-is-one-bounded-line",
       "class": "shape",
-      "says": "message is one line of 1 to 200 characters, with no control character (U+0000 to U+001F, U+007F to U+009F) and no line or paragraph separator (U+2028, U+2029). It is the family's own words, never document text."
+      "says": "message is one line of 1 to 200 characters, with no control character (U+0000 to U+001F, U+007F to U+009F) no line or paragraph separator (U+2028, U+2029) and no lone surrogate (U+D800 to U+DFFF). It is the family's own words, never document text."
     },
     {
       "id": "evidence-is-an-object",
@@ -292,9 +299,9 @@
       "says": "evidence is an object of locators: paths, line spans, link targets as written, digests, family_version, and a refused patch's refused_patch and reason. It is empty when the family has none."
     },
     {
-      "id": "evidence-strings-are-short",
+      "id": "evidence-strings-are-short-text",
       "class": "shape",
-      "says": "Every string in evidence, key or value, at any depth, is at most 200 characters (R2Q25 (a))."
+      "says": "Every string in evidence, key or value, at any depth, is at most 200 characters (R2Q25 (a)) and holds no lone surrogate (U+D800 to U+DFFF)."
     },
     {
       "id": "evidence-names-no-text",
