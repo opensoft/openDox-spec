@@ -1,0 +1,6 @@
+# VALID: an exceptions file that accepts nothing yet.
+{
+  "schema_version": 1,
+  "kind": "opendox-health-dispositions",
+  "exceptions": []
+}

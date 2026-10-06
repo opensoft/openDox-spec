@@ -1,0 +1,6 @@
+# VALID: a manifest that lists no pack, so none runs, as with no file at all.
+{
+  "schema_version": 1,
+  "kind": "opendox-health-packs",
+  "packs": []
+}

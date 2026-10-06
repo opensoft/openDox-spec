@@ -1,0 +1,335 @@
+# openDox's health finding: the neutral shape of ONE finding (plan 038, T040).
+#
+# WHY THIS FILE IS JSON. It is YAML whose body is one JSON object, as
+# opendox-snapshot.schema.yaml is and for the same reason: this leg's required
+# `validate` check installs pytest and nothing else, so
+# `tests/test_opendox_health_contracts.py` reads it with Python's built-in
+# `json` module once these comment lines are set aside, and proves that PyYAML
+# reads the same object wherever PyYAML is installed.
+#
+# A SHAPE THE ENGINE READS, NOT A FILE KIND (decision N-15). An instance is one
+# finding, as `opendox health list --json` emits one per array element. It
+# carries no schema_version, and its `kind` is the finding's FAMILY
+# (broken-link, orphan, ...), so no `kind` constant can name this schema, and
+# openDox's validator validates no instance against it. openDox-code carries a
+# digest-checked copy that its health contract module mirrors. The two file
+# kinds beside it, opendox-health-packs and opendox-health-dispositions, are
+# documents with a schema_version and a `kind` constant of their own.
+#
+# THE ID RULE (decision N-13, refined by review round 1's ADV-07):
+#
+#   key = {"identity": <identity>, "kind": <kind>, "pack_id": <pack_id>,
+#          "path": <path>}, written as JSON with its keys sorted at every
+#          level, no whitespace, and every character as itself, then encoded
+#          as UTF-8. In Python:
+#          json.dumps(key, sort_keys=True, separators=(",", ":"),
+#                     ensure_ascii=False).encode("utf-8")
+#   h16 = the first 16 hex digits of sha256(key)
+#   id  = pack_id + "." + kind + "." + h16
+#
+# `identity` is the key the family supplies, and it is POSITION-INDEPENDENT: a
+# link target as written, a pair of paths, a heading key, never a line number.
+# `locator` is display only and outside the hash, so an edit above a finding
+# moves its locator and keeps its id, and an exception keyed by that id keeps
+# suppressing it. The engine sets the id, and a pack's own value is ignored.
+#
+# NO DOCUMENT TEXT (R2Q25 (a)). `evidence` holds locators only, and `message`
+# is one line of the family's own words. Neither can carry more than 200
+# characters in one string, and no key of evidence or identity is named
+# excerpt, text, content or quote. The finding is CLOSED: a field this schema
+# does not name would be a channel around those bounds, so it is refused.
+#
+# RULES. Every rule has an identifier, as in opendox-snapshot.schema.yaml. A
+# subschema names in x-rule the rule its keywords enforce, and x-rules lists
+# every rule with its class. A shape rule is enforced by this schema's own
+# keywords. A reference rule is a cross-field rule that no JSON Schema keyword
+# can state, so the reader enforces it.
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "opendox-health-finding.schema.yaml",
+  "title": "openDox health finding",
+  "contract_schema_version": 1,
+  "description": "One health finding, in the neutral shape openDox's health engine stores, lists and shows (plan 038 T040, on R2Q10 (a), R2Q22 (a) and R2Q25 (a): opensoft/openxFactory issue 656, comment 6003486656; decisions N-3, N-13, N-15 and OQ-H15-19, comment 6013547504). The product's own families and every manifest-listed pack return findings in this shape; the engine sets id, pack_id, pack_version and baseline_class, and a pack is never asked for them (15.7). The file's comment header, the field descriptions and the x-rules catalog say the rest.",
+  "x-rule": "finding-keys",
+  "type": "object",
+  "required": [
+    "id",
+    "kind",
+    "pack_id",
+    "pack_version",
+    "path",
+    "identity",
+    "severity",
+    "resolution_class",
+    "message",
+    "evidence"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "description": "pack_id, the family and h16, joined by dots (the file's comment header gives the rule). Set by the engine. It is a valid git ref-name component, so the fix draft for a finding is the branch health-fix-<id>.",
+      "x-rule": "id-is-well-formed",
+      "type": "string",
+      "pattern": "^[a-z0-9-]+\\.[a-z0-9-]+\\.[0-9a-f]{16}$(?!\\n)"
+    },
+    "kind": {
+      "description": "The family that raised the finding: broken-link, orphan, empty-stub, and the rest a family or pack declares. identity-collision is the engine's own (the x-rules catalog).",
+      "x-rule": "kind-is-a-family-name",
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$(?!\\n)"
+    },
+    "pack_id": {
+      "description": "The pack the finding is attributed to: opendox for the product's own families and for an install-level finding, otherwise the id of the manifest entry that launched the pack (15.7, OQ-H15-19). Stamped by the engine.",
+      "x-rule": "pack-id-is-a-name",
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$(?!\\n)"
+    },
+    "pack_version": {
+      "description": "The manifest entry's version, or for opendox the installed version (15.7, OQ-H15-18). Stamped by the engine. A family's own version, if it has one, rides in evidence as family_version.",
+      "x-rule": "pack-version-is-text",
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?![\\s\\S]*[\\u0000-\\u001f\\u007f-\\u009f])"
+    },
+    "path": {
+      "description": "The document the finding is about, relative to the corpus root and separated by slashes. Empty for an install-level or pre-run finding, which names no document.",
+      "x-rule": "path-is-corpus-relative",
+      "type": "string",
+      "pattern": "^(?!/)(?![A-Za-z]:)(?![\\s\\S]*[\\\\\\u0000-\\u001f\\u007f-\\u009f])(?!(?:[\\s\\S]*/)?\\.\\.(?:/|$))"
+    },
+    "identity": {
+      "description": "The position-independent key the family supplies, which the id hashes: a link target as written, a pair of paths, a heading key. Empty when the family raises at most one finding per document. It holds no number, because a line number moves with every edit above it and a number has no one canonical JSON spelling across languages (1.0 and 1, 1e21). Its strings and keys are bounded as evidence's are.",
+      "x-rule": "identity-is-an-object",
+      "type": "object",
+      "propertyNames": {"$ref": "#/$defs/identity_key"},
+      "additionalProperties": {"$ref": "#/$defs/identity_value"}
+    },
+    "locator": {
+      "description": "Display only, and outside the id: a line span, a link target as written, or both. A reader that shows the passage reads it from git when it renders (R2Q25 (a)).",
+      "x-rule": "locator-keys",
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": false,
+      "dependentRequired": {"line_start": ["line_end"], "line_end": ["line_start"]},
+      "properties": {
+        "line_start": {"$ref": "#/$defs/line"},
+        "line_end": {"$ref": "#/$defs/line"},
+        "target": {
+          "x-rule": "locator-target-is-short",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        }
+      }
+    },
+    "severity": {
+      "x-rule": "severity-is-known",
+      "enum": ["error", "warning", "info"]
+    },
+    "resolution_class": {
+      "description": "The three classes, spelled exactly as 14.6 rules them, in the store, the CLI, the view and the pack contract alike.",
+      "x-rule": "resolution-class-is-one-of-three",
+      "enum": ["auto-fix", "assisted", "human-only"]
+    },
+    "message": {
+      "description": "One line, written by the family in its own words, never document text (ADV-27): at most 200 characters, with no control character and no line or paragraph separator.",
+      "x-rule": "message-is-one-bounded-line",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200,
+      "pattern": "^(?![\\s\\S]*[\\u0000-\\u001f\\u007f-\\u009f\\u2028\\u2029])"
+    },
+    "evidence": {
+      "description": "Locators only, never document text (R2Q25 (a)): paths, line spans, link targets as written, digests, the family's own family_version, a refused patch's refused_patch and reason (15.2a). An empty object when the family has none. Every string in it, key or value, at any depth, is at most 200 characters, and no key is named excerpt, text, content or quote.",
+      "x-rule": "evidence-is-an-object",
+      "type": "object",
+      "propertyNames": {"$ref": "#/$defs/evidence_key"},
+      "additionalProperties": {"$ref": "#/$defs/evidence_value"}
+    },
+    "baseline_class": {
+      "description": "Set by the engine against the previous default-tip run (R2Q12 (a)). There is no fourth value (I-2 (a)).",
+      "x-rule": "baseline-class-is-known",
+      "enum": ["new", "pack-upgrade", "persistent"]
+    }
+  },
+  "allOf": [
+    {
+      "if": {"required": ["path"], "properties": {"path": {"const": ""}}},
+      "then": {
+        "properties": {
+          "resolution_class": {"x-rule": "pathless-finding-is-human-only", "const": "human-only"}
+        }
+      }
+    },
+    {
+      "if": {"required": ["kind"], "properties": {"kind": {"const": "identity-collision"}}},
+      "then": {
+        "properties": {
+          "resolution_class": {"x-rule": "identity-collision-is-human-only", "const": "human-only"}
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "line": {
+      "x-rule": "locator-line-is-a-line-number",
+      "type": "integer",
+      "minimum": 1
+    },
+    "identity_key": {
+      "allOf": [
+        {"x-rule": "identity-names-no-text", "not": {"enum": ["excerpt", "text", "content", "quote"]}},
+        {"x-rule": "identity-strings-are-short", "maxLength": 200}
+      ]
+    },
+    "identity_value": {
+      "allOf": [
+        {"x-rule": "identity-holds-no-number", "type": ["string", "boolean", "null", "array", "object"]},
+        {"x-rule": "identity-strings-are-short", "maxLength": 200}
+      ],
+      "items": {"$ref": "#/$defs/identity_value"},
+      "propertyNames": {"$ref": "#/$defs/identity_key"},
+      "additionalProperties": {"$ref": "#/$defs/identity_value"}
+    },
+    "evidence_key": {
+      "allOf": [
+        {"x-rule": "evidence-names-no-text", "not": {"enum": ["excerpt", "text", "content", "quote"]}},
+        {"x-rule": "evidence-strings-are-short", "maxLength": 200}
+      ]
+    },
+    "evidence_value": {
+      "x-rule": "evidence-strings-are-short",
+      "maxLength": 200,
+      "items": {"$ref": "#/$defs/evidence_value"},
+      "propertyNames": {"$ref": "#/$defs/evidence_key"},
+      "additionalProperties": {"$ref": "#/$defs/evidence_value"}
+    }
+  },
+  "x-rules": [
+    {
+      "id": "finding-keys",
+      "class": "shape",
+      "says": "A finding is an object carrying id, kind, pack_id, pack_version, path, identity, severity, resolution_class, message and evidence, and optionally locator and baseline_class. It carries no other field."
+    },
+    {
+      "id": "id-is-well-formed",
+      "class": "shape",
+      "says": "id is pack_id, the family and 16 lowercase hex digits, joined by dots: two names of lowercase letters, digits and hyphens, then the hash. It is a valid git ref-name component."
+    },
+    {
+      "id": "kind-is-a-family-name",
+      "class": "shape",
+      "says": "kind, the family, is a name of lowercase letters, digits and hyphens."
+    },
+    {
+      "id": "pack-id-is-a-name",
+      "class": "shape",
+      "says": "pack_id is a name of lowercase letters, digits and hyphens (OQ-H15-19): opendox for the product's own families, otherwise a manifest entry's id."
+    },
+    {
+      "id": "pack-version-is-text",
+      "class": "shape",
+      "says": "pack_version is non-empty text with no control character (U+0000 to U+001F, U+007F to U+009F)."
+    },
+    {
+      "id": "path-is-corpus-relative",
+      "class": "shape",
+      "says": "path is relative to the corpus root: it does not start with a slash or with a drive letter and a colon, holds no backslash and no control character, and has no .. segment. It is empty for an install-level or pre-run finding."
+    },
+    {
+      "id": "identity-is-an-object",
+      "class": "shape",
+      "says": "identity is an object: the position-independent key the family supplies, empty when the family raises at most one finding per document."
+    },
+    {
+      "id": "identity-holds-no-number",
+      "class": "shape",
+      "says": "No value in identity, at any depth, is a number: never a line number, and never a value whose canonical JSON differs between languages. Text, true, false, null, lists and objects are admitted."
+    },
+    {
+      "id": "identity-strings-are-short",
+      "class": "shape",
+      "says": "Every string in identity, key or value, at any depth, is at most 200 characters."
+    },
+    {
+      "id": "identity-names-no-text",
+      "class": "shape",
+      "says": "No key in identity, at any depth, is named excerpt, text, content or quote."
+    },
+    {
+      "id": "locator-keys",
+      "class": "shape",
+      "says": "locator, when present, is an object carrying line_start and line_end together, target, or both, and no other key."
+    },
+    {
+      "id": "locator-line-is-a-line-number",
+      "class": "shape",
+      "says": "locator.line_start and locator.line_end are whole numbers no less than 1."
+    },
+    {
+      "id": "locator-target-is-short",
+      "class": "shape",
+      "says": "locator.target is non-empty text of at most 200 characters."
+    },
+    {
+      "id": "severity-is-known",
+      "class": "shape",
+      "says": "severity is one of error, warning and info."
+    },
+    {
+      "id": "resolution-class-is-one-of-three",
+      "class": "shape",
+      "says": "resolution_class is one of auto-fix, assisted and human-only, spelled exactly so (14.6)."
+    },
+    {
+      "id": "message-is-one-bounded-line",
+      "class": "shape",
+      "says": "message is one line of 1 to 200 characters, with no control character (U+0000 to U+001F, U+007F to U+009F) and no line or paragraph separator (U+2028, U+2029). It is the family's own words, never document text."
+    },
+    {
+      "id": "evidence-is-an-object",
+      "class": "shape",
+      "says": "evidence is an object of locators: paths, line spans, link targets as written, digests, family_version, and a refused patch's refused_patch and reason. It is empty when the family has none."
+    },
+    {
+      "id": "evidence-strings-are-short",
+      "class": "shape",
+      "says": "Every string in evidence, key or value, at any depth, is at most 200 characters (R2Q25 (a))."
+    },
+    {
+      "id": "evidence-names-no-text",
+      "class": "shape",
+      "says": "No key in evidence, at any depth, is named excerpt, text, content or quote (R2Q25 (a))."
+    },
+    {
+      "id": "baseline-class-is-known",
+      "class": "shape",
+      "says": "baseline_class, when present, is one of new, pack-upgrade and persistent (R2Q12 (a))."
+    },
+    {
+      "id": "pathless-finding-is-human-only",
+      "class": "shape",
+      "says": "A finding whose path is empty, an install-level or pre-run finding, is human-only: it names no document a repair could edit."
+    },
+    {
+      "id": "identity-collision-is-human-only",
+      "class": "shape",
+      "says": "A finding of kind identity-collision, which the engine records against the family or pack whose findings shared one id, is human-only."
+    },
+    {
+      "id": "id-names-its-pack-and-kind",
+      "class": "reference",
+      "says": "The first two parts of id are the finding's own pack_id and kind."
+    },
+    {
+      "id": "id-is-the-hash-of-its-key",
+      "class": "reference",
+      "says": "The last part of id is h16 of the finding's own identity, kind, pack_id and path, by the rule in this file's comment header. locator is outside the hash."
+    },
+    {
+      "id": "locator-span-is-ordered",
+      "class": "reference",
+      "says": "locator.line_end is no less than locator.line_start."
+    }
+  ]
+}

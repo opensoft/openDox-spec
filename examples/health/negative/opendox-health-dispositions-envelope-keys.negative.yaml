@@ -1,0 +1,13 @@
+# expected_failure: envelope-keys
+# INVALID: the aggregation's own form: a top-level list, matched by family,
+# repository and path.
+# openDox reads a file of another shape at this path as refused, so it
+# suppresses nothing (plan 038's conflict C-7).
+[
+  {
+    "family": "orphan",
+    "repo": "notes",
+    "path": "notes/appendix.md",
+    "cite": "kept as an unlinked appendix on purpose"
+  }
+]

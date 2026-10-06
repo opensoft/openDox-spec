@@ -1,0 +1,18 @@
+# expected_failure: identity-names-no-text
+# INVALID: an identity with a key named text.
+# The broken-link example with this one change, so it breaks this
+# rule and no other. Its id is computed again over the changed key.
+{
+  "id": "opendox.broken-link.d86b882e2a3dd0f2",
+  "kind": "broken-link",
+  "pack_id": "opendox",
+  "pack_version": "0.2.0",
+  "path": "notes/plan.md",
+  "identity": {"target": "../old/brief.md", "text": "see the old brief"},
+  "locator": {"line_start": 12, "line_end": 12},
+  "severity": "warning",
+  "resolution_class": "auto-fix",
+  "message": "link target does not exist; a unique file of that name exists elsewhere",
+  "evidence": {"candidate": "archive/brief.md", "family_version": "1"},
+  "baseline_class": "new"
+}

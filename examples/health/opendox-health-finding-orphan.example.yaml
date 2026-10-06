@@ -1,0 +1,18 @@
+# VALID: an orphan, which nothing links to.
+#
+# identity is empty, because the family raises at most one orphan per
+# document, and evidence is empty, because the finding needs no locator
+# beyond its path. There is no locator: an orphan has no line.
+{
+  "id": "opendox.orphan.516a58a1fcc2c37f",
+  "kind": "orphan",
+  "pack_id": "opendox",
+  "pack_version": "0.2.0",
+  "path": "notes/appendix.md",
+  "identity": {},
+  "severity": "info",
+  "resolution_class": "human-only",
+  "message": "nothing links to this document",
+  "evidence": {},
+  "baseline_class": "persistent"
+}
