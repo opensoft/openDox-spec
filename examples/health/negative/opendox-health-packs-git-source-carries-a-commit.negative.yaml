@@ -1,0 +1,22 @@
+# expected_failure: git-source-carries-a-commit
+# INVALID: a git URL with no commit (15.1a).
+# The two-sources example with this one change, so it breaks this
+# rule and no other.
+{
+  "schema_version": 1,
+  "kind": "opendox-health-packs",
+  "packs": [
+    {
+      "id": "house-style",
+      "version": "1.4.0",
+      "source": "tools/packs/house-style",
+      "digest": {"algorithm": "sorted-ls-tree-r-v1", "value": "a6729621f2bc125958d06ae76d4d63444ae3dc22fd34b18f378d77460554bf2c"}
+    },
+    {
+      "id": "shared-rules",
+      "version": "2.0.0",
+      "source": "https://example.invalid/packs/shared-rules.git",
+      "digest": {"algorithm": "sorted-ls-tree-r-v1", "value": "66b92496bd4614752be2fb4f4a58cfda0795d33698c67a3d233e87b8d147d386"}
+    }
+  ]
+}

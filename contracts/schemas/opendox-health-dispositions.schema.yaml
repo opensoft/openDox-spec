@@ -1,0 +1,117 @@
+# openDox's health exceptions, health/dispositions.yaml (plan 038, T040).
+#
+# WHY THIS FILE IS JSON. It is YAML whose body is one JSON object, as
+# opendox-snapshot.schema.yaml is and for the same reason: this leg's required
+# `validate` check installs pytest and nothing else, so
+# `tests/test_opendox_health_contracts.py` reads it with Python's built-in
+# `json` module once these comment lines are set aside, and proves that PyYAML
+# reads the same object wherever PyYAML is installed. The file it describes is
+# ordinary YAML, committed in the corpus beside health/packs.yaml.
+#
+# EXCEPTIONS LIVE IN GIT, NOT THE STORE (#1144's 14.8). An exception is a
+# judgement that exists nowhere else, and the store is disposable, so the
+# store never holds one: `runtime reset` loses no exception.
+#
+# AN EXCEPTION SUPPRESSES (OQ-H-13). A run neither stores nor lists a finding
+# whose id an entry names; it is not downgraded. Removing the entry re-opens
+# the finding on the next run. Each entry is keyed by a finding id (the
+# opendox-health-finding contract's id rule), which survives an edit above the
+# finding and a reset, and carries the reason. Who accepted it and when are
+# git's: the commit that added the entry. `opendox health accept --finding <id>
+# --reason <text>` appends one entry.
+#
+# WHICH FILE A RUN READS (decision N-14): the one in what the run reads. A
+# default-tip or branch run reads the committed file; a working-state run reads
+# the working tree's, so an uncommitted accept suppresses in a working-state
+# run, and in no commit run until it is committed.
+#
+# A REFUSED FILE SUPPRESSES NOTHING. Every rule below refuses the whole file,
+# and the refusal is an install-level finding. A file at this path of another
+# kind is refused by name: the xFactory aggregation's own
+# health/dispositions.yaml, a top-level list whose kind is
+# xfactory_doc_health_dispositions, is one (plan 038's conflict C-7). The
+# schema is CLOSED, unlike the snapshot: an entry carrying a key it does not
+# name is refused, so no field can pass for a downgrade or an expiry.
+#
+# RULES. Every rule has an identifier, as in opendox-snapshot.schema.yaml. A
+# subschema names in x-rule the rule its keywords enforce, and x-rules lists
+# every rule with its class.
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "opendox-health-dispositions.schema.yaml",
+  "title": "openDox health exceptions",
+  "contract_schema_version": 1,
+  "description": "health/dispositions.yaml: the findings a corpus's owners accepted, each keyed by its finding id with the reason, which a run suppresses (plan 038 T040, on R2Q22 (a) and R2Q10 (a): opensoft/openxFactory issue 656, comment 6003486656; decisions OQ-H-13, OQ-H-14 and OQ-H-15, comment 6013547504; #1144's 14.8). The file's comment header, the field descriptions and the x-rules catalog say the rest.",
+  "x-rule": "envelope-keys",
+  "type": "object",
+  "required": ["schema_version", "kind", "exceptions"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {"x-rule": "schema-version-is-1", "const": 1},
+    "kind": {
+      "x-rule": "kind-is-opendox-health-dispositions",
+      "const": "opendox-health-dispositions"
+    },
+    "exceptions": {
+      "description": "The accepted findings, one entry each. An empty list suppresses nothing.",
+      "x-rule": "exceptions-is-a-list",
+      "type": "array",
+      "items": {"$ref": "#/$defs/exception"}
+    }
+  },
+  "$defs": {
+    "exception": {
+      "x-rule": "exception-keys",
+      "type": "object",
+      "required": ["finding", "reason"],
+      "additionalProperties": false,
+      "properties": {
+        "finding": {
+          "description": "The id of the finding this entry accepts, exactly as the opendox-health-finding contract's id rule forms it.",
+          "x-rule": "finding-is-a-finding-id",
+          "type": "string",
+          "pattern": "^[a-z0-9-]+\\.[a-z0-9-]+\\.[0-9a-f]{16}$(?!\\n)"
+        },
+        "reason": {
+          "description": "Why the finding is accepted, in the accepter's words.",
+          "x-rule": "reason-is-text",
+          "type": "string",
+          "pattern": "[^\\s\\ufeff\\u0000-\\u001f\\u007f-\\u009f]"
+        }
+      }
+    }
+  },
+  "x-rules": [
+    {
+      "id": "envelope-keys",
+      "class": "shape",
+      "says": "The file is an object carrying schema_version, kind and exceptions, and no other key. A top-level list, the aggregation's form, is refused."
+    },
+    {"id": "schema-version-is-1", "class": "shape", "says": "schema_version is 1."},
+    {
+      "id": "kind-is-opendox-health-dispositions",
+      "class": "shape",
+      "says": "kind is opendox-health-dispositions. A file at this path of any other kind is refused by name (OQ-H-13)."
+    },
+    {
+      "id": "exceptions-is-a-list",
+      "class": "shape",
+      "says": "exceptions is a list of entries. An empty list suppresses nothing."
+    },
+    {
+      "id": "exception-keys",
+      "class": "shape",
+      "says": "An entry is an object carrying finding and reason, and no other key: who and when are git's."
+    },
+    {
+      "id": "finding-is-a-finding-id",
+      "class": "shape",
+      "says": "An entry's finding is a finding id: pack_id, the family and 16 lowercase hex digits, joined by dots, as the opendox-health-finding contract forms it."
+    },
+    {
+      "id": "reason-is-text",
+      "class": "shape",
+      "says": "An entry's reason is text holding at least one character that is neither whitespace nor a control character: an entry with no reason is refused."
+    }
+  ]
+}

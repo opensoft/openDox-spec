@@ -1,0 +1,17 @@
+# VALID: the engine's finding against a pack two of whose findings in one
+# run shared one id. Neither of the two is stored; this one is, against
+# the pack that produced them, human-only. Its identity is the engine's
+# own, the id the two shared, and evidence carries that id and the count.
+{
+  "id": "house-style.identity-collision.b722027596ad8c96",
+  "kind": "identity-collision",
+  "pack_id": "house-style",
+  "pack_version": "1.4.0",
+  "path": "notes/plan.md",
+  "identity": {"collided_id": "house-style.heading-case.0f1e2d3c4b5a6978"},
+  "severity": "error",
+  "resolution_class": "human-only",
+  "message": "two findings of one run share one id; the pack must give them identity keys that differ",
+  "evidence": {"collided_id": "house-style.heading-case.0f1e2d3c4b5a6978", "count": 2},
+  "baseline_class": "new"
+}

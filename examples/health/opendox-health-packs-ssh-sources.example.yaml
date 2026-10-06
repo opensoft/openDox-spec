@@ -1,0 +1,23 @@
+# VALID: the two other git URL forms the engine fetches over: ssh://, with a
+# user name and a port, and scp-like user@host:path. A user name is not a
+# credential; a password would be. Each carries its commit.
+{
+  "schema_version": 1,
+  "kind": "opendox-health-packs",
+  "packs": [
+    {
+      "id": "glossary",
+      "version": "0.3.1",
+      "source": "ssh://git@ssh.example.invalid:443/packs/glossary.git",
+      "commit": "8fc3ce70fb4213e1d259bd9df662bdce2e23ce0b",
+      "digest": {"algorithm": "sorted-ls-tree-r-v1", "value": "252ddd9efc4cb095603e4303d98b62a1db662368a4314151a6cdd8672e44554c"}
+    },
+    {
+      "id": "citations",
+      "version": "1.0.0-rc.2",
+      "source": "git@example.invalid:packs/citations.git",
+      "commit": "3dee2f49517d5e97d8e59134920e0df12b89fa03",
+      "digest": {"algorithm": "sorted-ls-tree-r-v1", "value": "65b74b4bfc4a90b5e3ba65fafb57781c98ad29e7d0f51ad71787c46c8d0a322a"}
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+# VALID: a finding a manifest-listed pack raised, new with its pack's upgrade.
+#
+# The engine stamped pack_id and pack_version from the manifest entry that
+# launched the pack (15.7). The path holds a character outside ASCII, so
+# this example also pins the id rule's reading of UTF-8: each character is
+# hashed as itself, never as a \u escape.
+{
+  "id": "house-style.heading-case.a5db1a71f8b8340d",
+  "kind": "heading-case",
+  "pack_id": "house-style",
+  "pack_version": "1.4.0",
+  "path": "notes/café-menu.md",
+  "identity": {"heading": "seasonal-specials"},
+  "locator": {"line_start": 3, "line_end": 3},
+  "severity": "info",
+  "resolution_class": "assisted",
+  "message": "a heading is not in the house case",
+  "evidence": {"family_version": "2", "lines": [3, 3]},
+  "baseline_class": "pack-upgrade"
+}

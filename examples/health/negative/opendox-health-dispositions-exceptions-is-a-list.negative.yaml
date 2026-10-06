@@ -1,0 +1,9 @@
+# expected_failure: exceptions-is-a-list
+# INVALID: exceptions written as a mapping from finding id to reason.
+# The two-exceptions example with this one change, so it breaks this
+# rule and no other.
+{
+  "schema_version": 1,
+  "kind": "opendox-health-dispositions",
+  "exceptions": {"opendox.orphan.516a58a1fcc2c37f": "kept as an unlinked appendix on purpose", "house-style.heading-case.a5db1a71f8b8340d": "the heading is a product name, and its case is the product's"}
+}

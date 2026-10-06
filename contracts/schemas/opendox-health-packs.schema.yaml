@@ -1,0 +1,250 @@
+# openDox's check-pack manifest, health/packs.yaml (plan 038, T040).
+#
+# WHY THIS FILE IS JSON. It is YAML whose body is one JSON object, as
+# opendox-snapshot.schema.yaml is and for the same reason: this leg's required
+# `validate` check installs pytest and nothing else, so
+# `tests/test_opendox_health_contracts.py` reads it with Python's built-in
+# `json` module once these comment lines are set aside, and proves that PyYAML
+# reads the same object wherever PyYAML is installed. The manifest it
+# describes is ordinary YAML, committed in the corpus beside
+# health/dispositions.yaml.
+#
+# AUTHORITATIVE FOR WHAT RUNS (15.1a, R2Q21 (a)). The engine loads packs ONLY
+# from this file: no entry-point scanning and no import-path discovery, so a
+# pack that is installed but not listed does not run.
+#
+# AN ENTRY CARRIES EXACTLY 15.1a's FIELDS: id, version, source and digest, and
+# commit for a git-URL source only. Where the source lives decides commit:
+#
+#   a git URL (https://, ssh://, or scp-like user@host:path) MUST carry the
+#     commit the engine fetches;
+#   a corpus-relative source MUST NOT carry one: its referent is the corpus
+#     commit that holds both this file and the pack, so the corpus's own
+#     history pins the pack. A commit there is refused, because it would name
+#     a commit the corpus cannot check (15.1a).
+#
+# THE DIGEST is sorted-ls-tree-r-v1, the source-tree digest neutral-product-pin
+# defines over a commit: openxFactory's contracts/opendox-pin.yaml, lines
+# 123-134, read at openxFactory commit 0f2a87f6cd91d39e64ae7c426e88664602cfa080
+# (blob 6bd244484fa2c119325693d64ddff338a5a878ef). Over a tree-ish T:
+#
+#   records = `git ls-tree -r -z T` split on NUL, empties dropped
+#   each record is `<mode> SP <type> SP <oid> TAB <path>`, path unquoted
+#   sort the records bytewise ascending
+#   value   = sha256(b"".join(record + b"\n" for record in records)), in hex
+#
+# Which tree T is depends on the source (OQ-H15-12, as plan 038's
+# contracts/health-packs-manifest.md states it at opensoft/openxFactory#1245's
+# commit f9cc2d02fe3bcaa10b33308a7422e47520014fae):
+#
+#   a corpus-relative source: the subtree <corpus-commit>:<source>, so each path
+#     is relative to the source. <corpus-commit> is the commit the run reads:
+#     HEAD's in a working-state run, so an uncommitted edit to a pack never runs;
+#   a git URL: the fetched repository's ROOT tree at the entry's commit,
+#     <commit>^{tree}, exactly as neutral-product-pin defines it over a commit.
+#     The URL is never part of a tree-ish.
+#
+# A gitlink inside a pack (a `160000 commit` record) is refused, and the engine
+# checks the digest before it imports a single line of the pack. Those checks
+# need the pack's tree, so the engine makes them, not this schema.
+#
+# BUDGETS AND BOUNDS ARE THE ENGINE'S (15.6, OQ-H15-5), never the corpus's: a
+# timeout, a memory bound or any other key the entry does not name is refused.
+# So is any other top-level key. The schema is CLOSED, unlike the snapshot,
+# because every field a reader does not know is one a corpus could use to
+# steer the engine.
+#
+# RULES. Every rule has an identifier, as in opendox-snapshot.schema.yaml. A
+# subschema names in x-rule the rule its keywords enforce, and x-rules lists
+# every rule with its class. A reference rule is one no JSON Schema keyword can
+# state, so the reader enforces it. Each refusal located in packs[i] is a
+# finding against that entry, and that entry's pack does not run.
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "opendox-health-packs.schema.yaml",
+  "title": "openDox check-pack manifest",
+  "contract_schema_version": 1,
+  "description": "health/packs.yaml: which check packs judge this corpus, each pinned by digest (plan 038 T040, on R2Q22 (a) and R2Q21 (a): opensoft/openxFactory issue 656, comment 6003486656; decisions OQ-H15-5, OQ-H15-10, OQ-H15-12, OQ-H15-14 and OQ-H15-19, comment 6013547504; #1144's 15.1a). The file's comment header, the field descriptions and the x-rules catalog say the rest.",
+  "x-rule": "envelope-keys",
+  "type": "object",
+  "required": ["schema_version", "kind", "packs"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {"x-rule": "schema-version-is-1", "const": 1},
+    "kind": {"x-rule": "kind-is-opendox-health-packs", "const": "opendox-health-packs"},
+    "packs": {
+      "description": "The packs that run, one entry each. An empty list runs none, as an absent file does.",
+      "x-rule": "packs-is-a-list",
+      "type": "array",
+      "items": {"$ref": "#/$defs/entry"}
+    }
+  },
+  "$defs": {
+    "entry": {
+      "description": "One pack: its id, the version every finding it raises is attributed to (15.7), where it lives, and its digest; and, for a git-URL source only, the commit.",
+      "x-rule": "entry-keys",
+      "type": "object",
+      "required": ["id", "version", "source", "digest"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {"$ref": "#/$defs/pack_id"},
+        "version": {
+          "description": "MUST equal the version the pack declares in its own opendox-pack.yaml (15.2, OQ-H15-10). The engine checks that against the pack, and refuses a pack that declares another version or none. It is text, so a YAML version such as 1.4 must be quoted, or it is a number and refused here.",
+          "x-rule": "version-is-text",
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^(?![\\s\\S]*[\\u0000-\\u001f\\u007f-\\u009f\\ud800-\\udfff])"
+        },
+        "source": {
+          "description": "Where the pack lives: a path relative to the corpus root, or a git URL the engine fetches over https:// or ssh:// (scp-like user@host:path included) into a cache under OPENDOX_STATE_DIR (OQ-H15-14). A file:// or ext:: URL, any other scheme, an absolute path and a path with a .. segment are refused, and so is a URL that carries a credential.",
+          "allOf": [
+            {
+              "x-rule": "source-is-a-git-url-or-corpus-path",
+              "type": "string",
+              "pattern": "^(?![\\s\\S]*[\\u0000-\\u001f\\u007f-\\u009f\\ud800-\\udfff])(?:https://[^/\\s\\ufeff]+/[^\\s\\ufeff]+|ssh://[^/\\s\\ufeff]+/[^\\s\\ufeff]+|[^/@:\\s\\ufeff]+@[^/@:\\s\\ufeff]+:[^\\s\\ufeff]+|(?!/)(?![\\s\\S]*[:\\\\])(?!(?:[\\s\\S]*/)?\\.\\.(?:/|$))[\\s\\S]+)$"
+            },
+            {
+              "x-rule": "source-carries-no-credential",
+              "pattern": "^(?!https://[^/]*@)(?!https://[\\s\\S]*\\?)(?!ssh://[^/@]*:[^/@]*@)"
+            }
+          ]
+        },
+        "commit": {
+          "description": "For a git-URL source only: the full commit id the engine fetches, whose root tree the digest is taken over.",
+          "x-rule": "commit-is-40-hex",
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$(?!\\n)"
+        },
+        "digest": {"$ref": "#/$defs/digest"}
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": ["source"],
+            "properties": {
+              "source": {
+                "type": "string",
+                "pattern": "^(?![\\s\\S]*[\\u0000-\\u001f\\u007f-\\u009f\\ud800-\\udfff])(?:https://|ssh://|[^/@:\\s\\ufeff]+@[^/@:\\s\\ufeff]+:)"
+              }
+            }
+          },
+          "then": {"x-rule": "git-source-carries-a-commit", "required": ["commit"]}
+        },
+        {
+          "if": {
+            "type": "object",
+            "required": ["source"],
+            "properties": {
+              "source": {
+                "type": "string",
+                "pattern": "^(?!/)(?![\\s\\S]*[:\\\\\\u0000-\\u001f\\u007f-\\u009f\\ud800-\\udfff])(?!(?:[\\s\\S]*/)?\\.\\.(?:/|$))[\\s\\S]"
+              }
+            }
+          },
+          "then": {"x-rule": "corpus-source-carries-no-commit", "not": {"required": ["commit"]}}
+        }
+      ]
+    },
+    "pack_id": {
+      "description": "The pack's id, unique in this file. opendox is the product's own checks, the one pack no manifest lists, so an entry may not take it (15.1a, 15.7).",
+      "allOf": [
+        {"x-rule": "pack-id-is-a-name", "type": "string", "pattern": "^[a-z0-9-]+$(?!\\n)"},
+        {"x-rule": "pack-id-is-not-opendox", "not": {"const": "opendox"}}
+      ]
+    },
+    "digest": {
+      "description": "The pack tree's digest, required for every source (15.1a), by the algorithm in this file's comment header: over <corpus-commit>:<source> for a corpus-relative source, and over <commit>^{tree} for a git URL.",
+      "x-rule": "digest-keys",
+      "type": "object",
+      "required": ["algorithm", "value"],
+      "additionalProperties": false,
+      "properties": {
+        "algorithm": {"x-rule": "digest-algorithm-is-sorted-ls-tree-r-v1", "const": "sorted-ls-tree-r-v1"},
+        "value": {"x-rule": "digest-value-is-64-hex", "type": "string", "pattern": "^[0-9a-f]{64}$(?!\\n)"}
+      }
+    }
+  },
+  "x-rules": [
+    {
+      "id": "envelope-keys",
+      "class": "shape",
+      "says": "The manifest is an object carrying schema_version, kind and packs, and no other key."
+    },
+    {"id": "schema-version-is-1", "class": "shape", "says": "schema_version is 1."},
+    {
+      "id": "kind-is-opendox-health-packs",
+      "class": "shape",
+      "says": "kind is opendox-health-packs. A file of any other kind is refused by name."
+    },
+    {
+      "id": "packs-is-a-list",
+      "class": "shape",
+      "says": "packs is a list of entries. An empty list runs no pack."
+    },
+    {
+      "id": "entry-keys",
+      "class": "shape",
+      "says": "An entry is an object carrying id, version, source and digest, and commit for a git-URL source. It carries no other key: a time budget, a resource bound or any key 15.1a does not name is refused (15.6, OQ-H15-5)."
+    },
+    {
+      "id": "pack-id-is-a-name",
+      "class": "shape",
+      "says": "An entry's id is a name of lowercase letters, digits and hyphens (OQ-H15-19)."
+    },
+    {
+      "id": "pack-id-is-not-opendox",
+      "class": "shape",
+      "says": "An entry's id is not opendox, the product's own checks, which no manifest lists (15.1a, 15.7)."
+    },
+    {
+      "id": "version-is-text",
+      "class": "shape",
+      "says": "An entry's version is non-empty text with no control character (U+0000 to U+001F, U+007F to U+009F) and no lone surrogate (U+D800 to U+DFFF), so it is always a finding's pack_version. A number is refused, so a YAML version such as 1.4 is quoted."
+    },
+    {
+      "id": "source-is-a-git-url-or-corpus-path",
+      "class": "shape",
+      "says": "An entry's source is a git URL over https:// or ssh://, or scp-like user@host:path, each with a path and no whitespace; or a path relative to the corpus root that does not start with a slash and holds no colon, no backslash and no .. segment. No source holds a control character or a lone surrogate. file://, ext::, http://, git:// and every other scheme, and every absolute path, are refused (OQ-H15-14)."
+    },
+    {
+      "id": "source-carries-no-credential",
+      "class": "shape",
+      "says": "A git URL carries no credential: an https:// URL has no user information before its host and no query string, and an ssh:// URL has no password (OQ-H15-14). A user name before an ssh:// or scp-like host is admitted."
+    },
+    {
+      "id": "commit-is-40-hex",
+      "class": "shape",
+      "says": "An entry's commit is a full commit id: 40 lowercase hex digits."
+    },
+    {
+      "id": "git-source-carries-a-commit",
+      "class": "shape",
+      "says": "An entry whose source is a git URL carries commit (15.1a)."
+    },
+    {
+      "id": "corpus-source-carries-no-commit",
+      "class": "shape",
+      "says": "An entry whose source is a path relative to the corpus root carries no commit: the corpus commit that holds the manifest and the pack is its referent, and a commit here would name one the corpus cannot check (15.1a)."
+    },
+    {
+      "id": "digest-keys",
+      "class": "shape",
+      "says": "An entry's digest is an object carrying algorithm and value, and no other key. Every entry carries one (15.1a)."
+    },
+    {
+      "id": "digest-algorithm-is-sorted-ls-tree-r-v1",
+      "class": "shape",
+      "says": "digest.algorithm is sorted-ls-tree-r-v1 (OQ-H15-12)."
+    },
+    {
+      "id": "digest-value-is-64-hex",
+      "class": "shape",
+      "says": "digest.value is a sha256 in hex: 64 lowercase hex digits."
+    },
+    {
+      "id": "ids-are-unique",
+      "class": "reference",
+      "says": "No two entries share an id."
+    }
+  ]
+}

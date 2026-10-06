@@ -1,0 +1,18 @@
+# expected_failure: collision-identity-is-the-collided-id
+# INVALID: a collision finding whose identity names the shared id under
+# another key.
+# The identity-collision example with this one change, so it breaks this
+# rule and no other.
+{
+  "id": "house-style.identity-collision.b722027596ad8c96",
+  "kind": "identity-collision",
+  "pack_id": "house-style",
+  "pack_version": "1.4.0",
+  "path": "notes/plan.md",
+  "identity": {"id": "house-style.heading-case.0f1e2d3c4b5a6978"},
+  "severity": "error",
+  "resolution_class": "human-only",
+  "message": "two findings of one run share one id; the pack must give them identity keys that differ",
+  "evidence": {"collided_id": "house-style.heading-case.0f1e2d3c4b5a6978", "count": 2},
+  "baseline_class": "new"
+}

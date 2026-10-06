@@ -56,3 +56,30 @@ adds it — the xFactory family's standing rule, levelled across all six
 `openspec/project.md` is not a document in this sense — it is this leg's
 OpenSpec instance file, read by the `openspec` CLI and by
 `tests/test_leg_shape.py`.
+
+## Contracts
+
+The contract index for this repository. Every schema under
+`contracts/schemas/` is listed here, and a new schema is linked from this table
+in the same pull request that adds it. The examples sit under `examples/`.
+The schemas this leg authored, `opendox-snapshot` and the three health
+schemas, are each held to their examples by a conformance test under `tests/`,
+which this leg's `validate` runs.
+
+A schema whose instance carries a `kind` constant describes a **file kind**: a
+document that names its own kind, and one openDox's validator validates once
+openDox-code holds its copy (the two health files join at plan 038's T047 and
+T054). The health finding is not one. A finding's `kind` is its family, so no
+`kind` constant can name the schema: it is a shape openDox's health engine
+reads, and no validator kind (plan 038's decision N-15,
+`opensoft/openxFactory#656` comment 6013547504).
+
+| schema | what an instance is | its `kind` |
+|---|---|---|
+| [contracts/schemas/ideation-workbench.schema.yaml](contracts/schemas/ideation-workbench.schema.yaml) | a user-assembled workbench reference set | `ideation-workbench` |
+| [contracts/schemas/opendox-health-dispositions.schema.yaml](contracts/schemas/opendox-health-dispositions.schema.yaml) | `health/dispositions.yaml`, the health exceptions a corpus keeps in git | `opendox-health-dispositions` |
+| [contracts/schemas/opendox-health-finding.schema.yaml](contracts/schemas/opendox-health-finding.schema.yaml) | one health finding, as `opendox health list --json` emits it | none: a shape the health engine reads, not a file kind |
+| [contracts/schemas/opendox-health-packs.schema.yaml](contracts/schemas/opendox-health-packs.schema.yaml) | `health/packs.yaml`, the check-pack manifest | `opendox-health-packs` |
+| [contracts/schemas/opendox-snapshot.schema.yaml](contracts/schemas/opendox-snapshot.schema.yaml) | openDox's own neutral snapshot | `opendox-snapshot` |
+| [contracts/schemas/xfactory-workbench-chat-turn.schema.yaml](contracts/schemas/xfactory-workbench-chat-turn.schema.yaml) | a doxBench chat turn: its request, its success or its fixed failure | `workbench-chat-turn-v2`, `workbench-chat-turn-v2-success`, `workbench-chat-turn-v2-failure` |
+| [contracts/schemas/xfactory-workbench-model-catalog.schema.yaml](contracts/schemas/xfactory-workbench-model-catalog.schema.yaml) | the doxBench approved model catalog | `workbench-model-catalog` |

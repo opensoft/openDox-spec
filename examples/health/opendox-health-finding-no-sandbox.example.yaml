@@ -1,0 +1,19 @@
+# VALID: an install-level finding. With no live sandbox no pack runs, and
+# ONE finding against the install says why (R2Q16 (a)).
+#
+# Its path is empty, because it names no document, so it is human-only;
+# pack_id is opendox. Its identity is the engine's own: the failure's
+# category, and the empty string for the manifest entry, because it is
+# about none. baseline_class is absent, as it may be.
+{
+  "id": "opendox.no-sandbox.5ccbb79891acb2e8",
+  "kind": "no-sandbox",
+  "pack_id": "opendox",
+  "pack_version": "0.2.0",
+  "path": "",
+  "identity": {"category": "no-sandbox", "entry": ""},
+  "severity": "warning",
+  "resolution_class": "human-only",
+  "message": "no live sandbox on this install, so no check pack ran",
+  "evidence": {"probe": "bwrap", "verdict": "absent"}
+}

@@ -1,0 +1,23 @@
+# expected_failure: digest-value-is-64-hex
+# INVALID: a digest value in capitals.
+# The two-sources example with this one change, so it breaks this
+# rule and no other.
+{
+  "schema_version": 1,
+  "kind": "opendox-health-packs",
+  "packs": [
+    {
+      "id": "house-style",
+      "version": "1.4.0",
+      "source": "tools/packs/house-style",
+      "digest": {"algorithm": "sorted-ls-tree-r-v1", "value": "A6729621F2BC125958D06AE76D4D63444AE3DC22FD34B18F378D77460554BF2C"}
+    },
+    {
+      "id": "shared-rules",
+      "version": "2.0.0",
+      "source": "https://example.invalid/packs/shared-rules.git",
+      "commit": "96abd3ea4dc5bf1c2faf8ab0f89baeb0bd80d098",
+      "digest": {"algorithm": "sorted-ls-tree-r-v1", "value": "66b92496bd4614752be2fb4f4a58cfda0795d33698c67a3d233e87b8d147d386"}
+    }
+  ]
+}

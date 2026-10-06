@@ -1,0 +1,25 @@
+# VALID: the contract's two sources, one entry each.
+#
+# house-style lives in the corpus, so it carries NO commit: the corpus commit
+# that holds this file and the pack is its referent (15.1a). shared-rules is
+# a git URL, so it carries the commit the engine fetches. Both carry the
+# digest of the pack's tree; these values are illustrative.
+{
+  "schema_version": 1,
+  "kind": "opendox-health-packs",
+  "packs": [
+    {
+      "id": "house-style",
+      "version": "1.4.0",
+      "source": "tools/packs/house-style",
+      "digest": {"algorithm": "sorted-ls-tree-r-v1", "value": "a6729621f2bc125958d06ae76d4d63444ae3dc22fd34b18f378d77460554bf2c"}
+    },
+    {
+      "id": "shared-rules",
+      "version": "2.0.0",
+      "source": "https://example.invalid/packs/shared-rules.git",
+      "commit": "96abd3ea4dc5bf1c2faf8ab0f89baeb0bd80d098",
+      "digest": {"algorithm": "sorted-ls-tree-r-v1", "value": "66b92496bd4614752be2fb4f4a58cfda0795d33698c67a3d233e87b8d147d386"}
+    }
+  ]
+}

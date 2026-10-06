@@ -1,0 +1,20 @@
+# VALID: a broken link one of the product's own families raised (pack
+# opendox).
+#
+# The contract's own example, with its id computed by the id rule: the key
+# hashes the link target as written, and the locator, display only, stays
+# outside it. evidence names the candidate the auto-fix would link to.
+{
+  "id": "opendox.broken-link.546cd2aacb1a6738",
+  "kind": "broken-link",
+  "pack_id": "opendox",
+  "pack_version": "0.2.0",
+  "path": "notes/plan.md",
+  "identity": {"target": "../old/brief.md"},
+  "locator": {"line_start": 12, "line_end": 12},
+  "severity": "warning",
+  "resolution_class": "auto-fix",
+  "message": "link target does not exist; a unique file of that name exists elsewhere",
+  "evidence": {"candidate": "archive/brief.md", "family_version": "1"},
+  "baseline_class": "new"
+}

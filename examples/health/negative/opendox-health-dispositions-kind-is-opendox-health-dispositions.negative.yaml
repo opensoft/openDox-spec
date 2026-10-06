@@ -1,0 +1,18 @@
+# expected_failure: kind-is-opendox-health-dispositions
+# INVALID: the aggregation's kind.
+# The two-exceptions example with this one change, so it breaks this
+# rule and no other.
+{
+  "schema_version": 1,
+  "kind": "xfactory_doc_health_dispositions",
+  "exceptions": [
+    {
+      "finding": "opendox.orphan.516a58a1fcc2c37f",
+      "reason": "kept as an unlinked appendix on purpose"
+    },
+    {
+      "finding": "house-style.heading-case.a5db1a71f8b8340d",
+      "reason": "the heading is a product name, and its case is the product's"
+    }
+  ]
+}

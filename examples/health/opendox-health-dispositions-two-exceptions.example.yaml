@@ -1,0 +1,19 @@
+# VALID: two accepted findings, each keyed by its id, with the reason.
+#
+# They are the orphan and pack-upgrade finding examples' own ids, so a run
+# neither stores nor lists either finding. Who accepted each and when are
+# the commit that added its entry.
+{
+  "schema_version": 1,
+  "kind": "opendox-health-dispositions",
+  "exceptions": [
+    {
+      "finding": "opendox.orphan.516a58a1fcc2c37f",
+      "reason": "kept as an unlinked appendix on purpose"
+    },
+    {
+      "finding": "house-style.heading-case.a5db1a71f8b8340d",
+      "reason": "the heading is a product name, and its case is the product's"
+    }
+  ]
+}

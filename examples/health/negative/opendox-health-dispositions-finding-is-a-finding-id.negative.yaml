@@ -1,0 +1,18 @@
+# expected_failure: finding-is-a-finding-id
+# INVALID: an entry keyed by a family name, not a finding id (R2Q10 (a)).
+# The two-exceptions example with this one change, so it breaks this
+# rule and no other.
+{
+  "schema_version": 1,
+  "kind": "opendox-health-dispositions",
+  "exceptions": [
+    {
+      "finding": "orphan",
+      "reason": "kept as an unlinked appendix on purpose"
+    },
+    {
+      "finding": "house-style.heading-case.a5db1a71f8b8340d",
+      "reason": "the heading is a product name, and its case is the product's"
+    }
+  ]
+}
