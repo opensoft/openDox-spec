@@ -908,11 +908,15 @@ def test_a_pathless_finding_has_the_engines_identity(identity: dict[str, Any],
     ({"collided_id": "house-style.heading-case.0f1e2d3c4b5a6978", "count": "2"}, False),
     ({}, False),
 ], ids=repr)
-def test_a_collision_has_the_engines_identity(identity: dict[str, Any], admitted: bool) -> None:
+@pytest.mark.parametrize("path", ["notes/plan.md", ""], ids=["with a path", "pathless"])
+def test_a_collision_has_the_engines_identity(identity: dict[str, Any], admitted: bool,
+                                              path: str) -> None:
     """The same contract: a collision finding's identity is exactly
-    {collided_id}, the id the colliding findings shared."""
-    finding = {**_finding_example("identity-collision"), "identity": identity}
-    finding["id"] = finding_id(identity, finding["kind"], finding["pack_id"], finding["path"])
+    {collided_id}, the id the colliding findings shared, whatever its path. Two
+    install-level findings that collide give a collision with an empty path,
+    and the pathless identity rule leaves it the collision's own key."""
+    finding = {**_finding_example("identity-collision"), "identity": identity, "path": path}
+    finding["id"] = finding_id(identity, finding["kind"], finding["pack_id"], path)
     found = violations(FINDING, finding)
     assert (not found) is admitted, _lines(found)
     assert {v.rule for v in found} <= {"collision-identity-is-the-collided-id"}
@@ -962,10 +966,10 @@ PATTERNS: dict[str, tuple[str, str]] = {
     "identity-strings-are-short-text": (FINDING, "#/$defs/identity_value/allOf/1"),
     "evidence-strings-are-short-text": (FINDING, "#/$defs/evidence_value"),
     "pathless-identity-category": (
-        FINDING, "#/allOf/0/then/properties/identity/properties/category"),
-    "pathless-identity-entry": (FINDING, "#/allOf/0/then/properties/identity/properties/entry"),
+        FINDING, "#/allOf/1/then/properties/identity/properties/category"),
+    "pathless-identity-entry": (FINDING, "#/allOf/1/then/properties/identity/properties/entry"),
     "collision-identity-is-the-collided-id": (
-        FINDING, "#/allOf/1/then/properties/identity/properties/collided_id"),
+        FINDING, "#/allOf/2/then/properties/identity/properties/collided_id"),
 }
 
 _H16 = "0123456789abcdef"

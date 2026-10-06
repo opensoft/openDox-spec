@@ -30,7 +30,8 @@
 # `identity` is the key the family supplies, and it is POSITION-INDEPENDENT: a
 # link target as written, a pair of paths, a heading key, never a line number.
 # The engine's own findings have the engine's own keys: {category, entry} for
-# an install-level or pre-run finding, and {collided_id} for a collision.
+# an install-level or pre-run finding, and {collided_id} for a collision,
+# whatever the collision's path.
 # `locator` is display only and outside the hash, so an edit above a finding
 # moves its locator and keeps its id, and an exception keyed by that id keeps
 # suppressing it. The engine sets the id, and a pack's own value is ignored.
@@ -165,9 +166,19 @@
       "if": {"required": ["path"], "properties": {"path": {"const": ""}}},
       "then": {
         "properties": {
-          "resolution_class": {"x-rule": "pathless-finding-is-human-only", "const": "human-only"},
+          "resolution_class": {"x-rule": "pathless-finding-is-human-only", "const": "human-only"}
+        }
+      }
+    },
+    {
+      "if": {
+        "required": ["path"],
+        "properties": {"path": {"const": ""}, "kind": {"not": {"const": "identity-collision"}}}
+      },
+      "then": {
+        "properties": {
           "identity": {
-            "description": "An install-level or pre-run finding's identity is the engine's own: the failure's category, and the manifest entry it is about, or the empty string for none.",
+            "description": "An install-level or pre-run finding's identity is the engine's own: the failure's category, and the manifest entry it is about, or the empty string for none. A collision of two such findings has an empty path too, and keeps the collision's identity instead.",
             "x-rule": "pathless-identity-is-category-and-entry",
             "required": ["category", "entry"],
             "additionalProperties": false,
@@ -354,7 +365,7 @@
     {
       "id": "pathless-identity-is-category-and-entry",
       "class": "shape",
-      "says": "A finding whose path is empty has the engine's own identity, exactly {category, entry}: category is the failure's category, a name of lowercase letters, digits and hyphens, and entry is the id of the manifest entry it is about, or the empty string for none. So an install-level or pre-run finding keeps one id across runs."
+      "says": "A finding whose path is empty, other than an identity collision, has the engine's own identity, exactly {category, entry}: category is the failure's category, a name of lowercase letters, digits and hyphens, and entry is the id of the manifest entry it is about, or the empty string for none. So an install-level or pre-run finding keeps one id across runs. A collision keeps {collided_id}, whatever its path."
     },
     {
       "id": "identity-collision-is-human-only",
