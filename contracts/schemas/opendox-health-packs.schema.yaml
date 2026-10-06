@@ -25,7 +25,8 @@
 #
 # THE DIGEST is sorted-ls-tree-r-v1, the source-tree digest neutral-product-pin
 # defines over a commit: openxFactory's contracts/opendox-pin.yaml, lines
-# 123-134, read at openxFactory 0f2a87f6 (blob 6bd24448). Over a tree-ish T:
+# 123-134, read at openxFactory commit 0f2a87f6cd91d39e64ae7c426e88664602cfa080
+# (blob 6bd244484fa2c119325693d64ddff338a5a878ef). Over a tree-ish T:
 #
 #   records = `git ls-tree -r -z T` split on NUL, empties dropped
 #   each record is `<mode> SP <type> SP <oid> TAB <path>`, path unquoted
@@ -34,7 +35,7 @@
 #
 # Which tree T is depends on the source (OQ-H15-12, as plan 038's
 # contracts/health-packs-manifest.md states it at opensoft/openxFactory#1245's
-# f9cc2d02):
+# commit f9cc2d02fe3bcaa10b33308a7422e47520014fae):
 #
 #   a corpus-relative source: the subtree <corpus-commit>:<source>, so each path
 #     is relative to the source. <corpus-commit> is the commit the run reads:
@@ -131,6 +132,7 @@
         },
         {
           "if": {
+            "type": "object",
             "required": ["source"],
             "properties": {
               "source": {

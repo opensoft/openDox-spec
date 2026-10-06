@@ -119,10 +119,11 @@ CARRYING = frozenset({"$schema", "$id", "$ref", "$defs", "title", "description",
                       "contract_schema_version", "x-rule", "x-rules",
                       "properties", "additionalProperties", "propertyNames",
                       "items", "allOf", "if", "then"})
-#: openDox-code's validator's keywords (`opendox.validator.KEYWORDS` at
-#: openDox-code a9ac96f9), which refuses a copy that uses any other. The two
-#: file kinds join its kinds by copy (plan 038 T047, T054), so no contract here
-#: may step outside them.
+#: openDox-code's validator's keywords: `KEYWORDS` in `src/opendox/validator.py`,
+#: lines 219-233, at openDox-code commit a9ac96f974d83c63908246e18592af52ca70907a
+#: (blob a542b7053f2e8610663eb9949f2b3c4d31a5b4ae). That validator refuses a
+#: copy that uses any other keyword. The two file kinds join its kinds by copy
+#: (plan 038 T047, T054), so no contract here may step outside them.
 OPENDOX_VALIDATOR_KEYWORDS = frozenset({
     "const", "dependentRequired", "enum", "format", "maxItems", "maxLength",
     "maxProperties", "maximum", "minItems", "minLength", "minProperties",
@@ -338,12 +339,21 @@ def _id_names_its_pack_and_kind(finding: Any) -> Iterator[Violation]:
                         f"is {pack_id!r}'s {kind!r}")
 
 
+def _identity_is_admitted(finding: dict[str, Any]) -> bool:
+    """Whether the finding's identity breaks no shape rule: its own subschema's,
+    and the engine identity rules, which constrain it from the finding's root."""
+    if not _admits(FINDING, "#/properties/identity", finding.get("identity")):
+        return False
+    return not any(v.where == "/identity" or v.where.startswith("/identity/")
+                   for v in shape_violations(FINDING, finding))
+
+
 def _id_is_the_hash_of_its_key(finding: Any) -> Iterator[Violation]:
     """Judged only over a key whose every part its own shape rules admit, the
     identity whole, so a malformed identity is reported once, by its own rule,
     and a string UTF-8 cannot encode never reaches the hash."""
     parts = _finding_parts(finding)
-    if parts is None or not _admits(FINDING, "#/properties/identity", finding.get("identity")):
+    if parts is None or not _identity_is_admitted(finding):
         return
     fid, kind, pack_id, path = parts
     want = finding_id(finding["identity"], kind, pack_id, path).rsplit(".", 1)[1]
@@ -891,7 +901,8 @@ def test_a_repeated_malformed_pack_id_is_reported_by_its_own_rule_alone() -> Non
 ], ids=repr)
 def test_a_pathless_finding_has_the_engines_identity(identity: dict[str, Any],
                                                      admitted: bool) -> None:
-    """Plan 038's finding contract, at opensoft/openxFactory#1245's c93ae88b: an
+    """Plan 038's finding contract, at opensoft/openxFactory#1245's commit
+    c93ae88b73baa9369b0f68dacad5740b7d34fdb2: an
     install-level or pre-run finding's identity is exactly {category, entry},
     the entry "" when it is about no manifest entry, so it keeps one id."""
     finding = {**_finding_example("no-sandbox"), "identity": identity}
@@ -1226,6 +1237,91 @@ def test_no_entry_sets_a_budget_or_a_bound(key: str) -> None:
     at_top = {**manifest, key: 60}
     assert {v.rule for v in violations(PACKS, in_entry)} == {"entry-keys"}
     assert {v.rule for v in violations(PACKS, at_top)} == {"envelope-keys"}
+
+
+#: Marks a part to remove rather than replace.
+_ABSENT = object()
+
+
+def _with(document: Any, at: tuple[Any, ...], value: Any) -> Any:
+    """A copy of `document` with the part at `at` replaced by `value`, or
+    removed when `value` is `_ABSENT`. An empty `at` replaces the whole."""
+    if not at:
+        return value
+    copy = json.loads(json.dumps(document))
+    node = copy
+    for part in at[:-1]:
+        node = node[part]
+    if value is _ABSENT:
+        del node[at[-1]]
+    else:
+        node[at[-1]] = value
+    return copy
+
+
+_ORPHAN_ID = "opendox.orphan.516a58a1fcc2c37f"
+
+
+@pytest.mark.parametrize("contract, example, at, value, rule, where", [
+    (FINDING, "broken-link", (), [], "finding-keys", ""),
+    (FINDING, "broken-link", ("id",), 7, "id-is-well-formed", "/id"),
+    (FINDING, "broken-link", ("kind",), 7, "kind-is-a-family-name", "/kind"),
+    (FINDING, "broken-link", ("kind",), _ABSENT, "finding-keys", ""),
+    (FINDING, "broken-link", ("pack_id",), 7, "pack-id-is-a-name", "/pack_id"),
+    (FINDING, "broken-link", ("pack_version",), 7, "pack-version-is-text", "/pack_version"),
+    (FINDING, "broken-link", ("path",), 7, "path-is-corpus-relative", "/path"),
+    (FINDING, "broken-link", ("path",), _ABSENT, "finding-keys", ""),
+    (FINDING, "broken-link", ("locator",), "12", "locator-keys", "/locator"),
+    (FINDING, "broken-link", ("locator",), {"target": 7}, "locator-target-is-short-text",
+     "/locator/target"),
+    (FINDING, "broken-link", ("message",), 7, "message-is-one-bounded-line", "/message"),
+    (FINDING, "no-sandbox", ("identity", "category"), True,
+     "pathless-identity-is-category-and-entry", "/identity/category"),
+    (FINDING, "identity-collision", ("identity", "collided_id"), True,
+     "collision-identity-is-the-collided-id", "/identity/collided_id"),
+    (PACKS, "two-sources", (), [], "envelope-keys", ""),
+    (PACKS, "two-sources", ("packs",), _ABSENT, "envelope-keys", ""),
+    (PACKS, "two-sources", ("packs", 0), "tools/packs/house-style", "entry-keys", "/packs/0"),
+    (PACKS, "two-sources", ("packs", 0, "id"), 7, "pack-id-is-a-name", "/packs/0/id"),
+    (PACKS, "two-sources", ("packs", 0, "version"), "", "version-is-text", "/packs/0/version"),
+    (PACKS, "two-sources", ("packs", 0, "source"), 7, "source-is-a-git-url-or-corpus-path",
+     "/packs/0/source"),
+    (PACKS, "two-sources", ("packs", 1, "source"), 7, "source-is-a-git-url-or-corpus-path",
+     "/packs/1/source"),
+    (PACKS, "two-sources", ("packs", 0, "source"), _ABSENT, "entry-keys", "/packs/0"),
+    (PACKS, "two-sources", ("packs", 1, "source"), _ABSENT, "entry-keys", "/packs/1"),
+    (PACKS, "two-sources", ("packs", 1, "commit"), 7, "commit-is-40-hex", "/packs/1/commit"),
+    (PACKS, "two-sources", ("packs", 0, "digest"), "ab" * 32, "digest-keys", "/packs/0/digest"),
+    (PACKS, "two-sources", ("packs", 0, "digest", "value"), _ABSENT, "digest-keys",
+     "/packs/0/digest"),
+    (PACKS, "two-sources", ("packs", 0, "digest", "value"), 7, "digest-value-is-64-hex",
+     "/packs/0/digest/value"),
+    (DISPOSITIONS, "two-exceptions", ("exceptions",), _ABSENT, "envelope-keys", ""),
+    (DISPOSITIONS, "two-exceptions", ("exceptions", 0), _ORPHAN_ID, "exception-keys",
+     "/exceptions/0"),
+    (DISPOSITIONS, "two-exceptions", ("exceptions", 0, "finding"), _ABSENT, "exception-keys",
+     "/exceptions/0"),
+    (DISPOSITIONS, "two-exceptions", ("exceptions", 0, "reason"), _ABSENT, "exception-keys",
+     "/exceptions/0"),
+    (DISPOSITIONS, "two-exceptions", ("exceptions", 0, "finding"), 7, "finding-is-a-finding-id",
+     "/exceptions/0/finding"),
+    (DISPOSITIONS, "two-exceptions", ("exceptions", 0, "reason"), 7, "reason-is-text",
+     "/exceptions/0/reason"),
+], ids=lambda v: "absent" if v is _ABSENT else (
+    "/".join(map(str, v)) if isinstance(v, tuple) else v if isinstance(v, str) else None))
+def test_a_missing_or_mistyped_part_is_refused_by_its_own_rule(
+        contract: str, example: str, at: tuple[Any, ...], value: Any, rule: str,
+        where: str) -> None:
+    """Each required part, removed, and each typed part, given a value of
+    another type, breaks exactly its own rule at one place. (An engine identity
+    key is given `true`, which identity admits, because a number there also
+    breaks identity-holds-no-number.) An `if` that tests
+    a part never fires on a part that is absent or mistyped, so no second rule
+    joins in: a git URL's commit rule on an entry with no source, or a corpus
+    path's on a source that is not text."""
+    document = read(EXAMPLES / f"{contract}-{example}.example.yaml")[1]
+    found = violations(contract, _with(document, at, value))
+    assert {(v.rule, v.where) for v in found} == {(rule, where)}, _lines(found)
 
 
 # ---------------------------------------------------------------------------

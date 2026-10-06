@@ -2,9 +2,9 @@
 # INVALID: an install-level finding with an empty identity, which is not the
 # engine's own key.
 # The no-sandbox example with this one change, so it breaks this
-# rule and no other. Its id is computed again over the changed key.
+# rule and no other.
 {
-  "id": "opendox.no-sandbox.6bb121f001a66f93",
+  "id": "opendox.no-sandbox.5ccbb79891acb2e8",
   "kind": "no-sandbox",
   "pack_id": "opendox",
   "pack_version": "0.2.0",

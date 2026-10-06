@@ -2,9 +2,9 @@
 # INVALID: a collision finding whose identity names the shared id under
 # another key.
 # The identity-collision example with this one change, so it breaks this
-# rule and no other. Its id is computed again over the changed key.
+# rule and no other.
 {
-  "id": "house-style.identity-collision.9dbdb8df722256a7",
+  "id": "house-style.identity-collision.b722027596ad8c96",
   "kind": "identity-collision",
   "pack_id": "house-style",
   "pack_version": "1.4.0",
