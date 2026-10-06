@@ -3,12 +3,12 @@
 # The no-sandbox example with this one change, so it breaks this
 # rule and no other.
 {
-  "id": "opendox.no-sandbox.6bb121f001a66f93",
+  "id": "opendox.no-sandbox.5ccbb79891acb2e8",
   "kind": "no-sandbox",
   "pack_id": "opendox",
   "pack_version": "0.2.0",
   "path": "",
-  "identity": {},
+  "identity": {"category": "no-sandbox", "entry": ""},
   "severity": "warning",
   "resolution_class": "assisted",
   "message": "no live sandbox on this install, so no check pack ran",

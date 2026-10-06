@@ -355,10 +355,11 @@ def _id_is_the_hash_of_its_key(finding: Any) -> Iterator[Violation]:
 
 def _locator_span_is_ordered(finding: Any) -> Iterator[Violation]:
     locator = finding.get("locator") if isinstance(finding, dict) else None
-    if not isinstance(locator, dict):
+    if not isinstance(locator, dict) or not {"line_start", "line_end"} <= set(locator):
         return
-    start, end = locator.get("line_start"), locator.get("line_end")
-    if _is_type(start, "integer") and _is_type(end, "integer") and end < start:
+    start, end = locator["line_start"], locator["line_end"]
+    lines_admitted = all(_admits(FINDING, "#/$defs/line", line) for line in (start, end))
+    if lines_admitted and end < start:
         yield Violation("locator-span-is-ordered", "/locator/line_end", "reference",
                         f"the span ends at {end}, before it starts at {start}")
 
@@ -368,7 +369,7 @@ def _pack_ids_are_unique(manifest: Any) -> Iterator[Violation]:
     seen: set[str] = set()
     for i, entry in enumerate(packs if isinstance(packs, list) else []):
         pid = entry.get("id") if isinstance(entry, dict) else None
-        if isinstance(pid, str):
+        if pid is not None and _admits(PACKS, "#/$defs/pack_id", pid):
             if pid in seen:
                 yield Violation("ids-are-unique", f"/packs/{i}/id", "reference",
                                 f"{pid!r} is already an entry's id")
@@ -854,6 +855,69 @@ def test_a_locator_is_a_span_a_target_or_both(locator: dict[str, Any], rules: se
     assert {v.rule for v in violations(FINDING, finding)} == rules
 
 
+@pytest.mark.parametrize("locator", [
+    {"line_start": 0, "line_end": -1},
+    {"line_start": "9", "line_end": 3},
+    {"line_start": True, "line_end": 0},
+], ids=repr)
+def test_a_malformed_span_is_reported_by_its_own_rule_alone(locator: dict[str, Any]) -> None:
+    """The span's order is judged only between two line numbers the line rule
+    admits, so a malformed line is reported once, by that rule."""
+    finding = {**_finding_example("broken-link"), "locator": locator}
+    assert {v.rule for v in violations(FINDING, finding)} == {"locator-line-is-a-line-number"}
+
+
+def test_a_repeated_malformed_pack_id_is_reported_by_its_own_rule_alone() -> None:
+    """Uniqueness is judged only among ids the pack-id rules admit."""
+    manifest = read(EXAMPLES / f"{PACKS}-two-sources.example.yaml")[1]
+    for pid, rule in (("opendox", "pack-id-is-not-opendox"), ("House", "pack-id-is-a-name")):
+        packs = [{**entry, "id": pid} for entry in manifest["packs"]]
+        found = violations(PACKS, {**manifest, "packs": packs})
+        assert {(v.rule, v.where) for v in found} == {
+            (rule, "/packs/0/id"), (rule, "/packs/1/id")}, _lines(found)
+
+
+@pytest.mark.parametrize("identity, admitted", [
+    ({"category": "no-sandbox", "entry": ""}, True),
+    ({"category": "digest-differs", "entry": "shared-rules"}, True),
+    ({}, False),
+    ({"category": "no-sandbox"}, False),
+    ({"entry": ""}, False),
+    ({"category": "no-sandbox", "entry": "", "pack": "x"}, False),
+    ({"category": "No-Sandbox", "entry": ""}, False),
+    ({"category": "", "entry": ""}, False),
+    ({"category": "no-sandbox", "entry": "shared_rules"}, False),
+    ({"category": "no-sandbox", "entry": None}, False),
+], ids=repr)
+def test_a_pathless_finding_has_the_engines_identity(identity: dict[str, Any],
+                                                     admitted: bool) -> None:
+    """Plan 038's finding contract, at opensoft/openxFactory#1245's c93ae88b: an
+    install-level or pre-run finding's identity is exactly {category, entry},
+    the entry "" when it is about no manifest entry, so it keeps one id."""
+    finding = {**_finding_example("no-sandbox"), "identity": identity}
+    finding["id"] = finding_id(identity, finding["kind"], finding["pack_id"], finding["path"])
+    found = violations(FINDING, finding)
+    assert (not found) is admitted, _lines(found)
+    assert {v.rule for v in found} <= {"pathless-identity-is-category-and-entry"}
+
+
+@pytest.mark.parametrize("identity, admitted", [
+    ({"collided_id": "house-style.heading-case.0f1e2d3c4b5a6978"}, True),
+    ({"id": "house-style.heading-case.0f1e2d3c4b5a6978"}, False),
+    ({"collided_id": "heading-case"}, False),
+    ({"collided_id": "house-style.heading-case.0f1e2d3c4b5a6978", "count": "2"}, False),
+    ({}, False),
+], ids=repr)
+def test_a_collision_has_the_engines_identity(identity: dict[str, Any], admitted: bool) -> None:
+    """The same contract: a collision finding's identity is exactly
+    {collided_id}, the id the colliding findings shared."""
+    finding = {**_finding_example("identity-collision"), "identity": identity}
+    finding["id"] = finding_id(identity, finding["kind"], finding["pack_id"], finding["path"])
+    found = violations(FINDING, finding)
+    assert (not found) is admitted, _lines(found)
+    assert {v.rule for v in found} <= {"collision-identity-is-the-collided-id"}
+
+
 @pytest.mark.parametrize("path, resolution_class, rules", [
     ("", "human-only", set()),
     ("", "assisted", {"pathless-finding-is-human-only"}),
@@ -897,6 +961,11 @@ PATTERNS: dict[str, tuple[str, str]] = {
     "locator-target-is-short-text": (FINDING, "#/properties/locator/properties/target"),
     "identity-strings-are-short-text": (FINDING, "#/$defs/identity_value/allOf/1"),
     "evidence-strings-are-short-text": (FINDING, "#/$defs/evidence_value"),
+    "pathless-identity-category": (
+        FINDING, "#/allOf/0/then/properties/identity/properties/category"),
+    "pathless-identity-entry": (FINDING, "#/allOf/0/then/properties/identity/properties/entry"),
+    "collision-identity-is-the-collided-id": (
+        FINDING, "#/allOf/1/then/properties/identity/properties/collided_id"),
 }
 
 _H16 = "0123456789abcdef"
@@ -1029,6 +1098,15 @@ PATTERN_CASES: list[tuple[str, str, bool]] = [
     ("identity-strings-are-short-text", "\U0001f50e", True),
     ("evidence-strings-are-short-text", "\udbff", False),
     ("evidence-strings-are-short-text", "\U0010ffff", True),
+    ("pathless-identity-category", "no-sandbox", True),
+    ("pathless-identity-category", "", False),
+    ("pathless-identity-category", "no-sandbox\n", False),
+    ("pathless-identity-entry", "", True),
+    ("pathless-identity-entry", "shared-rules", True),
+    ("pathless-identity-entry", "\n", False),
+    ("pathless-identity-entry", "shared.rules", False),
+    ("collision-identity-is-the-collided-id", f"house-style.heading-case.{_H16}", True),
+    ("collision-identity-is-the-collided-id", f"house-style.heading-case.{_H16}\n", False),
 ]
 
 

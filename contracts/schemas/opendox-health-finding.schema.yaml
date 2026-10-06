@@ -29,6 +29,8 @@
 #
 # `identity` is the key the family supplies, and it is POSITION-INDEPENDENT: a
 # link target as written, a pair of paths, a heading key, never a line number.
+# The engine's own findings have the engine's own keys: {category, entry} for
+# an install-level or pre-run finding, and {collided_id} for a collision.
 # `locator` is display only and outside the hash, so an edit above a finding
 # moves its locator and keeps its id, and an exception keyed by that id keeps
 # suppressing it. The engine sets the id, and a pack's own value is ignored.
@@ -163,7 +165,25 @@
       "if": {"required": ["path"], "properties": {"path": {"const": ""}}},
       "then": {
         "properties": {
-          "resolution_class": {"x-rule": "pathless-finding-is-human-only", "const": "human-only"}
+          "resolution_class": {"x-rule": "pathless-finding-is-human-only", "const": "human-only"},
+          "identity": {
+            "description": "An install-level or pre-run finding's identity is the engine's own: the failure's category, and the manifest entry it is about, or the empty string for none.",
+            "x-rule": "pathless-identity-is-category-and-entry",
+            "required": ["category", "entry"],
+            "additionalProperties": false,
+            "properties": {
+              "category": {
+                "x-rule": "pathless-identity-is-category-and-entry",
+                "type": "string",
+                "pattern": "^[a-z0-9-]+$(?!\\n)"
+              },
+              "entry": {
+                "x-rule": "pathless-identity-is-category-and-entry",
+                "type": "string",
+                "pattern": "^(?:[a-z0-9-]+)?$(?!\\n)"
+              }
+            }
+          }
         }
       }
     },
@@ -171,7 +191,20 @@
       "if": {"required": ["kind"], "properties": {"kind": {"const": "identity-collision"}}},
       "then": {
         "properties": {
-          "resolution_class": {"x-rule": "identity-collision-is-human-only", "const": "human-only"}
+          "resolution_class": {"x-rule": "identity-collision-is-human-only", "const": "human-only"},
+          "identity": {
+            "description": "A collision finding's identity is the engine's own: the id the colliding findings shared.",
+            "x-rule": "collision-identity-is-the-collided-id",
+            "required": ["collided_id"],
+            "additionalProperties": false,
+            "properties": {
+              "collided_id": {
+                "x-rule": "collision-identity-is-the-collided-id",
+                "type": "string",
+                "pattern": "^[a-z0-9-]+\\.[a-z0-9-]+\\.[0-9a-f]{16}$(?!\\n)"
+              }
+            }
+          }
         }
       }
     }
@@ -319,9 +352,19 @@
       "says": "A finding whose path is empty, an install-level or pre-run finding, is human-only: it names no document a repair could edit."
     },
     {
+      "id": "pathless-identity-is-category-and-entry",
+      "class": "shape",
+      "says": "A finding whose path is empty has the engine's own identity, exactly {category, entry}: category is the failure's category, a name of lowercase letters, digits and hyphens, and entry is the id of the manifest entry it is about, or the empty string for none. So an install-level or pre-run finding keeps one id across runs."
+    },
+    {
       "id": "identity-collision-is-human-only",
       "class": "shape",
       "says": "A finding of kind identity-collision, which the engine records against the family or pack whose findings shared one id, is human-only."
+    },
+    {
+      "id": "collision-identity-is-the-collided-id",
+      "class": "shape",
+      "says": "A finding of kind identity-collision has the engine's own identity, exactly {collided_id}: the id the colliding findings shared."
     },
     {
       "id": "id-names-its-pack-and-kind",
